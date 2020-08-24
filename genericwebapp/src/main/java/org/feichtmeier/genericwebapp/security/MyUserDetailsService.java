@@ -1,7 +1,6 @@
 package org.feichtmeier.genericwebapp.security;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import org.feichtmeier.genericwebapp.entity.Role;
@@ -33,11 +32,7 @@ public class MyUserDetailsService implements UserDetailsService {
 		for (Role role : user.getRoles()) {
 			userRoles.add(new SimpleGrantedAuthority(role.getName()));
 		}
-		if (null == user) {
-			throw new UsernameNotFoundException("No user present with username: " + username);
-		} else {
-			return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPasswordHash(),
-					userRoles);
-		}
+		return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPasswordHash(),
+				userRoles);
 	}
 }
