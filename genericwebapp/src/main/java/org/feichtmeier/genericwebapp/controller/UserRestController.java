@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/users")
-public class UserController extends GenericRestController<User> {
+public class UserRestController extends GenericRestController<User> {
 
     @Override
     protected User updateEntity(User e, User newE) {

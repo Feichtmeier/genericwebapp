@@ -77,7 +77,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         roleRepository.save(admin);
 
         // TODO: Delete proto use
-        User user = new User("user", "Heinrich Schmidt", passwordEncoder.encode("password"), false, "heinrich@schmidt.de");
+        User user = new User("user", "Heinrich Schmidt", passwordEncoder.encode("password"), "heinrich@schmidt.de", false);
         Set<Role> roles = new HashSet<>();
         roles.add(admin);
         user.setRoles(roles);;
@@ -100,6 +100,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(WebSecurity web) throws Exception {
         web.ignoring().antMatchers("/VAADIN/**",
+
+                "/**",
 
                 "/api/**",
 
