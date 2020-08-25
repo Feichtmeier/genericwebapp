@@ -5,7 +5,9 @@ import com.vaadin.flow.component.grid.Grid;
 import org.feichtmeier.genericwebapp.entity.Permission;
 import org.feichtmeier.genericwebapp.entity.Role;
 import org.feichtmeier.genericwebapp.repository.GenericRepository;
+import org.springframework.security.access.annotation.Secured;
 
+@Secured("ADMIN")
 public class RoleView extends GenericGridView<Role> {
 
     private static final long serialVersionUID = 5857470858968411471L;

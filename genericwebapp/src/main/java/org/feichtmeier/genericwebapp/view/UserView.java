@@ -5,8 +5,10 @@ import com.vaadin.flow.component.grid.Grid;
 import org.feichtmeier.genericwebapp.entity.Role;
 import org.feichtmeier.genericwebapp.entity.User;
 import org.feichtmeier.genericwebapp.repository.GenericRepository;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+@Secured("ADMIN")
 public class UserView extends GenericGridView<User> {
 
     private static final long serialVersionUID = 5168974008835497598L;

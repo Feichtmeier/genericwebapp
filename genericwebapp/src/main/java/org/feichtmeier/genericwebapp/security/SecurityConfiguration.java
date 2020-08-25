@@ -74,13 +74,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         super.configure(auth);
 
-        Role admin = new Role("admin");
-        Set<Permission> permissions = new HashSet<>();
-        for (Permission permission : permissionsRepository.findAll()) {
-            permissions.add(permission);
-        }
-        admin.setPermissions(permissions);
-        roleRepository.save(admin);        
+        Role admin = new Role("ADMIN");
+        roleRepository.save(admin);
 
         // TODO: Delete proto use
         User user = new User("user", "Heinrich Schmidt", passwordEncoder.encode("password"), false, "heinrich@schmidt.de");

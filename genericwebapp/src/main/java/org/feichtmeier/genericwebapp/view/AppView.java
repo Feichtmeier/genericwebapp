@@ -7,11 +7,13 @@ import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.html.Anchor;
+import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.page.Viewport;
 import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.tabs.Tabs;
@@ -23,6 +25,7 @@ import org.feichtmeier.genericwebapp.entity.Role;
 import org.feichtmeier.genericwebapp.entity.User;
 import org.feichtmeier.genericwebapp.entity.View;
 import org.feichtmeier.genericwebapp.repository.GenericRepository;
+import org.feichtmeier.genericwebapp.security.SecurityUtils;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Route(value = "")
@@ -49,17 +52,26 @@ public class AppView extends AppLayout {
         this.userView = new UserView(userRepository, roleRepository, passwordEncoder);
         this.roleView = new RoleView(roleRepository, permissionRepository);
 
+        VerticalLayout welcomeView = new VerticalLayout(new H1("Welcome"));
+
         // Notebook
         tabToViewMap = new HashMap<>();
-        viewTabs = new Tabs(createTabAndLinkToView(this.userView, "User Administration", VaadinIcon.USER.create()),
-                createTabAndLinkToView(this.roleView, "Role Administration", VaadinIcon.KEY.create()));
+
+        if (SecurityUtils.isAccessGranted(UserView.class) && SecurityUtils.isAccessGranted(Role.class)) {
+            viewTabs = new Tabs(createTabAndLinkToView(welcomeView, "Welcome", VaadinIcon.HOME.create()),
+                    createTabAndLinkToView(this.userView, "User Administration", VaadinIcon.USER.create()),
+                    createTabAndLinkToView(this.roleView, "Role Administration", VaadinIcon.KEY.create()));
+
+        } else {
+            viewTabs = new Tabs(createTabAndLinkToView(welcomeView, "Welcome", VaadinIcon.HOME.create()));
+        }
+        setContent(welcomeView);
         viewTabs.setOrientation(Tabs.Orientation.HORIZONTAL);
         viewTabs.addSelectedChangeListener(event -> {
             final Tab selectedTab = event.getSelectedTab();
             final Component component = tabToViewMap.get(selectedTab);
             setContent(component);
         });
-        setContent(this.userView);
 
         // Logo and drawer [ <--[X|X]--> | [ ] ]
         StreamResource res = new StreamResource("logo.svg", () -> AppView.class.getResourceAsStream("/" + "logo.svg"));
