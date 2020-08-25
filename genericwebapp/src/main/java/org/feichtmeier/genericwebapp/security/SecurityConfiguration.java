@@ -3,7 +3,6 @@ package org.feichtmeier.genericwebapp.security;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.feichtmeier.genericwebapp.entity.Permission;
 import org.feichtmeier.genericwebapp.entity.Role;
 import org.feichtmeier.genericwebapp.entity.User;
 import org.feichtmeier.genericwebapp.repository.PermissionRepository;
