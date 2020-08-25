@@ -3,15 +3,16 @@ package org.feichtmeier.genericwebapp.view;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.login.LoginForm;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.page.Viewport;
 import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.server.PWA;
 
 @Route("login") 
-@PWA(name = "app", shortName = "app")
-@PageTitle("Login | Generic Webapp")
+// @PWA(name = "app", shortName = "app", startPath = "login")
+@Viewport("width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes, viewport-fit=cover")
+@PageTitle("Generic Webapp")
 
 public class LoginView extends VerticalLayout implements BeforeEnterObserver {
 	
