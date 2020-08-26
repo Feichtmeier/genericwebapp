@@ -45,5 +45,10 @@ public class UserView extends GenericGridView<User> {
         String[] columnNames = {"username", "fullName"};
         return columnNames;
     }
+
+    @Override
+    protected void setViewName() {
+        this.viewName = ViewNames.USER_VIEW;
+    }
     
 }

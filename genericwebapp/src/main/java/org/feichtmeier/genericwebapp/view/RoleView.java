@@ -42,4 +42,9 @@ public class RoleView extends GenericGridView<Role> {
         return columnNames;
     }
 
+    @Override
+    protected void setViewName() {
+        this.viewName = ViewNames.ROLE_VIEW;
+    }
+
 }

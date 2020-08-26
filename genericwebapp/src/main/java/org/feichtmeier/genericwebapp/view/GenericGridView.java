@@ -3,12 +3,11 @@ package org.feichtmeier.genericwebapp.view;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.icon.VaadinIcon;
-import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 
 import org.feichtmeier.genericwebapp.entity.AbstractEntity;
 import org.feichtmeier.genericwebapp.repository.GenericRepository;
 
-public abstract class GenericGridView<E extends AbstractEntity> extends VerticalLayout {
+public abstract class GenericGridView<E extends AbstractEntity> extends AbstractView {
 
     private static final long serialVersionUID = -151705160904157799L;
 
