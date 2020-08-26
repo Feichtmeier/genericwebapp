@@ -32,9 +32,6 @@ public class AppView extends AppLayout {
 
     private static final long serialVersionUID = 8375254280365769233L;
 
-    private GenericRepository<Permission> permissionRepository;
-    private GenericRepository<View> viewRepository;
-
     private final UserView userView;
     private final RoleView roleView;
     private final Tabs viewTabs;
@@ -43,8 +40,6 @@ public class AppView extends AppLayout {
     public AppView(GenericRepository<User> userRepository, GenericRepository<Role> roleRepository,
             GenericRepository<Permission> permissionRepository, GenericRepository<View> viewRepository,
             PasswordEncoder passwordEncoder) {
-        this.permissionRepository = permissionRepository;
-        this.viewRepository = viewRepository;
 
         // all main "views"
         this.userView = new UserView(userRepository, roleRepository, passwordEncoder);
