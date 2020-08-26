@@ -8,7 +8,7 @@ import org.feichtmeier.genericwebapp.repository.GenericRepository;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-@Secured("ADMIN")
+@Secured(ViewNames.USER_VIEW)
 public class UserView extends GenericGridView<User> {
 
     private static final long serialVersionUID = 5168974008835497598L;

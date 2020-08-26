@@ -104,12 +104,7 @@ public class AppView extends AppLayout {
     private Tab createTabAndLinkToView(Component view, String tabText, Icon icon) {
         final Tab tab = new Tab(icon);
         this.tabToViewMap.put(tab, view);
-        Permission permission = new Permission();
-        View viewEntity = new View();
-        viewEntity.setName(tabText);
-        permission.setView(viewEntity);
-        viewRepository.save(viewEntity);
-        permissionRepository.save(permission);
+        
         return tab;
     }
 }
