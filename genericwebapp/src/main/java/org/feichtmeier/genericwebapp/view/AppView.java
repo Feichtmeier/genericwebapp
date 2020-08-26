@@ -47,17 +47,16 @@ public class AppView extends AppLayout {
 
         VerticalLayout welcomeView = new VerticalLayout(new H1("Welcome"));
 
-        // Notebook
+        // Build Notebook based on permissions
         tabToViewMap = new HashMap<>();
-
-        if (SecurityUtils.isAccessGranted(UserView.class) && SecurityUtils.isAccessGranted(Role.class)) {
-            viewTabs = new Tabs(createTabAndLinkToView(welcomeView, "Welcome", VaadinIcon.HOME.create()),
-                    createTabAndLinkToView(this.userView, "User Administration", VaadinIcon.USER.create()),
-                    createTabAndLinkToView(this.roleView, "Role Administration", VaadinIcon.KEY.create()));
-
-        } else {
-            viewTabs = new Tabs(createTabAndLinkToView(welcomeView, "Welcome", VaadinIcon.HOME.create()));
+        viewTabs = new Tabs(createTabAndLinkToView(welcomeView, "Welcome", VaadinIcon.HOME.create()));
+        if (SecurityUtils.isAccessGranted(UserView.class)) {
+            viewTabs.add(createTabAndLinkToView(this.userView, "User Administration", VaadinIcon.USER.create()));
         }
+        if (SecurityUtils.isAccessGranted(Role.class)) {
+            viewTabs.add(createTabAndLinkToView(this.roleView, "Role Administration", VaadinIcon.KEY.create()));
+        }
+
         setContent(welcomeView);
         viewTabs.setOrientation(Tabs.Orientation.HORIZONTAL);
         viewTabs.addSelectedChangeListener(event -> {
