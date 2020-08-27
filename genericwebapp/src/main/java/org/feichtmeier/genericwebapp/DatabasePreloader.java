@@ -29,27 +29,21 @@ public class DatabasePreloader {
             PermissionRepository permissionRepository, ViewRepository viewRepository, PasswordEncoder passwordEncoder) {
         return args -> {
             Permission userViewPermission = new Permission();
-            View userViewEntity = new View();
-            userViewEntity.setName(ViewNames.USER_VIEW);
+            View userViewEntity = new View(ViewNames.USER_VIEW);
             userViewPermission.setView(userViewEntity);
             viewRepository.save(userViewEntity);
-            userViewEntity.setPermission(userViewPermission);
             permissionRepository.save(userViewPermission);
 
             Permission homeViewPermission = new Permission();
-            View homeViewEntity = new View();
-            homeViewEntity.setName(ViewNames.HOME_VIEW);
+            View homeViewEntity = new View(ViewNames.HOME_VIEW);
             homeViewPermission.setView(homeViewEntity);
             viewRepository.save(homeViewEntity);
-            homeViewEntity.setPermission(homeViewPermission);
             permissionRepository.save(homeViewPermission);
 
             Permission roleViewPermission = new Permission();
-            View roleViewEntity = new View();
-            roleViewEntity.setName(ViewNames.ROLE_VIEW);
+            View roleViewEntity = new View(ViewNames.ROLE_VIEW);
             roleViewPermission.setView(roleViewEntity);
             viewRepository.save(roleViewEntity);
-            roleViewEntity.setPermission(roleViewPermission);
             permissionRepository.save(roleViewPermission);
 
             Role admin = new Role("ADMIN");

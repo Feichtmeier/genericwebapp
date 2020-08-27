@@ -2,9 +2,6 @@ package org.feichtmeier.genericwebapp.entity;
 
 import javax.persistence.Cacheable;
 import javax.persistence.Entity;
-import javax.persistence.OneToOne;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * View
@@ -20,10 +17,6 @@ public class View extends AbstractEntity {
 
     String name;
 
-    @JsonIgnore
-    @OneToOne(mappedBy = "view")
-    private Permission permission;
-
     public String getName() {
         return name;
     }
@@ -32,21 +25,20 @@ public class View extends AbstractEntity {
         this.name = name;
     }
 
-    public Permission getPermission() {
-        return permission;
-    }
-
-    public void setPermission(Permission permission) {
-        this.permission = permission;
-    }
-
     public View() {
         
     }
 
-    public View(String name, Permission permission) {
+    public View(String name) {
         this.name = name;
-        this.permission = permission;
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = super.hashCode();
+        result = prime * result + ((name == null) ? 0 : name.hashCode());
+        return result;
     }
 
     @Override
@@ -63,14 +55,7 @@ public class View extends AbstractEntity {
                 return false;
         } else if (!name.equals(other.name))
             return false;
-        if (permission == null) {
-            if (other.permission != null)
-                return false;
-        } else if (!permission.equals(other.permission))
-            return false;
         return true;
     }
-
-    
 
 }
