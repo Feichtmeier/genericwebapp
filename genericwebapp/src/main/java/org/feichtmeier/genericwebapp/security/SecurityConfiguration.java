@@ -1,8 +1,6 @@
 package org.feichtmeier.genericwebapp.security;
 
 import org.feichtmeier.genericwebapp.entity.User;
-import org.feichtmeier.genericwebapp.repository.PermissionRepository;
-import org.feichtmeier.genericwebapp.repository.RoleRepository;
 import org.feichtmeier.genericwebapp.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
@@ -25,15 +23,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     private static final String LOGIN_FAILURE_URL = "/login?error";
     private static final String LOGIN_URL = "/login";
     private static final String LOGOUT_SUCCESS_URL = "/login";
-
-    @Autowired
-    UserRepository userRepository;
-
-    @Autowired
-    RoleRepository roleRepository;
-
-    @Autowired
-    PermissionRepository permissionsRepository;
 
     @Autowired
     MyUserDetailsService myUserDetailsService;
