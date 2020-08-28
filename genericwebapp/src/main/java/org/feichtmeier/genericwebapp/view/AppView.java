@@ -50,10 +50,12 @@ public class AppView extends AppLayout {
         // Build Notebook based on permissions
         tabToViewMap = new HashMap<>();
         viewTabs = new Tabs(createTabAndLinkToView(welcomeView, "Welcome", VaadinIcon.HOME.create()));
-        if (SecurityUtils.isAccessGranted(UserView.class)) {
+        if (SecurityUtils.isAccessGranted(UserView.class) && SecurityUtils.isAccessGranted(RoleView.class)) {
+            viewTabs.add(createTabAndLinkToView(this.userView, "User Administration", VaadinIcon.USER.create()), createTabAndLinkToView(this.roleView, "Role Administration", VaadinIcon.KEY.create()));
+        } else if (SecurityUtils.isAccessGranted(UserView.class) && !SecurityUtils.isAccessGranted(RoleView.class)) {
             viewTabs.add(createTabAndLinkToView(this.userView, "User Administration", VaadinIcon.USER.create()));
         }
-        if (SecurityUtils.isAccessGranted(Role.class)) {
+        else if (!SecurityUtils.isAccessGranted(UserView.class) && SecurityUtils.isAccessGranted(RoleView.class)) {
             viewTabs.add(createTabAndLinkToView(this.roleView, "Role Administration", VaadinIcon.KEY.create()));
         }
 
