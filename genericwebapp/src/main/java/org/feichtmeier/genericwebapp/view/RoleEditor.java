@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.listbox.MultiSelectListBox;
 import com.vaadin.flow.component.textfield.TextField;
@@ -55,21 +56,12 @@ public class RoleEditor extends GenericEntityEditor<Role> {
 	public void setPermissionRepository(GenericRepository<Permission> permissionRepository) {
         this.permissionRepository = permissionRepository;
     }
-    
-    @Override
-    public void editEntity(Role role) {
-        if (role == null) {
-            return;
-        }
-        permissionListBox.deselectAll();
-        
-        this.currentEntity = role;
-        binder.setBean(this.currentEntity);
 
-        
+    @Override
+    protected void createSpecialWidgets(Role entity) {        
         Set<Permission> rolePermissions = new HashSet<>();
-        if (role.getPermissions() != null) {
-            rolePermissions = role.getPermissions();
+        if (entity.getPermissions() != null) {
+            rolePermissions = entity.getPermissions();
         }
         List<Permission> allPermissions = permissionRepository.findAll();
         allPermissionsToPermissionViewNamesMap.clear();
@@ -85,8 +77,6 @@ public class RoleEditor extends GenericEntityEditor<Role> {
             }
         }
 
-        this.setVisible(true);
-        saveButton.setVisible(true);
     }
 
 }

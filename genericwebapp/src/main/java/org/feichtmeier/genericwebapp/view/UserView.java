@@ -18,9 +18,7 @@ public class UserView extends GenericGridView<User> {
     public UserView(GenericRepository<User> userRepository, GenericRepository<Role> roleRepository, PasswordEncoder passwordEncoder) {
         super(userRepository);
         this.userEditor.setRoleRepository(roleRepository);
-        this.userEditor.setPasswordEncoder(passwordEncoder);
-        
-        
+        this.userEditor.setPasswordEncoder(passwordEncoder);        
     }
 
     @Override

@@ -51,12 +51,18 @@ public class DatabasePreloader {
             admin.setPermissions(allPermissions);
             roleRepository.save(admin);
 
-            User user = new User("user", "Heinrich Schmidt", passwordEncoder.encode("password"), "heinrich@schmidt.de",
+            User heinrich = new User("admin", "Heinrich Schmidt", passwordEncoder.encode("password"), "heinrich@schmidt.de",
                     false);
             Set<Role> roles = new HashSet<>();
             roles.add(admin);
-            user.setRoles(roles);
-            userRepository.save(user);
+            heinrich.setRoles(roles);
+            userRepository.save(heinrich);
+
+            for (int i = 0; i < 20; i++) {
+                User normalUser = new User("normalUser"+i, "Firstname"+i + " Surname"+i, passwordEncoder.encode("password"), i+"noob@noob.de",
+                    false);
+                userRepository.save(normalUser);
+            }
         };
     }
 }

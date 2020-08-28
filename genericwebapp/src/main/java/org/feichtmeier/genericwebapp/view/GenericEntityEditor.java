@@ -26,24 +26,38 @@ public abstract class GenericEntityEditor<E extends AbstractEntity> extends Form
 
     GenericRepository<E> repository;
 
+    private Grid<E> grid;
+
+    protected Button newEntityButton;
+
+    protected abstract void createSpecialWidgets(E entity);
+
     public GenericEntityEditor(Grid<E> grid, GenericRepository<E> repository) {
 
         this.repository = repository;
+
+        this.grid = grid;
 
         binder = createBinder();
 
         saveButton = new Button(VaadinIcon.CHECK.create(), e -> {
             repository.save(currentEntity);
-            grid.setItems(repository.findAll());
+            this.grid.setItems(repository.findAll());
             this.setVisible(false);
+            this.grid.setVisible(true);
+            this.newEntityButton.setVisible(true);
         });
         cancelButton = new Button(VaadinIcon.CLOSE.create(), e-> {
             this.setVisible(false);
+            this.grid.setVisible(true);
+            this.newEntityButton.setVisible(true);
         });
         deleteButton = new Button(VaadinIcon.TRASH.create(), e-> {
             repository.delete(currentEntity);
-            grid.setItems(repository.findAll());
+            this.grid.setItems(repository.findAll());
             this.setVisible(false);
+            this.grid.setVisible(true);
+            this.newEntityButton.setVisible(true);
         });
         saveButton.getElement().getThemeList().add("primary");
         deleteButton.getElement().getThemeList().add("error");
@@ -55,11 +69,18 @@ public abstract class GenericEntityEditor<E extends AbstractEntity> extends Form
         if (entity == null) {
             return;
         }
-
+        
         currentEntity = entity;
         binder.setBean(currentEntity);
+        createSpecialWidgets(currentEntity);   
+        
         this.setVisible(true);
-        saveButton.setVisible(true);
+        this.grid.setVisible(false);
+        this.newEntityButton.setVisible(false);
+    }
+
+	public void setNewEntityButton(Button newEntityButton) {
+        this.newEntityButton = newEntityButton;
     }
 
 }

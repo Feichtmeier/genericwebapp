@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.listbox.MultiSelectListBox;
 import com.vaadin.flow.component.textfield.EmailField;
@@ -90,19 +91,15 @@ public class UserEditor extends GenericEntityEditor<User> {
         this.roleRepository = roleRepository;
     }
 
+	public void setPasswordEncoder(PasswordEncoder passwordEncoder) {
+        this.passwordEncoder = passwordEncoder;
+	}
+
     @Override
-    public void editEntity(User user) {
-        if (user == null) {
-            return;
-        }
-        rolesListBox.deselectAll();
-
-        this.currentEntity = user;
-        binder.setBean(this.currentEntity);
-
+    protected void createSpecialWidgets(User entity) {
         Set<Role> userRoles = new HashSet<>();
-        if (user.getRoles() != null) {
-            userRoles = user.getRoles();
+        if (entity.getRoles() != null) {
+            userRoles = entity.getRoles();
         }
         List<Role> allRoles = roleRepository.findAll();
         allRolesToRoleNamesMap.clear();
@@ -118,11 +115,5 @@ public class UserEditor extends GenericEntityEditor<User> {
             }
         }
 
-        this.setVisible(true);
-        saveButton.setVisible(true);
     }
-
-	public void setPasswordEncoder(PasswordEncoder passwordEncoder) {
-        this.passwordEncoder = passwordEncoder;
-	}
 }

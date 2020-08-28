@@ -27,7 +27,7 @@ public abstract class GenericGridView<E extends AbstractEntity> extends Abstract
     protected abstract String[] createWantedColumnNames();
 
     public GenericGridView(GenericRepository<E> repository) {
-
+        super();
         this.repository = repository;
         grid = createGrid();
         grid.removeAllColumns();
@@ -36,14 +36,15 @@ public abstract class GenericGridView<E extends AbstractEntity> extends Abstract
         currentEntity = createEmptyEntity();
         entityEditor = createEditor();
         newEntityButton = new Button(VaadinIcon.PLUS.create(), e -> {
-            entityEditor.editEntity(createEmptyEntity());            
+            entityEditor.editEntity(createEmptyEntity());
         });
+        entityEditor.setNewEntityButton(this.newEntityButton);
         grid.asSingleSelect().addValueChangeListener(event -> {
             entityEditor.editEntity(event.getValue());
             grid.setItems(repository.findAll());
         });
         entityEditor.setVisible(false);
-        add(grid, newEntityButton, entityEditor);
+        add(newEntityButton, grid, entityEditor);
         grid.setItems(repository.findAll());
     }
 }
