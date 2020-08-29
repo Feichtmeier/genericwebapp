@@ -1,5 +1,8 @@
 package org.feichtmeier.genericwebapp.view;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.vaadin.flow.component.grid.Grid;
 
 import org.feichtmeier.genericwebapp.entity.Role;
@@ -15,10 +18,11 @@ public class UserView extends GenericGridView<User> {
 
     private UserEditor userEditor;
 
-    public UserView(GenericRepository<User> userRepository, GenericRepository<Role> roleRepository, PasswordEncoder passwordEncoder) {
+    public UserView(GenericRepository<User> userRepository, GenericRepository<Role> roleRepository,
+            PasswordEncoder passwordEncoder) {
         super(userRepository);
         this.userEditor.setRoleRepository(roleRepository);
-        this.userEditor.setPasswordEncoder(passwordEncoder);        
+        this.userEditor.setPasswordEncoder(passwordEncoder);
     }
 
     @Override
@@ -45,6 +49,21 @@ public class UserView extends GenericGridView<User> {
     @Override
     protected void setViewName() {
         this.viewName = ViewNames.USER_VIEW;
+    }
+
+    @Override
+    protected List<User> mainFilterOperation(String filterText) {
+        List<User> allUsers = repository.findAll();
+
+        List<User> matchedUsers = new ArrayList<>();
+
+        for (User user : allUsers) {
+            if (user.getFullName().startsWith(filterText)) {
+                matchedUsers.add(user);               
+            }
+        }
+
+        return matchedUsers;
     }
     
 }

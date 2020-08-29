@@ -1,12 +1,16 @@
 package org.feichtmeier.genericwebapp.view;
 
+import java.util.List;
+
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.data.value.ValueChangeMode;
 
+import org.apache.commons.lang3.StringUtils;
 import org.feichtmeier.genericwebapp.entity.AbstractEntity;
 import org.feichtmeier.genericwebapp.repository.GenericRepository;
 
@@ -36,6 +40,8 @@ public abstract class GenericGridView<E extends AbstractEntity> extends Abstract
 
         topLayout = new HorizontalLayout();
         entityFilter = new TextField("", "Search ...");
+        entityFilter.setValueChangeMode(ValueChangeMode.EAGER);
+        entityFilter.addValueChangeListener(e -> listEntities(e.getValue()));
         
         this.repository = repository;
         grid = createGrid();
@@ -67,5 +73,15 @@ public abstract class GenericGridView<E extends AbstractEntity> extends Abstract
         entityEditor.setScrollableLayout(scrollableLayout);
 
         add(topLayout, entityEditor, scrollableLayout);
+    }
+
+    protected abstract List<E> mainFilterOperation(String filterText);
+
+    void listEntities(String filterText) {
+        if (StringUtils.isEmpty(filterText)) {
+            grid.setItems(repository.findAll());
+        } else {
+            grid.setItems(mainFilterOperation(filterText));
+        }
     }
 }

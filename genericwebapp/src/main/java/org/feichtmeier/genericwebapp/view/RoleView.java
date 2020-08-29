@@ -1,5 +1,8 @@
 package org.feichtmeier.genericwebapp.view;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.vaadin.flow.component.grid.Grid;
 
 import org.feichtmeier.genericwebapp.entity.Permission;
@@ -42,6 +45,21 @@ public class RoleView extends GenericGridView<Role> {
     @Override
     protected void setViewName() {
         this.viewName = ViewNames.ROLE_VIEW;
+    }
+
+    @Override
+    protected List<Role> mainFilterOperation(String filterText) {
+        List<Role> allRoles = repository.findAll();
+
+        List<Role> matchedRoles = new ArrayList<>();
+
+        for (Role role : allRoles) {
+            if (role.getName().startsWith(filterText)) {
+                matchedRoles.add(role);
+            }            
+        }
+
+        return matchedRoles;
     }
 
 }
