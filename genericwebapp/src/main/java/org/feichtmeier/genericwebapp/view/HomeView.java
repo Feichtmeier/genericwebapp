@@ -17,6 +17,7 @@ public class HomeView extends AbstractView {
 
     public HomeView() {
         H1 header = new H1("Welcome");
+        this.setAlignItems(Alignment.CENTER);
         this.add(header);
     }
     

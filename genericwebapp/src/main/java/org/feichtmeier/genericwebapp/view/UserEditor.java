@@ -28,7 +28,6 @@ public class UserEditor extends GenericEntityEditor<User> {
 
     private final TextField fullName;
     private final TextField username;
-    private final Label label;
     private final EmailField email;
     private final PasswordField password;
     private final MultiSelectListBox<String> rolesListBox;
@@ -41,7 +40,6 @@ public class UserEditor extends GenericEntityEditor<User> {
         super(grid, userRepository);
 
         fullName = new TextField("", "Full Name");
-        label = new Label("Roles:");
         username = new TextField("", "Username");
         email = new EmailField("", "E-Mail");
         password = new PasswordField("", "Password");
@@ -81,7 +79,7 @@ public class UserEditor extends GenericEntityEditor<User> {
             currentEntity.setRoles(selectedRoles);
         });
 
-        add(fullName, username, email, password, label, rolesListBox);
+        add(fullName, username, email, password, rolesListBox);
         remove(buttonLayout); 
         add(buttonLayout);
     }

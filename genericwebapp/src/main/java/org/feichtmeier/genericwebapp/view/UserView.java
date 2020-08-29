@@ -27,7 +27,6 @@ public class UserView extends GenericGridView<User> {
         userGrid.removeAllColumns();
         userGrid.addColumn("username").setFooter("Users: " + userGrid.getPageSize());
         userGrid.addColumn("fullName");
-        userGrid.addColumn("email");
         return userGrid;
     }
 

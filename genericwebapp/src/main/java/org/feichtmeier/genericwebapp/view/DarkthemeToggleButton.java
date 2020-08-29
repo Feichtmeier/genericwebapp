@@ -23,9 +23,11 @@ public class DarkthemeToggleButton extends Button {
 
             if (themeList.contains(Lumo.DARK)) {
                 themeList.remove(Lumo.DARK);
+                themeList.add(Lumo.LIGHT);
                 setIcon(new Icon(VaadinIcon.MOON));
             } else {
                 themeList.add(Lumo.DARK);
+                themeList.remove(Lumo.LIGHT);
                 setIcon(new Icon(VaadinIcon.SUN_O));
             }
         });

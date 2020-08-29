@@ -21,7 +21,6 @@ public class RoleEditor extends GenericEntityEditor<Role> {
     private static final long serialVersionUID = -5462059994803015447L;
 
     private final TextField name;
-    private final Label label;
     private final MultiSelectListBox<String> permissionListBox;
 
     private GenericRepository<Permission> permissionRepository;
@@ -31,9 +30,8 @@ public class RoleEditor extends GenericEntityEditor<Role> {
     public RoleEditor(Grid<Role> grid, GenericRepository<Role> roleRepository) {
         super(grid, roleRepository);
         name = new TextField("", "Name");
-        label = new Label("Give permissions to Views:");
         permissionListBox = new MultiSelectListBox<>();
-        add(name, label, permissionListBox);
+        add(name, permissionListBox);
         remove(buttonLayout);
         add(buttonLayout);
         binder.bindInstanceFields(this);

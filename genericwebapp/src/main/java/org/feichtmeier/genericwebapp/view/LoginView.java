@@ -8,10 +8,13 @@ import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.theme.Theme;
+import com.vaadin.flow.theme.lumo.Lumo;
 
 @Route("login") 
 // @PWA(name = "app", shortName = "app", startPath = "login")
 @Viewport("width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes, viewport-fit=cover")
+@Theme(value = Lumo.class, variant = Lumo.DARK)
 @PageTitle("Generic Webapp")
 
 public class LoginView extends VerticalLayout implements BeforeEnterObserver {
