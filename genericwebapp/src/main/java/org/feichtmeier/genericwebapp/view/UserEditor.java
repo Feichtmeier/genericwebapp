@@ -6,8 +6,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.listbox.MultiSelectListBox;
 import com.vaadin.flow.component.textfield.EmailField;
 import com.vaadin.flow.component.textfield.PasswordField;
@@ -28,6 +28,7 @@ public class UserEditor extends GenericEntityEditor<User> {
 
     private final TextField fullName;
     private final TextField username;
+    private final Label label;
     private final EmailField email;
     private final PasswordField password;
     private final MultiSelectListBox<String> rolesListBox;
@@ -40,6 +41,7 @@ public class UserEditor extends GenericEntityEditor<User> {
         super(grid, userRepository);
 
         fullName = new TextField("", "Full Name");
+        label = new Label("Roles:");
         username = new TextField("", "Username");
         email = new EmailField("", "E-Mail");
         password = new PasswordField("", "Password");
@@ -79,7 +81,9 @@ public class UserEditor extends GenericEntityEditor<User> {
             currentEntity.setRoles(selectedRoles);
         });
 
-        add(fullName, username, email, password, rolesListBox);
+        add(fullName, username, email, password, label, rolesListBox);
+        remove(buttonLayout); 
+        add(buttonLayout);
     }
 
     @Override

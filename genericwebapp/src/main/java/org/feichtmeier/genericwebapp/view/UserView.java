@@ -23,7 +23,12 @@ public class UserView extends GenericGridView<User> {
 
     @Override
     public Grid<User> createGrid() {
-        return new Grid<>(User.class);
+        Grid<User> userGrid = new Grid<>(User.class);
+        userGrid.removeAllColumns();
+        userGrid.addColumn("username").setFooter("Users: " + userGrid.getPageSize());
+        userGrid.addColumn("fullName");
+        userGrid.addColumn("email");
+        return userGrid;
     }
 
     @Override
@@ -36,12 +41,6 @@ public class UserView extends GenericGridView<User> {
         UserEditor userEditor = new UserEditor(this.grid, this.repository);
         this.userEditor = userEditor;
         return userEditor;
-    }
-
-    @Override
-    protected String[] createWantedColumnNames() {
-        String[] columnNames = {"username", "fullName"};
-        return columnNames;
     }
 
     @Override

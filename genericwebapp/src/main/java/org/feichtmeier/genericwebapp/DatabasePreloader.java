@@ -3,6 +3,8 @@ package org.feichtmeier.genericwebapp;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.github.javafaker.Faker;
+
 import org.feichtmeier.genericwebapp.entity.Permission;
 import org.feichtmeier.genericwebapp.entity.Role;
 import org.feichtmeier.genericwebapp.entity.User;
@@ -51,16 +53,20 @@ public class DatabasePreloader {
             admin.setPermissions(allPermissions);
             roleRepository.save(admin);
 
-            User heinrich = new User("admin", "Heinrich Schmidt", passwordEncoder.encode("password"), "heinrich@schmidt.de",
-                    false);
+            User heinrich = new User("heinrich", "Heinrich Schmidt", passwordEncoder.encode("password"),
+                    "heinrich@schmidt.de", false);
             Set<Role> roles = new HashSet<>();
             roles.add(admin);
             heinrich.setRoles(roles);
             userRepository.save(heinrich);
 
             for (int i = 0; i < 20; i++) {
-                User normalUser = new User("normalUser"+i, "Firstname"+i + " Surname"+i, passwordEncoder.encode("password"), i+"noob@noob.de",
-                    false);
+                Faker faker = new Faker();
+                String name = faker.name().fullName();
+                String username = faker.name().username();
+                String email = faker.internet().emailAddress(username);
+                User normalUser = new User(username, name, passwordEncoder.encode("password"), i + email,
+                        false);
                 userRepository.save(normalUser);
             }
         };

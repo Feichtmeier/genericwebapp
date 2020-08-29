@@ -5,6 +5,7 @@ import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.data.binder.Binder;
 
 import org.feichtmeier.genericwebapp.entity.AbstractEntity;
@@ -16,7 +17,7 @@ public abstract class GenericEntityEditor<E extends AbstractEntity> extends Form
 
     protected E currentEntity;
 
-    private final HorizontalLayout buttonLayout;
+    protected final HorizontalLayout buttonLayout;
 
     protected final Binder<E> binder;
 
@@ -28,7 +29,9 @@ public abstract class GenericEntityEditor<E extends AbstractEntity> extends Form
 
     private Grid<E> grid;
 
-    protected Button newEntityButton;
+    protected HorizontalLayout topLayout;
+
+    private VerticalLayout scrollableLayout;
 
     protected abstract void createSpecialWidgets(E entity);
 
@@ -44,25 +47,25 @@ public abstract class GenericEntityEditor<E extends AbstractEntity> extends Form
             repository.save(currentEntity);
             this.grid.setItems(repository.findAll());
             this.setVisible(false);
-            this.grid.setVisible(true);
-            this.newEntityButton.setVisible(true);
+            this.scrollableLayout.setVisible(true);
+            this.topLayout.setVisible(true);
         });
         cancelButton = new Button(VaadinIcon.CLOSE.create(), e-> {
             this.setVisible(false);
-            this.grid.setVisible(true);
-            this.newEntityButton.setVisible(true);
+            this.scrollableLayout.setVisible(true);
+            this.topLayout.setVisible(true);
         });
         deleteButton = new Button(VaadinIcon.TRASH.create(), e-> {
             repository.delete(currentEntity);
             this.grid.setItems(repository.findAll());
             this.setVisible(false);
-            this.grid.setVisible(true);
-            this.newEntityButton.setVisible(true);
+            this.scrollableLayout.setVisible(true);
+            this.topLayout.setVisible(true);
         });
         saveButton.getElement().getThemeList().add("primary");
         deleteButton.getElement().getThemeList().add("error");
         buttonLayout = new HorizontalLayout(saveButton, cancelButton, deleteButton);
-        add(buttonLayout, 2);
+        add(buttonLayout, 3);
     }
 
     public void editEntity(E entity) {
@@ -75,12 +78,16 @@ public abstract class GenericEntityEditor<E extends AbstractEntity> extends Form
         createSpecialWidgets(currentEntity);   
         
         this.setVisible(true);
-        this.grid.setVisible(false);
-        this.newEntityButton.setVisible(false);
+        this.scrollableLayout.setVisible(false);
+        this.topLayout.setVisible(false);
     }
 
-	public void setNewEntityButton(Button newEntityButton) {
-        this.newEntityButton = newEntityButton;
+	public void setTopLayout(HorizontalLayout topLayout) {
+        this.topLayout = topLayout;
+    }
+
+    public void setScrollableLayout(VerticalLayout scrollableLayout) {
+        this.scrollableLayout = scrollableLayout;
     }
 
 }

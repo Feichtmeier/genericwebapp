@@ -6,8 +6,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.listbox.MultiSelectListBox;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
@@ -21,6 +21,7 @@ public class RoleEditor extends GenericEntityEditor<Role> {
     private static final long serialVersionUID = -5462059994803015447L;
 
     private final TextField name;
+    private final Label label;
     private final MultiSelectListBox<String> permissionListBox;
 
     private GenericRepository<Permission> permissionRepository;
@@ -30,8 +31,11 @@ public class RoleEditor extends GenericEntityEditor<Role> {
     public RoleEditor(Grid<Role> grid, GenericRepository<Role> roleRepository) {
         super(grid, roleRepository);
         name = new TextField("", "Name");
+        label = new Label("Give permissions to Views:");
         permissionListBox = new MultiSelectListBox<>();
-        add(name, permissionListBox);
+        add(name, label, permissionListBox);
+        remove(buttonLayout);
+        add(buttonLayout);
         binder.bindInstanceFields(this);
         allPermissionsToPermissionViewNamesMap = new HashMap<>();
         permissionListBox.addSelectionListener(event -> {

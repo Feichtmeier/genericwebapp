@@ -21,7 +21,10 @@ public class RoleView extends GenericGridView<Role> {
 
     @Override
     public Grid<Role> createGrid() {
-        return new Grid<>(Role.class);
+        Grid<Role> roleGrid = new Grid<>(Role.class);
+        roleGrid.removeAllColumns();
+        roleGrid.addColumn("name");
+        return roleGrid;
     }
 
     @Override
@@ -34,12 +37,6 @@ public class RoleView extends GenericGridView<Role> {
     @Override
     public Role createEmptyEntity() {
         return new Role("");
-    }
-
-    @Override
-    protected String[] createWantedColumnNames() {
-        String[] columnNames = {"name"};
-        return columnNames;
     }
 
     @Override
