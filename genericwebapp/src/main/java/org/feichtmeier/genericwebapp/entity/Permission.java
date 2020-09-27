@@ -8,13 +8,14 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToOne;
+import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import org.springframework.cache.annotation.Cacheable;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 @Entity
-@Cacheable
+@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Permission extends AbstractEntity {
 
     /**
@@ -24,11 +25,12 @@ public class Permission extends AbstractEntity {
 
     @JsonIgnore
     @ManyToMany(mappedBy = "permissions", fetch = FetchType.EAGER)
-    Set<Role> roles;
+    private Set<Role> roles;
 
+    @NotNull
     @OneToOne(fetch=FetchType.EAGER)
     @JoinColumn
-    View view;
+    private View view;
 
     @Column(columnDefinition = "tinyint(1) default 1")
     private boolean edit = true;
@@ -74,6 +76,11 @@ public class Permission extends AbstractEntity {
         } else if (!view.equals(other.view))
             return false;
         return true;
+    }
+
+    @Override
+    public String toString() {
+        return view.getName() + " Permission";
     }
 
     

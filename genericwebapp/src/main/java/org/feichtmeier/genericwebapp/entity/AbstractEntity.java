@@ -8,24 +8,21 @@ import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Version;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreType;
-
 /**
  * AbstractEntity
  */
 
 @SuppressWarnings("serial")
 @MappedSuperclass
-@JsonIgnoreType
 public abstract class AbstractEntity implements Serializable {
 
     @Id
     @GeneratedValue
     @Column(unique = true)
-    long id;
+    private long id;
 
     @Version
-    private int version;
+    private int version = 0;
 
     public long getId() {
         return id;
@@ -66,6 +63,6 @@ public abstract class AbstractEntity implements Serializable {
         if (version != other.version)
             return false;
         return true;
-    }    
+    }   
     
 }

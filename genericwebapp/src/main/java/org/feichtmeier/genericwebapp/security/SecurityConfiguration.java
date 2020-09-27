@@ -12,8 +12,10 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.session.HttpSessionEventPublisher;
 
 @EnableWebSecurity
 @Configuration
@@ -52,6 +54,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .failureUrl(LOGIN_FAILURE_URL)
 
                 .and().logout().logoutSuccessUrl(LOGOUT_SUCCESS_URL);
+
+        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.ALWAYS);
+
+        http.sessionManagement().maximumSessions(1);
+
     }
 
     @Override
@@ -61,22 +68,21 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         auth.userDetailsService(myUserDetailsService).passwordEncoder(passwordEncoder);
     }
 
-
-	@Bean
-	@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-	public CurrentUser currentUser(UserRepository userRepository) {
-		final String username = SecurityUtils.getUsername();
-		User user =
-			username != null ? userRepository.findByUsername(username) :
-				null;
-		return () -> user;
-	}
+    @Bean
+    @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+    public CurrentUser currentUser(UserRepository userRepository) {
+        final String username = SecurityUtils.getUsername();
+        User user = username != null ? userRepository.findByUsername(username) : null;
+        return () -> user;
+    }
 
     @Override
     public void configure(WebSecurity web) throws Exception {
         web.ignoring().antMatchers("/VAADIN/**",
 
                 "/api/**",
+
+                "/api/permissions/**",
 
                 "/favicon.ico",
 
@@ -89,5 +95,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 "/webjars/**",
 
                 "/frontend-es5/**", "/frontend-es6/**");
+    }
+
+    @Bean
+    public HttpSessionEventPublisher httpSessionEventPublisher() {
+        return new HttpSessionEventPublisher();
     }
 }

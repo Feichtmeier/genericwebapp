@@ -6,12 +6,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/permissions")
-public class PermissionController extends GenericRestController<Permission> {
+public class PermissionRestController extends GenericRestController<Permission> {
 
     @Override
     protected Permission updateEntity(Permission e, Permission newE) {
+        e.setView(null != newE.getView() ? newE.getView() : e.getView());
         e.setEdit(newE.isEdit());
-        e.setView(newE.getView());
+        
         return e;
     }
     

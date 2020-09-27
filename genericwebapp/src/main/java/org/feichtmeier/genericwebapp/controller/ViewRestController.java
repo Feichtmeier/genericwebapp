@@ -11,9 +11,9 @@ public class ViewRestController extends GenericRestController<View> {
     @Override
     protected View updateEntity(View e, View newE) {
 
-        e.setName(newE.getName());
+        e.setName(null != newE.getName() ? newE.getName() : e.getName());
 
         return e;
     }
-    
+
 }

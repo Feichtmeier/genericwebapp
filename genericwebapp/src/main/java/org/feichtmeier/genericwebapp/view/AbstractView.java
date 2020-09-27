@@ -6,12 +6,6 @@ public abstract class AbstractView extends VerticalLayout {
 
     private static final long serialVersionUID = -3471469020050609980L;
 
-    protected String viewName;
-
-    protected abstract void setViewName();
-
-    public AbstractView() {
-        setViewName();
-    }
+    protected abstract void refresh();
     
 }

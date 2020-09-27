@@ -5,58 +5,41 @@ import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToOne;
+import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
-/**
- * Role
- */
 @Entity
 @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-public class Role extends AbstractEntity {
+public class Project extends AbstractEntity {
 
-    /**
-     *
-     */
-    private static final long serialVersionUID = -1560262625260195851L;
+    private static final long serialVersionUID = 5219845253466363534L;
 
-    @ManyToMany(fetch=FetchType.EAGER)
-    @JoinTable(name = "ROLE_TO_PERMISSION", joinColumns = @JoinColumn(name = "FK_ROLE_ID"), inverseJoinColumns = @JoinColumn(name = "FK_PERMISSION_ID"))
-    private Set<Permission> permissions;
-
-    @JsonIgnore
-    @ManyToMany(mappedBy = "roles", fetch=FetchType.EAGER)
-    private Set<User> users;
-
-    @Column(nullable = false, unique = true)
+    @NotNull
+    @Column(unique = true, length = 255)
     private String name;
 
-    public Role(String name) {
+    @ManyToMany(mappedBy = "projects", fetch = FetchType.EAGER)
+    @JsonIgnore
+    private Set<User> users;
+
+    @OneToOne(mappedBy = "project")
+    ProjectImage projectImage;
+
+    public Project(@NotNull String name) {
         this.name = name;
     }
 
-    public Role() {
+    public Project() {
     }
 
-    public Set<Permission> getPermissions() {
-        return permissions;
-    }
-
-    public void setPermissions(Set<Permission> permissions) {
-        this.permissions = permissions;
-    }
-
-    public Set<User> getUsers() {
-        return users;
-    }
-
-    public void setUsers(Set<User> users) {
-        this.users = users;
+    @Override
+    public String toString() {
+        return name;
     }
 
     public String getName() {
@@ -67,11 +50,28 @@ public class Role extends AbstractEntity {
         this.name = name;
     }
 
+    public Set<User> getUsers() {
+        return users;
+    }
+
+    public void setUsers(Set<User> users) {
+        this.users = users;
+    }
+
+    public ProjectImage getProjectImage() {
+        return projectImage;
+    }
+
+    public void setProjectImage(ProjectImage projectImage) {
+        this.projectImage = projectImage;
+    }
+
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = super.hashCode();
         result = prime * result + ((name == null) ? 0 : name.hashCode());
+        result = prime * result + ((projectImage == null) ? 0 : projectImage.hashCode());
         return result;
     }
 
@@ -83,18 +83,17 @@ public class Role extends AbstractEntity {
             return false;
         if (getClass() != obj.getClass())
             return false;
-        Role other = (Role) obj;
+        Project other = (Project) obj;
         if (name == null) {
             if (other.name != null)
                 return false;
         } else if (!name.equals(other.name))
             return false;
+        if (projectImage == null) {
+            if (other.projectImage != null)
+                return false;
+        } else if (!projectImage.equals(other.projectImage))
+            return false;
         return true;
     }
-
-    @Override
-    public String toString() {
-        return name;
-    }
-
 }

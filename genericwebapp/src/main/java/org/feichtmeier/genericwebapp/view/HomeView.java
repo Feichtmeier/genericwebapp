@@ -9,16 +9,16 @@ public class HomeView extends AbstractView {
 
     private static final long serialVersionUID = -2333684897315095897L;
 
-    @Override
-    protected void setViewName() {
-        this.viewName = ViewNames.HOME_VIEW;
-
-    }
+    private final H1 header;
 
     public HomeView() {
-        H1 header = new H1("Welcome");
+        header = new H1("Welcome");
         this.setAlignItems(Alignment.CENTER);
         this.add(header);
+    }
+
+    @Override
+    protected void refresh() {
     }
     
 }

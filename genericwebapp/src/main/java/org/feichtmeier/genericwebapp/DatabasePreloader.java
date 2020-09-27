@@ -1,15 +1,19 @@
 package org.feichtmeier.genericwebapp;
 
+import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
 import com.github.javafaker.Faker;
 
 import org.feichtmeier.genericwebapp.entity.Permission;
+import org.feichtmeier.genericwebapp.entity.Project;
 import org.feichtmeier.genericwebapp.entity.Role;
 import org.feichtmeier.genericwebapp.entity.User;
 import org.feichtmeier.genericwebapp.entity.View;
 import org.feichtmeier.genericwebapp.repository.PermissionRepository;
+import org.feichtmeier.genericwebapp.repository.ProjectRepository;
 import org.feichtmeier.genericwebapp.repository.RoleRepository;
 import org.feichtmeier.genericwebapp.repository.UserRepository;
 import org.feichtmeier.genericwebapp.repository.ViewRepository;
@@ -28,8 +32,16 @@ public class DatabasePreloader {
 
     @Bean
     CommandLineRunner initDatabase(UserRepository userRepository, RoleRepository roleRepository,
-            PermissionRepository permissionRepository, ViewRepository viewRepository, PasswordEncoder passwordEncoder) {
+            PermissionRepository permissionRepository, ViewRepository viewRepository, PasswordEncoder passwordEncoder,
+            ProjectRepository projectRepository) {
         return args -> {
+
+            Project ber = new Project("ber");
+            projectRepository.save(ber);
+            Project twoWTC = new Project("twoWTC");
+            projectRepository.save(twoWTC);
+            Set<Project> allProjects = new HashSet<>(projectRepository.findAll());
+
             Permission userViewPermission = new Permission();
             View userViewEntity = new View(ViewNames.USER_VIEW);
             userViewPermission.setView(userViewEntity);
@@ -48,13 +60,19 @@ public class DatabasePreloader {
             viewRepository.save(roleViewEntity);
             permissionRepository.save(roleViewPermission);
 
-            Role admin = new Role("ADMIN");
+            Permission projectViewPermission = new Permission();
+            View projectViewEntity = new View(ViewNames.PROJECT_VIEW);
+            projectViewPermission.setView(projectViewEntity);
+            viewRepository.save(projectViewEntity);
+            permissionRepository.save(projectViewPermission);
+
+            Role admin = new Role("admin");
             Set<Permission> allPermissions = new HashSet<>(permissionRepository.findAll());
             admin.setPermissions(allPermissions);
             roleRepository.save(admin);
 
             User heinrich = new User("heinrich", "Heinrich Schmidt", passwordEncoder.encode("password"),
-                    "heinrich@schmidt.de", false);
+                    "heinrich@schmidt.de", false, allProjects);
             Set<Role> roles = new HashSet<>();
             roles.add(admin);
             heinrich.setRoles(roles);
@@ -62,13 +80,20 @@ public class DatabasePreloader {
 
             for (int i = 0; i < 20; i++) {
                 Faker faker = new Faker();
-                String name = faker.name().fullName();
-                String username = faker.name().username();
-                String email = faker.internet().emailAddress(username);
-                User normalUser = new User(username, name, passwordEncoder.encode("password"), i + email,
-                        false);
+                String fullName = faker.name().fullName();
+                String[] fullNameArray = fullName.split(" ");
+                String firstName = fullNameArray[0];
+                String username = fullName.replace(" ", "").toLowerCase();
+                String email = firstName + i + "@gmail.com";
+
+                User normalUser = new User(username, fullName, passwordEncoder.encode("password"), email, false,
+                        new HashSet<>(Arrays.asList(ber)));
+                Set<Role> normalUserRoles = new HashSet<>();
+                normalUserRoles.add(reporter);
+                normalUser.setRoles(normalUserRoles);
                 userRepository.save(normalUser);
             }
+
         };
     }
 }

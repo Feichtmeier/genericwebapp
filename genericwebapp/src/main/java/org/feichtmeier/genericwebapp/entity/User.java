@@ -2,7 +2,6 @@ package org.feichtmeier.genericwebapp.entity;
 
 import java.util.Set;
 
-import javax.persistence.Cacheable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -14,15 +13,17 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
 @Entity
-@Cacheable
+@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class User extends AbstractEntity {
-    
+
     private static final long serialVersionUID = -8628945301913035776L;
 
     @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "USER_TO_ROLE", joinColumns = @JoinColumn(name = "FK_ROLE_ID"), inverseJoinColumns = @JoinColumn(name = "FK_USER_ID"))
-    Set<Role> roles;
+    @JoinTable(name = "USER_TO_ROLE", joinColumns = @JoinColumn(name = "FK_USER_ID"), inverseJoinColumns = @JoinColumn(name = "FK_ROLE_ID"))
+    private Set<Role> roles;
 
     @NotNull
     @Column(unique = true)
@@ -32,27 +33,34 @@ public class User extends AbstractEntity {
     private String fullName;
 
     @NotNull
-	@Size(min = 4, max = 255)
+    @Size(min = 4, max = 255)
     private String passwordHash;
-    
+
     @NotEmpty
-	@Email
-	@Size(max = 255)
-	@Column(unique = true)
+    @Email
+    @Size(max = 255)
+    @Column(unique = true)
     private String email;
 
-    private boolean locked = false;    
+    @NotNull
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "USER_TO_PROJECT", joinColumns = @JoinColumn(name = "FK_USER_ID"), inverseJoinColumns = @JoinColumn(name = "FK_PROJECT_ID"))
+    private Set<Project> projects;
+
+    private boolean locked = false;
 
     public User() {
     }
 
-    public User(@NotNull String username, @NotNull String fullName, @NotNull @Size(min = 4, max = 255) String passwordHash,
-            @NotEmpty @Email @Size(max = 255) String email, boolean locked) {
+    public User(@NotNull String username, @NotNull String fullName,
+            @NotNull @Size(min = 4, max = 255) String passwordHash, @NotEmpty @Email @Size(max = 255) String email,
+            boolean locked, @NotNull Set<Project> projects) {
         this.username = username;
         this.fullName = fullName;
         this.passwordHash = passwordHash;
         this.email = email;
         this.locked = locked;
+        this.projects = projects;
     }
 
     public User(@NotNull String username, @NotNull String fullName) {
@@ -108,6 +116,19 @@ public class User extends AbstractEntity {
         this.locked = locked;
     }
 
+    public Set<Project> getProjects() {
+        return this.projects;
+    }
+
+    public void setProjects(Set<Project> projects) {
+        this.projects = projects;
+    }
+
+    @Override
+    public String toString() {
+        return fullName;
+    }
+
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -152,6 +173,5 @@ public class User extends AbstractEntity {
         } else if (!username.equals(other.username))
             return false;
         return true;
-    }   
-
+    }
 }

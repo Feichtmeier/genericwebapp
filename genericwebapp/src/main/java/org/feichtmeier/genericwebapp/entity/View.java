@@ -1,13 +1,19 @@
 package org.feichtmeier.genericwebapp.entity;
 
-import javax.persistence.Cacheable;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.OneToOne;
+import javax.validation.constraints.NotNull;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 /**
  * View
  */
 @Entity
-@Cacheable
+@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class View extends AbstractEntity {
 
     /**
@@ -15,7 +21,12 @@ public class View extends AbstractEntity {
      */
     private static final long serialVersionUID = -7794725293820392762L;
 
-    String name;
+    @NotNull
+    private String name;
+
+    @OneToOne(mappedBy = "view", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private Permission permission;
 
     public String getName() {
         return name;

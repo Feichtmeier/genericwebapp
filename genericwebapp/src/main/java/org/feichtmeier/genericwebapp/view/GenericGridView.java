@@ -13,75 +13,84 @@ import com.vaadin.flow.data.value.ValueChangeMode;
 import org.apache.commons.lang3.StringUtils;
 import org.feichtmeier.genericwebapp.entity.AbstractEntity;
 import org.feichtmeier.genericwebapp.repository.GenericRepository;
+import org.feichtmeier.genericwebapp.view.util.WindowResizer;
 
-public abstract class GenericGridView<E extends AbstractEntity> extends AbstractView {
+public abstract class GenericGridView<E extends AbstractEntity> extends AbstractView implements WindowResizer {
 
     private static final long serialVersionUID = -151705160904157799L;
 
     protected final Grid<E> grid;
     protected final GenericEntityEditor<E> entityEditor;
-    private final Button newEntityButton;
+    protected final Button newEntityButton;
     protected final TextField entityFilter;
     protected final HorizontalLayout topLayout;
     protected final VerticalLayout scrollableLayout;
-    protected E currentEntity;
-
     protected GenericRepository<E> repository;
-
-    public abstract Grid<E> createGrid();
-
-    public abstract GenericEntityEditor<E> createEditor();
-
-    public abstract E createEmptyEntity();
 
     public GenericGridView(GenericRepository<E> repository) {
         super();
-        this.setSizeFull();
+        setSizeFull();
 
         topLayout = new HorizontalLayout();
         entityFilter = new TextField("", "Search ...");
         entityFilter.setValueChangeMode(ValueChangeMode.EAGER);
         entityFilter.addValueChangeListener(e -> listEntities(e.getValue()));
-        
+        entityFilter.setMinWidth("7em");
+        entityFilter.getStyle().set("flex-grow", "1");
+
         this.repository = repository;
         grid = createGrid();
         grid.setHeightByRows(true);
-        currentEntity = createEmptyEntity();
+
         entityEditor = createEditor();
         newEntityButton = new Button(VaadinIcon.PLUS.create(), e -> {
             entityEditor.editEntity(createEmptyEntity());
         });
 
         topLayout.add(newEntityButton, entityFilter);
-        topLayout.setWidthFull();
-        
-        entityEditor.setTopLayout(topLayout);
+        topLayout.setWidthFull();        
 
         grid.asSingleSelect().addValueChangeListener(event -> {
             entityEditor.editEntity(event.getValue());
-            grid.setItems(repository.findAll());
+            refresh();
         });
         entityEditor.setVisible(false);
-        
-        grid.setItems(repository.findAll());
 
         scrollableLayout = new VerticalLayout();
         scrollableLayout.add(grid);
         scrollableLayout.setWidthFull();
         scrollableLayout.setHeight(null);
         scrollableLayout.getStyle().set("overflow-y", "auto");
-        entityEditor.setScrollableLayout(scrollableLayout);
+        scrollableLayout.getStyle().set("padding", "0");
+        grid.getStyle().set("overflow-y", "inherit");
 
-        add(topLayout, entityEditor, scrollableLayout);
+        topLayout.getStyle().set("display", "flex");
+        topLayout.getStyle().set("flex-direction", "row");
+        newEntityButton.getStyle().set("flex-grow", "0");
+
+        add(topLayout, scrollableLayout);
+        setAlignItems(Alignment.CENTER);
+
+        applyResponsivePadding(this, 20, 4);
     }
 
-    protected abstract List<E> mainFilterOperation(String filterText);
-
-    void listEntities(String filterText) {
+    private void listEntities(String filterText) {
         if (StringUtils.isEmpty(filterText)) {
-            grid.setItems(repository.findAll());
+            grid.setItems(getAllowedEntities());
         } else {
             grid.setItems(mainFilterOperation(filterText));
         }
     }
+
+    @Override
+    protected void refresh() {
+        grid.setItems(getAllowedEntities());
+    }
+
+    public abstract Grid<E> createGrid();
+    public abstract List<E> getAllowedEntities();
+    public abstract GenericEntityEditor<E> createEditor();
+    public abstract E createEmptyEntity();
+    protected abstract List<E> mainFilterOperation(String filterText);
+
 }
