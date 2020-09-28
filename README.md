@@ -1,3 +1,5 @@
+![CI with nodejs, mariadb and maven](https://github.com/Feichtmeier/genericwebapp/workflows/CI%20with%20nodejs,%20mariadb%20and%20maven/badge.svg?branch=master)
+
 # genericwebapp
 
 ## About
