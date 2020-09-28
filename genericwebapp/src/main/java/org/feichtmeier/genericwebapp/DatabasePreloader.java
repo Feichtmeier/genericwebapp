@@ -1,6 +1,5 @@
 package org.feichtmeier.genericwebapp;
 
-import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -36,10 +35,10 @@ public class DatabasePreloader {
             ProjectRepository projectRepository) {
         return args -> {
 
-            Project ber = new Project("ber");
-            projectRepository.save(ber);
-            Project twoWTC = new Project("twoWTC");
-            projectRepository.save(twoWTC);
+            Project projectOne = new Project("projectOne");
+            projectRepository.save(projectOne);
+            Project projectTwo = new Project("projectTwo");
+            projectRepository.save(projectTwo);
             Set<Project> allProjects = new HashSet<>(projectRepository.findAll());
 
             Permission userViewPermission = new Permission();
@@ -87,7 +86,7 @@ public class DatabasePreloader {
                 String email = firstName + i + "@gmail.com";
 
                 User normalUser = new User(username, fullName, passwordEncoder.encode("password"), email, false,
-                        new HashSet<>(Arrays.asList(ber)));
+                        new HashSet<>(Arrays.asList(projectOne)));
                 userRepository.save(normalUser);
             }
 
