@@ -88,9 +88,6 @@ public class DatabasePreloader {
 
                 User normalUser = new User(username, fullName, passwordEncoder.encode("password"), email, false,
                         new HashSet<>(Arrays.asList(ber)));
-                Set<Role> normalUserRoles = new HashSet<>();
-                normalUserRoles.add(reporter);
-                normalUser.setRoles(normalUserRoles);
                 userRepository.save(normalUser);
             }
 
