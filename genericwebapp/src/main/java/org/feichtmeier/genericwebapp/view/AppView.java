@@ -33,24 +33,22 @@ public class AppView extends AppLayout implements Resizeable {
 
     private static final long serialVersionUID = 8375254280365769233L;
 
-    private final NewUserView userView;
     private final RoleView roleView;
 
     private final Tabs viewTabs;
     private final Map<Tab, AbstractView> tabToViewMap;
 
-    public AppView(NewUserView adminView, HomeView homeView, GenericRepository<User> genericUserRepository,
+    public AppView(NewUserView userView, HomeView homeView, GenericRepository<User> genericUserRepository,
             GenericRepository<Role> genericRoleRepository, GenericRepository<Permission> permissionRepository,
             GenericRepository<View> viewRepository, PasswordEncoder passwordEncoder, UserRepository userRepository, RoleRepository roleRepository) {
         // all main "views"
-        this.userView = new NewUserView(userRepository, roleRepository, passwordEncoder);
         this.roleView = new RoleView(genericRoleRepository, permissionRepository);
 
         // Build Notebook based on permissions
         tabToViewMap = new HashMap<>();
 
         Tab homeTab = createTabAndLinkToView(homeView, "Welcome", VaadinIcon.HOME.create());
-        Tab userTab = createTabAndLinkToView(this.userView, "User Administration", VaadinIcon.USER.create());
+        Tab userTab = createTabAndLinkToView(userView, "User Administration", VaadinIcon.USER.create());
         Tab roleTab = createTabAndLinkToView(this.roleView, "Role Administration", VaadinIcon.KEY.create());
 
         boolean userViewAllowed = SecurityUtils.isAccessGranted(UserView.class);

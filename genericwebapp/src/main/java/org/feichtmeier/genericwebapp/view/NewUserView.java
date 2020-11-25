@@ -2,7 +2,6 @@ package org.feichtmeier.genericwebapp.view;
 
 import java.util.List;
 
-import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
