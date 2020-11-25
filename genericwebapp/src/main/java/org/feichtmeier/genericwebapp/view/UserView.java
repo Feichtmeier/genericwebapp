@@ -7,7 +7,6 @@ import com.vaadin.flow.component.grid.Grid;
 import org.feichtmeier.genericwebapp.entity.Role;
 import org.feichtmeier.genericwebapp.entity.User;
 import org.feichtmeier.genericwebapp.repository.GenericRepository;
-import org.feichtmeier.genericwebapp.repository.ProjectRepository;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -18,11 +17,9 @@ public class UserView extends GenericGridView<User> implements UserFilter {
 
     private UserEditor userEditor;
 
-    public UserView(GenericRepository<User> userRepository, GenericRepository<Role> roleRepository, ProjectRepository projectRepository,
-            PasswordEncoder passwordEncoder) {
+    public UserView(GenericRepository<User> userRepository, GenericRepository<Role> roleRepository, PasswordEncoder passwordEncoder) {
         super(userRepository);
         this.userEditor.setRoleRepository(roleRepository);
-        this.userEditor.setProjecRepository(projectRepository);
         this.userEditor.setPasswordEncoder(passwordEncoder);
     }
 
@@ -54,7 +51,7 @@ public class UserView extends GenericGridView<User> implements UserFilter {
 
     @Override
     public List<User> getAllowedEntities() {
-        return listUserByProjectName(AppView.GLOBAL_PROJECT.getName(), repository.findAll());
+        return repository.findAll();
     }
     
 }

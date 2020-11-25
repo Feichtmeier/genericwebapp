@@ -4,7 +4,7 @@ import com.vaadin.flow.component.HasSize;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 
-public interface WindowResizer {
+public interface Resizeable {
 
     double levelOne = 1000;
     double levelTwo = levelOne * 1.92;

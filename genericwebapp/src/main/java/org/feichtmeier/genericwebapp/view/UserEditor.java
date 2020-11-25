@@ -6,14 +6,10 @@ import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.validator.RegexpValidator;
-
-import org.feichtmeier.genericwebapp.entity.Project;
 import org.feichtmeier.genericwebapp.entity.Role;
 import org.feichtmeier.genericwebapp.entity.User;
 import org.feichtmeier.genericwebapp.repository.GenericRepository;
-import org.feichtmeier.genericwebapp.repository.ProjectRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
-
 public class UserEditor extends GenericEntityEditor<User> {
 
     PasswordEncoder passwordEncoder;
@@ -25,11 +21,9 @@ public class UserEditor extends GenericEntityEditor<User> {
     private final EmailField email;
     private final PasswordField password;
     private final MultiSelectListBox<Role> rolesListBox;
-    private final MultiSelectListBox<Project> projectListBox;
     private final DefaultSmallLabel projectsLabel;
     private final DefaultSmallLabel rolesLabel;
     private GenericRepository<Role> roleRepository;
-    private ProjectRepository projectRepository;
 
     public UserEditor(GenericRepository<User> userRepository, GenericGridView<User> view) {
         super(userRepository, view);
@@ -69,11 +63,6 @@ public class UserEditor extends GenericEntityEditor<User> {
 
         projectsLabel = new DefaultSmallLabel("Projects");
         projectsLabel.setWidthFull();
-        projectListBox = new MultiSelectListBox<>();
-        projectListBox.addSelectionListener(e -> {
-            currentEntity.setProjects(e.getValue());
-        });
-        projectListBox.setWidthFull();
 
         binder.forField(fullName).asRequired("Must provide a full name")
                 .withValidator(new RegexpValidator("Not a valid full name", "(?i)[a-z]+(\\s+[a-z]+)*"))
@@ -97,7 +86,6 @@ public class UserEditor extends GenericEntityEditor<User> {
         topLayout.add(email);
         topLayout.add(password);
         topLayout.add(projectsLabel);
-        topLayout.add(projectListBox);
         topLayout.add(rolesLabel);
         topLayout.add(rolesListBox);
     }
@@ -111,10 +99,6 @@ public class UserEditor extends GenericEntityEditor<User> {
         this.roleRepository = roleRepository;
     }
 
-    public void setProjecRepository(ProjectRepository projectRepository) {
-        this.projectRepository = projectRepository;
-    }
-
     public void setPasswordEncoder(PasswordEncoder passwordEncoder) {
         this.passwordEncoder = passwordEncoder;
     }
@@ -124,10 +108,6 @@ public class UserEditor extends GenericEntityEditor<User> {
         rolesListBox.setItems(roleRepository.findAll());
         if (null != currentEntity.getRoles()) {
             rolesListBox.select(this.currentEntity.getRoles());
-        }
-        projectListBox.setItems(projectRepository.findAll());
-        if (null != this.currentEntity.getProjects()) {
-            projectListBox.select(this.currentEntity.getProjects());
         }
     }
 
@@ -139,7 +119,6 @@ public class UserEditor extends GenericEntityEditor<User> {
     @Override
     protected void forgetSpecificSelections() {
         rolesListBox.deselectAll();
-        projectListBox.deselectAll();
     }
 
     @Override

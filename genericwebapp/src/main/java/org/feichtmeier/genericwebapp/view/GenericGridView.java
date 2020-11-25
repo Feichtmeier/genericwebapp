@@ -13,9 +13,9 @@ import com.vaadin.flow.data.value.ValueChangeMode;
 import org.apache.commons.lang3.StringUtils;
 import org.feichtmeier.genericwebapp.entity.AbstractEntity;
 import org.feichtmeier.genericwebapp.repository.GenericRepository;
-import org.feichtmeier.genericwebapp.view.util.WindowResizer;
+import org.feichtmeier.genericwebapp.view.util.Resizeable;
 
-public abstract class GenericGridView<E extends AbstractEntity> extends AbstractView implements WindowResizer {
+public abstract class GenericGridView<E extends AbstractEntity> extends AbstractView implements Resizeable {
 
     private static final long serialVersionUID = -151705160904157799L;
 

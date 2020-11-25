@@ -11,9 +11,9 @@ import com.vaadin.flow.data.binder.Binder;
 
 import org.feichtmeier.genericwebapp.entity.AbstractEntity;
 import org.feichtmeier.genericwebapp.repository.GenericRepository;
-import org.feichtmeier.genericwebapp.view.util.WindowResizer;
+import org.feichtmeier.genericwebapp.view.util.Resizeable;
 
-public abstract class GenericEntityEditor<E extends AbstractEntity> extends Dialog implements WindowResizer {
+public abstract class GenericEntityEditor<E extends AbstractEntity> extends Dialog implements Resizeable {
 
     private static final long serialVersionUID = -7882218816479297372L;
 

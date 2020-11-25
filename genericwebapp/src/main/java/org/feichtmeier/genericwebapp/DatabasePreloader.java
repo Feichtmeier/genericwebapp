@@ -1,18 +1,15 @@
 package org.feichtmeier.genericwebapp;
 
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
 import com.github.javafaker.Faker;
 
 import org.feichtmeier.genericwebapp.entity.Permission;
-import org.feichtmeier.genericwebapp.entity.Project;
 import org.feichtmeier.genericwebapp.entity.Role;
 import org.feichtmeier.genericwebapp.entity.User;
 import org.feichtmeier.genericwebapp.entity.View;
 import org.feichtmeier.genericwebapp.repository.PermissionRepository;
-import org.feichtmeier.genericwebapp.repository.ProjectRepository;
 import org.feichtmeier.genericwebapp.repository.RoleRepository;
 import org.feichtmeier.genericwebapp.repository.UserRepository;
 import org.feichtmeier.genericwebapp.repository.ViewRepository;
@@ -31,15 +28,8 @@ public class DatabasePreloader {
 
     @Bean
     CommandLineRunner initDatabase(UserRepository userRepository, RoleRepository roleRepository,
-            PermissionRepository permissionRepository, ViewRepository viewRepository, PasswordEncoder passwordEncoder,
-            ProjectRepository projectRepository) {
+            PermissionRepository permissionRepository, ViewRepository viewRepository, PasswordEncoder passwordEncoder) {
         return args -> {
-
-            Project projectOne = new Project("projectOne");
-            projectRepository.save(projectOne);
-            Project projectTwo = new Project("projectTwo");
-            projectRepository.save(projectTwo);
-            Set<Project> allProjects = new HashSet<>(projectRepository.findAll());
 
             Permission userViewPermission = new Permission();
             View userViewEntity = new View(ViewNames.USER_VIEW);
@@ -59,19 +49,13 @@ public class DatabasePreloader {
             viewRepository.save(roleViewEntity);
             permissionRepository.save(roleViewPermission);
 
-            Permission projectViewPermission = new Permission();
-            View projectViewEntity = new View(ViewNames.PROJECT_VIEW);
-            projectViewPermission.setView(projectViewEntity);
-            viewRepository.save(projectViewEntity);
-            permissionRepository.save(projectViewPermission);
-
             Role admin = new Role("admin");
             Set<Permission> allPermissions = new HashSet<>(permissionRepository.findAll());
             admin.setPermissions(allPermissions);
             roleRepository.save(admin);
 
             User heinrich = new User("heinrich", "Heinrich Schmidt", passwordEncoder.encode("password"),
-                    "heinrich@schmidt.de", false, allProjects);
+                    "heinrich@schmidt.de", false);
             Set<Role> roles = new HashSet<>();
             roles.add(admin);
             heinrich.setRoles(roles);
@@ -85,8 +69,7 @@ public class DatabasePreloader {
                 String username = fullName.replace(" ", "").toLowerCase();
                 String email = firstName + i + "@gmail.com";
 
-                User normalUser = new User(username, fullName, passwordEncoder.encode("password"), email, false,
-                        new HashSet<>(Arrays.asList(projectOne)));
+                User normalUser = new User(username, fullName, passwordEncoder.encode("password"), email, false);
                 userRepository.save(normalUser);
             }
 

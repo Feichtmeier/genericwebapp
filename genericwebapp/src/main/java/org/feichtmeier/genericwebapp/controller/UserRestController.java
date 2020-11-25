@@ -15,7 +15,6 @@ public class UserRestController extends GenericRestController<User> {
         e.setEmail(null != newE.getEmail() ? newE.getEmail() : e.getEmail());
         e.setPasswordHash(null != newE.getPasswordHash() ? newE.getPasswordHash() : e.getPasswordHash());
         e.setRoles(null != newE.getRoles() ? newE.getRoles() : e.getRoles());
-        e.setProjects(null != newE.getProjects() ? newE.getProjects() : e.getProjects());
 
         return e;
     }    

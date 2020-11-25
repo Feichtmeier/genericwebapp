@@ -3,7 +3,9 @@ package org.feichtmeier.genericwebapp.view;
 import com.vaadin.flow.component.html.H1;
 
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.stereotype.Component;
 
+@Component
 @Secured(ViewNames.HOME_VIEW)
 public class HomeView extends AbstractView {
 

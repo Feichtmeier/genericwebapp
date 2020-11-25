@@ -6,9 +6,6 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-
-import org.feichtmeier.genericwebapp.entity.ProjectImage;
-
 public class ImageLayout extends VerticalLayout {
 
     private static final long serialVersionUID = 1L;
@@ -16,7 +13,7 @@ public class ImageLayout extends VerticalLayout {
     private final Button removeImageButton;
     private boolean markedForDelete;
 
-    public ImageLayout(Image image, boolean unpersisted, Map<ImageLayout, ProjectImage> imageLayoutToImageMap) {
+    public ImageLayout(Image image, boolean unpersisted, Map<ImageLayout, Image> imageLayoutToImageMap) {
         image.setMaxWidth("10em");
         image.setHeight("auto");
         image.getStyle().set("margin-bottom", "auto");

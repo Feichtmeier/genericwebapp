@@ -42,11 +42,6 @@ public class User extends AbstractEntity {
     @Column(unique = true)
     private String email;
 
-    @NotNull
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "USER_TO_PROJECT", joinColumns = @JoinColumn(name = "FK_USER_ID"), inverseJoinColumns = @JoinColumn(name = "FK_PROJECT_ID"))
-    private Set<Project> projects;
-
     private boolean locked = false;
 
     public User() {
@@ -54,13 +49,12 @@ public class User extends AbstractEntity {
 
     public User(@NotNull String username, @NotNull String fullName,
             @NotNull @Size(min = 4, max = 255) String passwordHash, @NotEmpty @Email @Size(max = 255) String email,
-            boolean locked, @NotNull Set<Project> projects) {
+            boolean locked) {
         this.username = username;
         this.fullName = fullName;
         this.passwordHash = passwordHash;
         this.email = email;
         this.locked = locked;
-        this.projects = projects;
     }
 
     public User(@NotNull String username, @NotNull String fullName) {
@@ -114,14 +108,6 @@ public class User extends AbstractEntity {
 
     public void setLocked(boolean locked) {
         this.locked = locked;
-    }
-
-    public Set<Project> getProjects() {
-        return this.projects;
-    }
-
-    public void setProjects(Set<Project> projects) {
-        this.projects = projects;
     }
 
     @Override
