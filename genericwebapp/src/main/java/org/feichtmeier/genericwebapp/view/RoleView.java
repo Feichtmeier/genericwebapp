@@ -2,26 +2,170 @@ package org.feichtmeier.genericwebapp.view;
 
 import java.util.List;
 
+import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.listbox.MultiSelectListBox;
+import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.data.binder.Binder;
+import com.vaadin.flow.data.value.ValueChangeMode;
 
+import org.apache.commons.lang3.StringUtils;
 import org.feichtmeier.genericwebapp.entity.Permission;
 import org.feichtmeier.genericwebapp.entity.Role;
-import org.feichtmeier.genericwebapp.repository.GenericRepository;
+import org.feichtmeier.genericwebapp.repository.PermissionRepository;
+import org.feichtmeier.genericwebapp.repository.RoleRepository;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.stereotype.Component;
 
+@Component
 @Secured(ViewNames.ROLE_VIEW)
-public class RoleView extends GenericGridView<Role> implements RoleFilter {
+public class RoleView extends AbstractView implements RoleFilter, Styleable {
 
-    private static final long serialVersionUID = 5857470858968411471L;
+    private static final long serialVersionUID = 1L;
 
-    private RoleEditor roleEditor;
+    private final Grid<Role> roleGrid;
+    private final Dialog roleEditorDialog;
+    private final Button newRoleButton;
+    private final TextField roleFilter;
+    private final HorizontalLayout viewTopLayout;
+    private final VerticalLayout viewScrollLayout;
+    private Role currentEntity;
+    private final VerticalLayout topLayout;
+    private final HorizontalLayout bottomLayout;
+    private final VerticalLayout dialogBody;
+    private final Binder<Role> roleBinder;
+    private final Button saveButton, cancelButton, deleteButton;
+    private final RoleRepository roleRepository;
 
-    public RoleView(GenericRepository<Role> roleRepository, GenericRepository<Permission> permissionRepository) {
-        super(roleRepository);
-        this.roleEditor.setPermissionRepository(permissionRepository);
+    private final TextField name;
+    private final DefaultSmallLabel permissionLabel;
+    private final MultiSelectListBox<Permission> permissionListBox;
+
+    private final PermissionRepository permissionRepository;
+
+    public RoleView(RoleRepository roleRepository, PermissionRepository permissionRepository) {
+        this.permissionRepository = permissionRepository;
+        roleEditorDialog = new Dialog();
+
+        viewTopLayout = new HorizontalLayout();
+        roleFilter = new TextField("", "Search ...");
+        roleFilter.setValueChangeMode(ValueChangeMode.EAGER);
+        roleFilter.addValueChangeListener(e -> listEntities(e.getValue()));
+
+        this.roleRepository = roleRepository;
+        roleGrid = new Grid<>(Role.class);
+        roleGrid.removeAllColumns();
+        roleGrid.addColumn("name");
+
+        newRoleButton = new Button(VaadinIcon.PLUS.create(), e -> {
+            editEntity(new Role(""));
+        });
+
+        viewTopLayout.add(newRoleButton, roleFilter);
+
+        roleGrid.asSingleSelect().addValueChangeListener(event -> {
+            editEntity(event.getValue());
+        });
+
+        viewScrollLayout = new VerticalLayout();
+        viewScrollLayout.add(roleGrid);
+
+        this.add(viewTopLayout, viewScrollLayout);
+
+        roleBinder = new Binder<>(Role.class);
+
+        saveButton = new Button("", VaadinIcon.CHECK.create(), e -> {
+            if (roleBinder.validate().isOk()) {
+                roleRepository.save(currentEntity);
+                createNotification("Saved Role " + currentEntity.getName());
+                goBackToView();
+            } else {
+                createNotification("NOT saved Role " + currentEntity.getName());
+            }
+        });
+
+        cancelButton = new Button("", VaadinIcon.CLOSE.create(), e -> {
+            goBackToView();
+        });
+
+        deleteButton = new Button("", VaadinIcon.TRASH.create(), e -> {
+            roleRepository.delete(currentEntity);
+            createNotification("Deleted " + currentEntity.getName());
+            goBackToView();
+        });
+
+        bottomLayout = new HorizontalLayout(saveButton, cancelButton, deleteButton);
+
+        topLayout = new VerticalLayout();
+
+        dialogBody = new VerticalLayout(topLayout, bottomLayout);
+
+        roleEditorDialog.add(dialogBody);
+        roleEditorDialog.setCloseOnEsc(false);
+        roleEditorDialog.setCloseOnOutsideClick(false);
+
+        name = new TextField("");
+        name.setLabel("Name of the role");
+
+        permissionListBox = new MultiSelectListBox<>();
+
+        permissionLabel = new DefaultSmallLabel("Allowed views");
+        topLayout.add(name, permissionLabel, permissionListBox);
+        roleBinder.forField(name).asRequired("Must chose a role name").bind(Role::getName, Role::setName);
+
+        permissionListBox.addSelectionListener(e -> {
+            currentEntity.setPermissions(e.getValue());
+        });
+
+        applyStyling();
+    }
+
+    public void editEntity(Role entity) {
+        roleEditorDialog.open();
+        if (entity == null) {
+            roleEditorDialog.close();
+            return;
+        }
+
+        this.currentEntity = entity;
+        roleBinder.setBean(currentEntity);
+
+        permissionListBox.setItems(permissionRepository.findAll());
+        if (null != currentEntity.getPermissions()) {
+            permissionListBox.select(this.currentEntity.getPermissions());
+        }
+    }
+
+    private void createNotification(String text) {
+        Notification notification = new Notification(text);
+        notification.setDuration(2000);
+        notification.open();
+    }
+
+    private void goBackToView() {
+        permissionListBox.deselectAll();
+        roleEditorDialog.close();
+        refresh();
+    }
+
+    private void listEntities(String filterText) {
+        if (StringUtils.isEmpty(filterText)) {
+            roleGrid.setItems(getAllowedEntities());
+        } else {
+            roleGrid.setItems(mainFilterOperation(filterText));
+        }
     }
 
     @Override
+    protected void refresh() {
+        roleGrid.setItems(getAllowedEntities());
+    }
+
     public Grid<Role> createGrid() {
         Grid<Role> roleGrid = new Grid<>(Role.class);
         roleGrid.removeAllColumns();
@@ -29,26 +173,58 @@ public class RoleView extends GenericGridView<Role> implements RoleFilter {
         return roleGrid;
     }
 
-    @Override
-    public GenericEntityEditor<Role> createEditor() {
-        RoleEditor roleEditor = new RoleEditor(this.repository, this);
-        this.roleEditor = roleEditor;
-        return roleEditor;
-    }
-
-    @Override
-    public Role createEmptyEntity() {
-        return new Role("");
-    }
-
-    @Override
     protected List<Role> mainFilterOperation(String filterText) {
         return listRolesByName(filterText, getAllowedEntities());
     }
 
-    @Override
     public List<Role> getAllowedEntities() {
-        return repository.findAll();
+        return roleRepository.findAll();
+    }
+
+    @Override
+    public void applyStyling() {
+        setSizeFull();
+        roleFilter.setMinWidth("7em");
+        roleFilter.getStyle().set("flex-grow", "1");
+        roleGrid.setHeightByRows(true);
+        viewScrollLayout.setWidthFull();
+        viewScrollLayout.setHeight(null);
+        viewScrollLayout.getStyle().set("overflow-y", "auto");
+        viewScrollLayout.getStyle().set("padding", "0");
+        roleGrid.getStyle().set("overflow-y", "inherit");
+        dialogBody.setHeightFull();
+        dialogBody.setPadding(false);
+        dialogBody.setMargin(false);
+        viewTopLayout.setWidthFull();
+        viewTopLayout.getStyle().set("display", "flex");
+        viewTopLayout.getStyle().set("flex-direction", "row");
+        newRoleButton.getStyle().set("flex-grow", "0");
+        setAlignItems(Alignment.CENTER);
+        roleEditorDialog.setHeight(null);
+        saveButton.getElement().getThemeList().add("primary");
+        saveButton.getStyle().set("flex-grow", "1");
+        saveButton.getStyle().set("margin-top", "0");
+        saveButton.getStyle().set("margin-bottom", "0");
+        cancelButton.getStyle().set("flex-grow", "1");
+        cancelButton.getStyle().set("margin-top", "0");
+        cancelButton.getStyle().set("margin-bottom", "0");
+        deleteButton.getElement().getThemeList().add("error");
+        deleteButton.getStyle().set("flex-grow", "1");
+        deleteButton.getStyle().set("margin-top", "0");
+        deleteButton.getStyle().set("margin-bottom", "0");
+        bottomLayout.setAlignItems(Alignment.CENTER);
+        bottomLayout.setWidthFull();
+        bottomLayout.getStyle().set("flex-grow", "0");
+        topLayout.setPadding(false);
+        topLayout.getStyle().set("flex-grow", "1");
+        topLayout.setWidthFull();
+        topLayout.setHeight(null);
+        topLayout.getStyle().set("overflow-y", "auto");
+        topLayout.setPadding(false);
+        topLayout.setMargin(false);
+        name.setWidthFull();
+        permissionLabel.setWidthFull();
+        permissionListBox.setWidthFull();
     }
 
 }
