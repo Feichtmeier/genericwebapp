@@ -8,6 +8,8 @@ import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 
+import org.feichtmeier.genericwebapp.view.util.JavaScripts;
+
 @Route("login") 
 // @PWA(name = "app", shortName = "app", startPath = "login")
 @Viewport("width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes, viewport-fit=cover")
@@ -27,6 +29,8 @@ public class LoginView extends VerticalLayout implements BeforeEnterObserver {
 		login.setAction("login");		
 
 		add(login);
+
+		getElement().executeJs(JavaScripts.USE_SYSTEM_THEME_SCRIPT);
 	}
 
 	@Override

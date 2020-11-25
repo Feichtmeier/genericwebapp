@@ -17,6 +17,7 @@ import com.vaadin.flow.router.Route;
 import com.vaadin.flow.spring.annotation.VaadinSessionScope;
 
 import org.feichtmeier.genericwebapp.security.SecurityUtils;
+import org.feichtmeier.genericwebapp.view.util.JavaScripts;
 
 @Route(value = "")
 @PreserveOnRefresh
@@ -92,7 +93,9 @@ public class AppView extends AppLayout implements Styleable {
         navbarLayout.add(drawerToggle, viewTabs);
 
         addToNavbar(true, navbarLayout);
-        addToDrawer(new VerticalLayout(new DarkthemeToggleButton(), new Anchor("logout", "Log out")));
+
+        getElement().executeJs(JavaScripts.USE_SYSTEM_THEME_SCRIPT);
+        addToDrawer(new VerticalLayout(new Anchor("logout", "Log out")));
         setDrawerOpened(false);
 
         applyStyling();
