@@ -16,6 +16,7 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.validator.RegexpValidator;
 import com.vaadin.flow.data.value.ValueChangeMode;
+import com.vaadin.flow.spring.annotation.VaadinSessionScope;
 
 import org.apache.commons.lang3.StringUtils;
 import org.feichtmeier.genericwebapp.entity.Role;
@@ -29,6 +30,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Secured(ViewNames.USER_VIEW)
+@VaadinSessionScope
 public class UserView extends AbstractView implements Styleable, UserFilter {
 
     private static final long serialVersionUID = 7368213324544313846L;

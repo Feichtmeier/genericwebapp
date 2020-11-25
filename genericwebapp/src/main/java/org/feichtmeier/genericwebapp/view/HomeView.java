@@ -1,12 +1,14 @@
 package org.feichtmeier.genericwebapp.view;
 
 import com.vaadin.flow.component.html.H1;
+import com.vaadin.flow.spring.annotation.VaadinSessionScope;
 
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Component;
 
 @Component
 @Secured(ViewNames.HOME_VIEW)
+@VaadinSessionScope
 public class HomeView extends AbstractView {
 
     private static final long serialVersionUID = -2333684897315095897L;

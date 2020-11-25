@@ -13,6 +13,7 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.value.ValueChangeMode;
+import com.vaadin.flow.spring.annotation.VaadinSessionScope;
 
 import org.apache.commons.lang3.StringUtils;
 import org.feichtmeier.genericwebapp.entity.Permission;
@@ -23,6 +24,7 @@ import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Component;
 
 @Component
+@VaadinSessionScope
 @Secured(ViewNames.ROLE_VIEW)
 public class RoleView extends AbstractView implements RoleFilter, Styleable {
 
@@ -61,6 +63,7 @@ public class RoleView extends AbstractView implements RoleFilter, Styleable {
         roleGrid = new Grid<>(Role.class);
         roleGrid.removeAllColumns();
         roleGrid.addColumn("name");
+        roleGrid.setItems(getAllowedEntities());
 
         newRoleButton = new Button(VaadinIcon.PLUS.create(), e -> {
             editEntity(new Role(""));

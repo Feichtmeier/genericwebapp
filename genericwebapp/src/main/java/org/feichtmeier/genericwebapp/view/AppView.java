@@ -14,19 +14,13 @@ import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.router.PreserveOnRefresh;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.spring.annotation.VaadinSessionScope;
 
-import org.feichtmeier.genericwebapp.entity.Permission;
-import org.feichtmeier.genericwebapp.entity.Role;
-import org.feichtmeier.genericwebapp.entity.User;
-import org.feichtmeier.genericwebapp.entity.View;
-import org.feichtmeier.genericwebapp.repository.GenericRepository;
-import org.feichtmeier.genericwebapp.repository.RoleRepository;
-import org.feichtmeier.genericwebapp.repository.UserRepository;
 import org.feichtmeier.genericwebapp.security.SecurityUtils;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Route(value = "")
 @PreserveOnRefresh
+@VaadinSessionScope
 public class AppView extends AppLayout implements Styleable {
 
     private static final long serialVersionUID = 8375254280365769233L;
@@ -37,51 +31,66 @@ public class AppView extends AppLayout implements Styleable {
 
     private final Map<Tab, AbstractView> tabToViewMap;
 
-    public AppView(RoleView newRoleView, UserView userView, HomeView homeView, GenericRepository<User> genericUserRepository,
-            GenericRepository<Role> genericRoleRepository, GenericRepository<Permission> permissionRepository,
-            GenericRepository<View> viewRepository, PasswordEncoder passwordEncoder, UserRepository userRepository, RoleRepository roleRepository) {
+    public AppView(RoleView roleView, UserView userView, HomeView homeView) {
 
         // Build Notebook based on permissions
         tabToViewMap = new HashMap<>();
 
         Tab homeTab = createTabAndLinkToView(homeView, "Welcome", VaadinIcon.HOME.create());
         Tab userTab = createTabAndLinkToView(userView, "User Administration", VaadinIcon.USER.create());
-        Tab roleTab = createTabAndLinkToView(newRoleView, "Role Administration", VaadinIcon.KEY.create());
+        Tab roleTab = createTabAndLinkToView(roleView, "Role Administration", VaadinIcon.KEY.create());
 
         boolean userViewAllowed = SecurityUtils.isAccessGranted(UserView.class);
         boolean roleViewAllowed = SecurityUtils.isAccessGranted(RoleView.class);
         boolean homeViewAllowed = SecurityUtils.isAccessGranted(HomeView.class);
 
-        viewTabs = new Tabs();
-        if (homeViewAllowed) {
-            viewTabs.add(homeTab);
+        // 1 0 0
+        if (homeViewAllowed && !userViewAllowed && !roleViewAllowed) {
+            viewTabs = new Tabs(homeTab);
             click(homeTab);
         }
-        if (userViewAllowed) {
-            viewTabs.add(userTab);
-            if (!homeViewAllowed) {
-                click(userTab);
-            }
+        // 0 1 0
+        else if (!homeViewAllowed && userViewAllowed && !roleViewAllowed) {
+            viewTabs = new Tabs(userTab);
+            click(userTab);
         }
-        if (roleViewAllowed) {
-            viewTabs.add(roleTab);
-            if (!homeViewAllowed && !userViewAllowed) {
-                click(roleTab);
-            }
+        // 0 0 1
+        else if (!homeViewAllowed && !userViewAllowed && roleViewAllowed) {
+            viewTabs = new Tabs(roleTab);
+            click(roleTab);
         }
-        
+        // 0 1 1
+        else if (!homeViewAllowed && userViewAllowed && roleViewAllowed) {
+            viewTabs = new Tabs(userTab, roleTab);
+            click(userTab);
+        }
+        // 1 0 1
+        else if (homeViewAllowed && !userViewAllowed && roleViewAllowed) {
+            viewTabs = new Tabs(homeTab, roleTab);
+            click(homeTab);
+        }
+        // 1 1 1
+        else if (homeViewAllowed && userViewAllowed && roleViewAllowed) {
+            viewTabs = new Tabs(homeTab, userTab, roleTab);
+            click(homeTab);
+        }
+        // 0 0 0
+        else {
+            viewTabs = new Tabs();
+        }
+
         viewTabs.setOrientation(Tabs.Orientation.HORIZONTAL);
         viewTabs.addSelectedChangeListener(event -> {
             final Tab selectedTab = event.getSelectedTab();
             final AbstractView view = tabToViewMap.get(selectedTab);
             view.refresh();
             setContent(view);
-        });       
+        });
 
-        navbarLayout = new HorizontalLayout();        
-        drawerToggle = new DrawerToggle();        
+        navbarLayout = new HorizontalLayout();
+        drawerToggle = new DrawerToggle();
         navbarLayout.add(drawerToggle, viewTabs);
-        
+
         addToNavbar(true, navbarLayout);
         addToDrawer(new VerticalLayout(new DarkthemeToggleButton(), new Anchor("logout", "Log out")));
         setDrawerOpened(false);
