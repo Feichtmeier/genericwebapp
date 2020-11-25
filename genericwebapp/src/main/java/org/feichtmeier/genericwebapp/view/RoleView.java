@@ -5,6 +5,7 @@ import java.util.List;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.listbox.MultiSelectListBox;
 import com.vaadin.flow.component.notification.Notification;
@@ -45,7 +46,7 @@ public class RoleView extends AbstractView implements RoleFilter, Styleable {
     private final RoleRepository roleRepository;
 
     private final TextField name;
-    private final DefaultSmallLabel permissionLabel;
+    private final Label permissionLabel;
     private final MultiSelectListBox<Permission> permissionListBox;
 
     private final PermissionRepository permissionRepository;
@@ -117,7 +118,7 @@ public class RoleView extends AbstractView implements RoleFilter, Styleable {
 
         permissionListBox = new MultiSelectListBox<>();
 
-        permissionLabel = new DefaultSmallLabel("Allowed views");
+        permissionLabel = new Label("Allowed views");
         topLayout.add(name, permissionLabel, permissionListBox);
         roleBinder.forField(name).asRequired("Must chose a role name").bind(Role::getName, Role::setName);
 
@@ -227,6 +228,10 @@ public class RoleView extends AbstractView implements RoleFilter, Styleable {
         topLayout.setMargin(false);
         name.setWidthFull();
         permissionLabel.setWidthFull();
+        permissionLabel.getStyle().set("margin-top", "10px");
+        permissionLabel.getStyle().set("font-size", "0.875rem");
+        permissionLabel.getStyle().set("color", "var(--lumo-primary-color)");
+        permissionLabel.getStyle().set("font-weight", "bold");
         permissionListBox.setWidthFull();
     }
 

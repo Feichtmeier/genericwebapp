@@ -5,6 +5,7 @@ import java.util.List;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.listbox.MultiSelectListBox;
 import com.vaadin.flow.component.notification.Notification;
@@ -55,7 +56,7 @@ public class UserView extends AbstractView implements Styleable, UserFilter {
     private final EmailField email;
     private final PasswordField password;
     private final MultiSelectListBox<Role> rolesListBox;
-    private final DefaultSmallLabel rolesLabel;
+    private final Label rolesLabel;
     private GenericRepository<Role> roleRepository;
 
     private Dialog userEditorDialog;
@@ -124,7 +125,7 @@ public class UserView extends AbstractView implements Styleable, UserFilter {
         username = new TextField("");
         email = new EmailField("");
         password = new PasswordField("");
-        rolesLabel = new DefaultSmallLabel("Roles");
+        rolesLabel = new Label("Roles");
         rolesListBox = new MultiSelectListBox<>();
         rolesListBox.addSelectionListener(e -> {
             currentUser.setRoles(e.getValue());
@@ -266,6 +267,10 @@ public class UserView extends AbstractView implements Styleable, UserFilter {
         password.getStyle().set("margin-bottom", "0");
 
         rolesLabel.setWidthFull();
+        rolesLabel.getStyle().set("margin-top", "10px");
+        rolesLabel.getStyle().set("font-size", "0.875rem");
+        rolesLabel.getStyle().set("color", "var(--lumo-primary-color)");
+        rolesLabel.getStyle().set("font-weight", "bold");
 
         rolesListBox.setWidthFull();
 
