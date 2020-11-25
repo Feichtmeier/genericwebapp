@@ -23,19 +23,20 @@ import org.feichtmeier.genericwebapp.repository.GenericRepository;
 import org.feichtmeier.genericwebapp.repository.RoleRepository;
 import org.feichtmeier.genericwebapp.repository.UserRepository;
 import org.feichtmeier.genericwebapp.security.SecurityUtils;
-import org.feichtmeier.genericwebapp.view.util.DarkthemeToggleButton;
-import org.feichtmeier.genericwebapp.view.util.Resizeable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Route(value = "")
 @PreserveOnRefresh
-public class AppView extends AppLayout implements Resizeable {
+public class AppView extends AppLayout implements Styleable {
 
     private static final long serialVersionUID = 8375254280365769233L;
 
     private final RoleView roleView;
 
     private final Tabs viewTabs;
+    private final HorizontalLayout navbarLayout;
+    private final DrawerToggle drawerToggle;
+
     private final Map<Tab, AbstractView> tabToViewMap;
 
     public AppView(NewUserView userView, HomeView homeView, GenericRepository<User> genericUserRepository,
@@ -72,30 +73,24 @@ public class AppView extends AppLayout implements Resizeable {
                 click(roleTab);
             }
         }
-
-        viewTabs.setFlexGrowForEnclosedTabs(1);
+        
         viewTabs.setOrientation(Tabs.Orientation.HORIZONTAL);
         viewTabs.addSelectedChangeListener(event -> {
             final Tab selectedTab = event.getSelectedTab();
             final AbstractView view = tabToViewMap.get(selectedTab);
             view.refresh();
             setContent(view);
-        });
-        viewTabs.getStyle().set("flex-grow", "1");
-        viewTabs.getStyle().set("margin-right", "35px");
+        });       
 
-        HorizontalLayout navbarLayout = new HorizontalLayout();
-        navbarLayout.getStyle().set("display", "flex");
-        DrawerToggle drawerToggle = new DrawerToggle();
-        drawerToggle.getStyle().set("flex-grow", "0");
+        navbarLayout = new HorizontalLayout();        
+        drawerToggle = new DrawerToggle();        
         navbarLayout.add(drawerToggle, viewTabs);
-        navbarLayout.setSizeFull();
+        
         addToNavbar(true, navbarLayout);
-        VerticalLayout drawerLayout = new VerticalLayout(new DarkthemeToggleButton(), new Anchor("logout", "Log out"));
-        addToDrawer(drawerLayout);
+        addToDrawer(new VerticalLayout(new DarkthemeToggleButton(), new Anchor("logout", "Log out")));
         setDrawerOpened(false);
 
-        applyResponsivePadding(navbarLayout, 20, 0);
+        applyStyling();
     }
 
     private void click(Tab tab) {
@@ -110,6 +105,16 @@ public class AppView extends AppLayout implements Resizeable {
         this.tabToViewMap.put(tab, view);
 
         return tab;
+    }
+
+    @Override
+    public void applyStyling() {
+        viewTabs.setFlexGrowForEnclosedTabs(1);
+        viewTabs.getStyle().set("flex-grow", "1");
+        viewTabs.getStyle().set("margin-right", "35px");
+        navbarLayout.getStyle().set("display", "flex");
+        drawerToggle.getStyle().set("flex-grow", "0");
+        navbarLayout.setSizeFull();
     }
 
 }

@@ -13,9 +13,8 @@ import com.vaadin.flow.data.value.ValueChangeMode;
 import org.apache.commons.lang3.StringUtils;
 import org.feichtmeier.genericwebapp.entity.AbstractEntity;
 import org.feichtmeier.genericwebapp.repository.GenericRepository;
-import org.feichtmeier.genericwebapp.view.util.Resizeable;
 
-public abstract class GenericGridView<E extends AbstractEntity> extends AbstractView implements Resizeable {
+public abstract class GenericGridView<E extends AbstractEntity> extends AbstractView {
 
     private static final long serialVersionUID = -151705160904157799L;
 
@@ -70,8 +69,6 @@ public abstract class GenericGridView<E extends AbstractEntity> extends Abstract
 
         add(topLayout, scrollableLayout);
         setAlignItems(Alignment.CENTER);
-
-        applyResponsivePadding(this, 20, 4);
     }
 
     private void listEntities(String filterText) {

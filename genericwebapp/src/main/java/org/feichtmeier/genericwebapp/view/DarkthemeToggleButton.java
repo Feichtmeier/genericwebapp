@@ -1,4 +1,4 @@
-package org.feichtmeier.genericwebapp.view.util;
+package org.feichtmeier.genericwebapp.view;
 
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.icon.Icon;

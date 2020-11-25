@@ -11,9 +11,8 @@ import com.vaadin.flow.data.binder.Binder;
 
 import org.feichtmeier.genericwebapp.entity.AbstractEntity;
 import org.feichtmeier.genericwebapp.repository.GenericRepository;
-import org.feichtmeier.genericwebapp.view.util.Resizeable;
 
-public abstract class GenericEntityEditor<E extends AbstractEntity> extends Dialog implements Resizeable {
+public abstract class GenericEntityEditor<E extends AbstractEntity> extends Dialog {
 
     private static final long serialVersionUID = -7882218816479297372L;
 
@@ -86,7 +85,6 @@ public abstract class GenericEntityEditor<E extends AbstractEntity> extends Dial
         dialogBody.setPadding(false);
         dialogBody.setMargin(false);
         
-        addResponsiveDialogWidth(this);
         add(dialogBody);
         setCloseOnEsc(false);
         setCloseOnOutsideClick(false);
