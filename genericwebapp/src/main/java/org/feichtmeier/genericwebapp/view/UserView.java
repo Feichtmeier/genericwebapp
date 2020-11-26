@@ -1,7 +1,5 @@
 package org.feichtmeier.genericwebapp.view;
 
-import java.util.List;
-
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
@@ -32,7 +30,7 @@ import org.springframework.stereotype.Component;
 @Component
 @Secured(ViewNames.USER_VIEW)
 @VaadinSessionScope
-public class UserView extends AbstractView implements UserFilter {
+public class UserView extends AbstractView {
 
     private static final long serialVersionUID = 7368213324544313846L;
 
@@ -80,7 +78,7 @@ public class UserView extends AbstractView implements UserFilter {
         userGrid = new Grid<>(User.class);
         userGrid.removeAllColumns();
         userGrid.addColumns("username", "fullName");
-        userGrid.setItems(getAllowedEntities());
+        userGrid.setItems(userRepository.findAll());
         userGrid.asSingleSelect().addValueChangeListener(event -> {
             editEntity(event.getValue());
         });
@@ -155,19 +153,15 @@ public class UserView extends AbstractView implements UserFilter {
 
     private void listEntities(String filterText) {
         if (StringUtils.isEmpty(filterText)) {
-            userGrid.setItems(getAllowedEntities());
+            userGrid.setItems(userRepository.findAll());
         } else {
-            userGrid.setItems(listUsersByFullName(filterText, getAllowedEntities()));
+            userGrid.setItems(userRepository.findByFullNameStartsWithIgnoreCase(filterText));
         }
     }
 
     @Override
     protected void refresh() {
-        userGrid.setItems(getAllowedEntities());
-    }
-
-    public List<User> getAllowedEntities() {
-        return userRepository.findAll();
+        userGrid.setItems(userRepository.findAll());
     }
 
     public void editEntity(User entity) {

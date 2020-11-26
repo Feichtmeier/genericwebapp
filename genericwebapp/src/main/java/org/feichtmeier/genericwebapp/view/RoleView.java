@@ -1,7 +1,5 @@
 package org.feichtmeier.genericwebapp.view;
 
-import java.util.List;
-
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
@@ -27,7 +25,7 @@ import org.springframework.stereotype.Component;
 @Component
 @VaadinSessionScope
 @Secured(ViewNames.ROLE_VIEW)
-public class RoleView extends AbstractView implements RoleFilter {
+public class RoleView extends AbstractView {
 
     private static final long serialVersionUID = 1L;
 
@@ -64,7 +62,7 @@ public class RoleView extends AbstractView implements RoleFilter {
         roleGrid = new Grid<>(Role.class);
         roleGrid.removeAllColumns();
         roleGrid.addColumn("name");
-        roleGrid.setItems(getAllowedEntities());
+        roleGrid.setItems(roleRepository.findAll());
 
         newRoleButton = new Button(VaadinIcon.PLUS.create(), e -> {
             editEntity(new Role(""));
@@ -159,15 +157,15 @@ public class RoleView extends AbstractView implements RoleFilter {
 
     private void listEntities(String filterText) {
         if (StringUtils.isEmpty(filterText)) {
-            roleGrid.setItems(getAllowedEntities());
+            roleGrid.setItems(roleRepository.findAll());
         } else {
-            roleGrid.setItems(mainFilterOperation(filterText));
+            roleGrid.setItems(roleRepository.findByNameStartsWithIgnoreCase(filterText));
         }
     }
 
     @Override
     protected void refresh() {
-        roleGrid.setItems(getAllowedEntities());
+        roleGrid.setItems(roleRepository.findAll());
     }
 
     public Grid<Role> createGrid() {
@@ -175,14 +173,6 @@ public class RoleView extends AbstractView implements RoleFilter {
         roleGrid.removeAllColumns();
         roleGrid.addColumn("name");
         return roleGrid;
-    }
-
-    protected List<Role> mainFilterOperation(String filterText) {
-        return listRolesByName(filterText, getAllowedEntities());
-    }
-
-    public List<Role> getAllowedEntities() {
-        return roleRepository.findAll();
     }
 
     @Override
