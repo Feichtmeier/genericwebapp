@@ -195,7 +195,7 @@ public class RoleView extends AbstractView implements RoleFilter {
         viewScrollLayout.setHeight(null);
         viewScrollLayout.getStyle().set("overflow-y", "auto");
         viewScrollLayout.getStyle().set("padding", "0");
-        roleGrid.getStyle().set("overflow-y", "inherit");
+        roleGrid.getStyle().set("overflow-y", "auto");
         dialogBody.setHeightFull();
         dialogBody.setPadding(false);
         dialogBody.setMargin(false);

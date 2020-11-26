@@ -209,7 +209,7 @@ public class UserView extends AbstractView implements UserFilter {
         viewScrollLayout.setHeight(null);
         viewScrollLayout.getStyle().set("overflow-y", "auto");
         viewScrollLayout.getStyle().set("padding", "0");
-        userGrid.getStyle().set("overflow-y", "inherit");
+        userGrid.getStyle().set("overflow-y", "auto");
         viewTopLayout.getStyle().set("display", "flex");
         viewTopLayout.getStyle().set("flex-direction", "row");
         newUserButton.getStyle().set("flex-grow", "0");
