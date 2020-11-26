@@ -15,17 +15,23 @@ public class SettingsView extends AbstractView {
 
     private static final long serialVersionUID = 1L;
 
-    private final Anchor logout = new Anchor("logout", "logout");
+    private final Anchor logout = new Anchor("logout", "Logout");
     private final H1 header = new H1("Settings");
 
     public SettingsView() {
         add(header);
         add(new HorizontalLayout(logout));
-        setAlignItems(Alignment.CENTER);
+        applyStyling();
     }
 
     @Override
     protected void refresh() {
+    }
+
+    @Override
+    public void applyStyling() {
+        logout.getStyle().set("color", "red");
+        setAlignItems(Alignment.CENTER);
     }
 
 }

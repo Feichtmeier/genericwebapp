@@ -27,7 +27,7 @@ import org.springframework.stereotype.Component;
 @Component
 @VaadinSessionScope
 @Secured(ViewNames.ROLE_VIEW)
-public class RoleView extends AbstractView implements RoleFilter, Styleable {
+public class RoleView extends AbstractView implements RoleFilter {
 
     private static final long serialVersionUID = 1L;
 

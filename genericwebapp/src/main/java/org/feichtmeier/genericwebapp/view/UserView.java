@@ -32,7 +32,7 @@ import org.springframework.stereotype.Component;
 @Component
 @Secured(ViewNames.USER_VIEW)
 @VaadinSessionScope
-public class UserView extends AbstractView implements Styleable, UserFilter {
+public class UserView extends AbstractView implements UserFilter {
 
     private static final long serialVersionUID = 7368213324544313846L;
 

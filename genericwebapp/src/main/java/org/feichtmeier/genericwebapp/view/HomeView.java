@@ -26,14 +26,19 @@ public class HomeView extends AbstractView {
         this.userRepository = userRepository;
         userName = new H2("");
         welcomeHeader = new H1("Welcome");
-        this.setAlignItems(Alignment.CENTER);
-        this.add(welcomeHeader, userName);
+        add(welcomeHeader, userName);
+        applyStyling();
     }
 
     @Override
     protected void refresh() {
         User currentUser = userRepository.findByUsername(SecurityUtils.getUsername());
         userName.setText(currentUser.getFullName());
+    }
+
+    @Override
+    public void applyStyling() {
+        this.setAlignItems(Alignment.CENTER);
     }
     
 }
