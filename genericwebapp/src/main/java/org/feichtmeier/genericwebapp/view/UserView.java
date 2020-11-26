@@ -1,12 +1,14 @@
 package org.feichtmeier.genericwebapp.view;
 
+import java.util.Collection;
+import java.util.List;
+
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.listbox.MultiSelectListBox;
-import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.EmailField;
@@ -39,7 +41,7 @@ public class UserView extends AbstractView {
     private final TextField userFilter;
     private final HorizontalLayout viewTopLayout;
     private final VerticalLayout viewScrollLayout;
-    
+
     private UserRepository userRepository;
 
     private User currentUser;
@@ -58,6 +60,8 @@ public class UserView extends AbstractView {
     private GenericRepository<Role> roleRepository;
 
     private Dialog userEditorDialog;
+
+    private List<User> users;
 
     public UserView(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
@@ -78,7 +82,7 @@ public class UserView extends AbstractView {
         userGrid = new Grid<>(User.class);
         userGrid.removeAllColumns();
         userGrid.addColumns("username", "fullName");
-        userGrid.setItems(userRepository.findAll());
+        refreshData();
         userGrid.asSingleSelect().addValueChangeListener(event -> {
             editEntity(event.getValue());
         });
@@ -93,7 +97,7 @@ public class UserView extends AbstractView {
             if (userBinder.validate().isOk()) {
                 userRepository.save(currentUser);
                 createNotification("Saved User: " + currentUser.getFullName());
-
+                refreshData();
                 goBackToView();
             } else {
                 createNotification("NOT saved User: " + currentUser.getFullName());
@@ -107,7 +111,7 @@ public class UserView extends AbstractView {
         deleteButton = new Button("", VaadinIcon.TRASH.create(), e -> {
             userRepository.delete(currentUser);
             createNotification("Deleted User: " + currentUser.getFullName());
-            refresh();
+            refreshData();
             goBackToView();
         });
 
@@ -153,15 +157,17 @@ public class UserView extends AbstractView {
 
     private void listEntities(String filterText) {
         if (StringUtils.isEmpty(filterText)) {
-            userGrid.setItems(userRepository.findAll());
+            userGrid.setItems(users);
         } else {
+            // TODO: move to service
             userGrid.setItems(userRepository.findByFullNameStartsWithIgnoreCase(filterText));
         }
     }
 
-    @Override
-    protected void refresh() {
-        userGrid.setItems(userRepository.findAll());
+    // TODO: move to service, do not connect to  db so often
+    private void refreshData() {
+        users = userRepository.findAll();
+        userGrid.setItems(users);
     }
 
     public void editEntity(User entity) {
@@ -180,16 +186,9 @@ public class UserView extends AbstractView {
         }
     }
 
-    private void createNotification(String text) {
-        Notification notification = new Notification();
-        notification.setDuration(2000);
-        notification.open();
-    }
-
     private void goBackToView() {
         rolesListBox.deselectAll();
         userEditorDialog.close();
-        refresh();
     }
 
     @Override
@@ -270,5 +269,5 @@ public class UserView extends AbstractView {
         rolesListBox.setWidthFull();
 
         userEditorDialog.setHeight(null);
-    }    
+    }
 }

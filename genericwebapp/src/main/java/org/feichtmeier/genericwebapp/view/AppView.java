@@ -86,7 +86,6 @@ public class AppView extends AppLayout implements Styleable {
             final Tab selectedTab = event.getSelectedTab();
             final Tab previousTab = event.getPreviousTab();
             final AbstractView view = tabToViewMap.get(selectedTab);
-            view.refresh();
             if (!selectedTab.equals(settingsTab)) {
                 setContent(view);
             } else {
@@ -111,7 +110,6 @@ public class AppView extends AppLayout implements Styleable {
     private void click(Tab tab) {
         viewTabs.setSelectedTab(tab);
         final AbstractView view = tabToViewMap.get(tab);
-        view.refresh();
         setContent(view);
     }
 

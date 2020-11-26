@@ -1,12 +1,13 @@
 package org.feichtmeier.genericwebapp.view;
 
+import java.util.List;
+
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.listbox.MultiSelectListBox;
-import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
@@ -49,8 +50,12 @@ public class RoleView extends AbstractView {
 
     private final PermissionRepository permissionRepository;
 
+    private List<Role> roles;
+
     public RoleView(RoleRepository roleRepository, PermissionRepository permissionRepository) {
         this.permissionRepository = permissionRepository;
+        this.roleRepository = roleRepository;
+
         roleEditorDialog = new Dialog();
 
         viewTopLayout = new HorizontalLayout();
@@ -58,11 +63,11 @@ public class RoleView extends AbstractView {
         roleFilter.setValueChangeMode(ValueChangeMode.EAGER);
         roleFilter.addValueChangeListener(e -> listEntities(e.getValue()));
 
-        this.roleRepository = roleRepository;
+        
         roleGrid = new Grid<>(Role.class);
         roleGrid.removeAllColumns();
         roleGrid.addColumn("name");
-        roleGrid.setItems(roleRepository.findAll());
+        refreshData();
 
         newRoleButton = new Button(VaadinIcon.PLUS.create(), e -> {
             editEntity(new Role(""));
@@ -85,6 +90,7 @@ public class RoleView extends AbstractView {
             if (roleBinder.validate().isOk()) {
                 roleRepository.save(currentEntity);
                 createNotification("Saved Role " + currentEntity.getName());
+                refreshData();
                 goBackToView();
             } else {
                 createNotification("NOT saved Role " + currentEntity.getName());
@@ -98,6 +104,7 @@ public class RoleView extends AbstractView {
         deleteButton = new Button("", VaadinIcon.TRASH.create(), e -> {
             roleRepository.delete(currentEntity);
             createNotification("Deleted " + currentEntity.getName());
+            refreshData();
             goBackToView();
         });
 
@@ -143,29 +150,24 @@ public class RoleView extends AbstractView {
         }
     }
 
-    private void createNotification(String text) {
-        Notification notification = new Notification(text);
-        notification.setDuration(2000);
-        notification.open();
-    }
-
     private void goBackToView() {
         permissionListBox.deselectAll();
         roleEditorDialog.close();
-        refresh();
     }
 
     private void listEntities(String filterText) {
         if (StringUtils.isEmpty(filterText)) {
-            roleGrid.setItems(roleRepository.findAll());
+            roleGrid.setItems(roles);
         } else {
+            // TODO: move to service
             roleGrid.setItems(roleRepository.findByNameStartsWithIgnoreCase(filterText));
         }
     }
 
-    @Override
-    protected void refresh() {
-        roleGrid.setItems(roleRepository.findAll());
+    // TODO: move to service
+    private void refreshData() {
+        roles = roleRepository.findAll();
+        roleGrid.setItems(roles);
     }
 
     public Grid<Role> createGrid() {

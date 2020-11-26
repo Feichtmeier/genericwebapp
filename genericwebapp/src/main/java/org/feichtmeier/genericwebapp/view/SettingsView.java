@@ -23,10 +23,6 @@ public class SettingsView extends AbstractView {
     }
 
     @Override
-    protected void refresh() {
-    }
-
-    @Override
     public void applyStyling() {
         logout.getStyle().set("color", "red");
         setAlignItems(Alignment.CENTER);

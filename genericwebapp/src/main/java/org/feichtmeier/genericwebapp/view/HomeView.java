@@ -25,15 +25,11 @@ public class HomeView extends AbstractView {
     public HomeView(UserRepository userRepository) {
         this.userRepository = userRepository;
         userName = new H2("");
+        User currentUser = userRepository.findByUsername(SecurityUtils.getUsername());
+        userName.setText(currentUser.getFullName());
         welcomeHeader = new H1("Welcome");
         add(welcomeHeader, userName);
         applyStyling();
-    }
-
-    @Override
-    protected void refresh() {
-        User currentUser = userRepository.findByUsername(SecurityUtils.getUsername());
-        userName.setText(currentUser.getFullName());
     }
 
     @Override
