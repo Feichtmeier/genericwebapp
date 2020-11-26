@@ -67,7 +67,7 @@ public class DatabasePreloader {
             heinrich.setRoles(roles);
             userRepository.save(heinrich);
 
-            for (int i = 0; i < 20; i++) {
+            for (int i = 0; i < 100; i++) {
                 Faker faker = new Faker();
                 String fullName = faker.name().fullName();
                 String[] fullNameArray = fullName.split(" ");

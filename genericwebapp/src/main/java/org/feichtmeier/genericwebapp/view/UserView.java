@@ -1,6 +1,5 @@
 package org.feichtmeier.genericwebapp.view;
 
-import java.util.Collection;
 import java.util.List;
 
 import com.vaadin.flow.component.button.Button;
