@@ -22,7 +22,6 @@ import com.vaadin.flow.spring.annotation.VaadinSessionScope;
 import org.apache.commons.lang3.StringUtils;
 import org.feichtmeier.genericwebapp.entity.Role;
 import org.feichtmeier.genericwebapp.entity.User;
-import org.feichtmeier.genericwebapp.repository.GenericRepository;
 import org.feichtmeier.genericwebapp.repository.RoleRepository;
 import org.feichtmeier.genericwebapp.repository.UserRepository;
 import org.springframework.security.access.annotation.Secured;
@@ -57,7 +56,7 @@ public class UserView extends AbstractView {
     private final PasswordField password;
     private final MultiSelectListBox<Role> rolesListBox;
     private final Label rolesLabel;
-    private GenericRepository<Role> roleRepository;
+    private RoleRepository roleRepository;
 
     private Dialog userEditorDialog;
 
@@ -100,7 +99,7 @@ public class UserView extends AbstractView {
                 // TODO: move to service
                 userRepository.save(currentUser);
                 createNotification("Saved User: " + currentUser.getFullName());
-                refreshUsers();
+                
                 goBackToView();
             } else {
                 createNotification("NOT saved User: " + currentUser.getFullName());
@@ -115,7 +114,7 @@ public class UserView extends AbstractView {
             // TODO: move to service
             userRepository.delete(currentUser);
             createNotification("Deleted User: " + currentUser.getFullName());
-            refreshUsers();
+            
             goBackToView();
         });
 
@@ -133,7 +132,6 @@ public class UserView extends AbstractView {
         password = new PasswordField("");
         rolesLabel = new Label("Roles");
         rolesListBox = new MultiSelectListBox<>();
-        refreshRoles();
         rolesListBox.addSelectionListener(e -> {
             currentUser.setRoles(e.getValue());
         });
@@ -196,16 +194,16 @@ public class UserView extends AbstractView {
     }
 
     public void editEntity(User entity) {
-        userEditorDialog.open();
         if (entity == null) {
-            userEditorDialog.close();
+            goBackToView();
             return;
         }
+        userEditorDialog.open();
 
         this.currentUser = entity;
         userBinder.setBean(currentUser);
 
-        rolesListBox.setItems(roles);
+        refreshRoles();        
         if (null != currentUser.getRoles()) {
             rolesListBox.select(this.currentUser.getRoles());
         }
@@ -213,7 +211,9 @@ public class UserView extends AbstractView {
 
     private void goBackToView() {
         rolesListBox.deselectAll();
+        userGrid.deselectAll();
         userEditorDialog.close();
+        refreshUsers();
     }
 
     @Override

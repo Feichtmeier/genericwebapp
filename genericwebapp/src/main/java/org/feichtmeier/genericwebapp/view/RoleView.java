@@ -94,7 +94,6 @@ public class RoleView extends AbstractView {
                 // TODO: move to service
                 roleRepository.save(currentEntity);
                 createNotification("Saved Role " + currentEntity.getName());
-                refreshRoles();
                 goBackToView();
             } else {
                 createNotification("NOT saved Role " + currentEntity.getName());
@@ -109,7 +108,6 @@ public class RoleView extends AbstractView {
             // TODO: move to service
             roleRepository.delete(currentEntity);
             createNotification("Deleted " + currentEntity.getName());
-            refreshRoles();
             goBackToView();
         });
 
@@ -127,7 +125,6 @@ public class RoleView extends AbstractView {
         name.setLabel("Name of the role");
 
         permissionListBox = new MultiSelectListBox<>();
-        refreshPermissions();
         permissionLabel = new Label("Allowed views");
         topLayout.add(name, permissionLabel, permissionListBox);
         roleBinder.forField(name).asRequired("Must chose a role name").bind(Role::getName, Role::setName);
@@ -139,17 +136,16 @@ public class RoleView extends AbstractView {
         applyStyling();
     }
 
-    public void editEntity(Role entity) {
-        roleEditorDialog.open();
+    public void editEntity(Role entity) {        
         if (entity == null) {
             roleEditorDialog.close();
             return;
         }
-
+        roleEditorDialog.open();
         this.currentEntity = entity;
         roleBinder.setBean(currentEntity);
 
-        permissionListBox.setItems(permissions);
+        refreshPermissions();
         if (null != currentEntity.getPermissions()) {
             permissionListBox.select(this.currentEntity.getPermissions());
         }
@@ -158,6 +154,8 @@ public class RoleView extends AbstractView {
     private void goBackToView() {
         permissionListBox.deselectAll();
         roleEditorDialog.close();
+        refreshRoles();
+        refreshPermissions();
     }
 
     private void listEntities(String filterText) {
