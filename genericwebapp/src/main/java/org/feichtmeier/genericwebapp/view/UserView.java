@@ -1,5 +1,6 @@
 package org.feichtmeier.genericwebapp.view;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.vaadin.flow.component.button.Button;
@@ -61,9 +62,11 @@ public class UserView extends AbstractView {
     private Dialog userEditorDialog;
 
     private List<User> users;
+    private List<Role> roles;
 
     public UserView(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.roleRepository = roleRepository;
 
         userEditorDialog = new Dialog();
 
@@ -81,7 +84,8 @@ public class UserView extends AbstractView {
         userGrid = new Grid<>(User.class);
         userGrid.removeAllColumns();
         userGrid.addColumns("username", "fullName");
-        refreshData();
+        refreshUsers();
+
         userGrid.asSingleSelect().addValueChangeListener(event -> {
             editEntity(event.getValue());
         });
@@ -90,13 +94,13 @@ public class UserView extends AbstractView {
         add(viewTopLayout, viewScrollLayout);
 
         userBinder = new Binder<>(User.class);
-        this.roleRepository = roleRepository;
 
         saveButton = new Button("", VaadinIcon.CHECK.create(), e -> {
             if (userBinder.validate().isOk()) {
+                // TODO: move to service
                 userRepository.save(currentUser);
                 createNotification("Saved User: " + currentUser.getFullName());
-                refreshData();
+                refreshUsers();
                 goBackToView();
             } else {
                 createNotification("NOT saved User: " + currentUser.getFullName());
@@ -108,9 +112,10 @@ public class UserView extends AbstractView {
         });
 
         deleteButton = new Button("", VaadinIcon.TRASH.create(), e -> {
+            // TODO: move to service
             userRepository.delete(currentUser);
             createNotification("Deleted User: " + currentUser.getFullName());
-            refreshData();
+            refreshUsers();
             goBackToView();
         });
 
@@ -128,6 +133,7 @@ public class UserView extends AbstractView {
         password = new PasswordField("");
         rolesLabel = new Label("Roles");
         rolesListBox = new MultiSelectListBox<>();
+        refreshRoles();
         rolesListBox.addSelectionListener(e -> {
             currentUser.setRoles(e.getValue());
         });
@@ -158,15 +164,35 @@ public class UserView extends AbstractView {
         if (StringUtils.isEmpty(filterText)) {
             userGrid.setItems(users);
         } else {
-            // TODO: move to service
-            userGrid.setItems(userRepository.findByFullNameStartsWithIgnoreCase(filterText));
+            userGrid.setItems(listUsersByFullName(filterText, users));
         }
     }
 
+    private List<User> listUsersByFullName(String filterText, List<User> allowedUsers) {
+        if (null == filterText) {
+            return allowedUsers;
+        } else {
+            List<User> matchedUsers = new ArrayList<>();
+            for (User user : allowedUsers) {
+                if (null != user.getFullName()
+                        && user.getFullName().toUpperCase().startsWith(filterText.toUpperCase())) {
+                    matchedUsers.add(user);
+                }
+            }
+            return matchedUsers;
+        }
+
+    }
+
     // TODO: move to service, do not connect to  db so often
-    private void refreshData() {
+    private void refreshUsers() {
         users = userRepository.findAll();
         userGrid.setItems(users);
+    }
+    // TODO: move to service
+    private void refreshRoles() {
+        roles = roleRepository.findAll();
+        rolesListBox.setItems(roles);
     }
 
     public void editEntity(User entity) {
@@ -179,7 +205,7 @@ public class UserView extends AbstractView {
         this.currentUser = entity;
         userBinder.setBean(currentUser);
 
-        rolesListBox.setItems(roleRepository.findAll());
+        rolesListBox.setItems(roles);
         if (null != currentUser.getRoles()) {
             rolesListBox.select(this.currentUser.getRoles());
         }

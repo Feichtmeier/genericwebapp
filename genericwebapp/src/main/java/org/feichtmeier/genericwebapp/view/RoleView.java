@@ -1,5 +1,6 @@
 package org.feichtmeier.genericwebapp.view;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.vaadin.flow.component.button.Button;
@@ -52,6 +53,8 @@ public class RoleView extends AbstractView {
 
     private List<Role> roles;
 
+    private List<Permission> permissions;
+
     public RoleView(RoleRepository roleRepository, PermissionRepository permissionRepository) {
         this.permissionRepository = permissionRepository;
         this.roleRepository = roleRepository;
@@ -67,7 +70,7 @@ public class RoleView extends AbstractView {
         roleGrid = new Grid<>(Role.class);
         roleGrid.removeAllColumns();
         roleGrid.addColumn("name");
-        refreshData();
+        refreshRoles();
 
         newRoleButton = new Button(VaadinIcon.PLUS.create(), e -> {
             editEntity(new Role(""));
@@ -88,9 +91,10 @@ public class RoleView extends AbstractView {
 
         saveButton = new Button("", VaadinIcon.CHECK.create(), e -> {
             if (roleBinder.validate().isOk()) {
+                // TODO: move to service
                 roleRepository.save(currentEntity);
                 createNotification("Saved Role " + currentEntity.getName());
-                refreshData();
+                refreshRoles();
                 goBackToView();
             } else {
                 createNotification("NOT saved Role " + currentEntity.getName());
@@ -102,9 +106,10 @@ public class RoleView extends AbstractView {
         });
 
         deleteButton = new Button("", VaadinIcon.TRASH.create(), e -> {
+            // TODO: move to service
             roleRepository.delete(currentEntity);
             createNotification("Deleted " + currentEntity.getName());
-            refreshData();
+            refreshRoles();
             goBackToView();
         });
 
@@ -122,7 +127,7 @@ public class RoleView extends AbstractView {
         name.setLabel("Name of the role");
 
         permissionListBox = new MultiSelectListBox<>();
-
+        refreshPermissions();
         permissionLabel = new Label("Allowed views");
         topLayout.add(name, permissionLabel, permissionListBox);
         roleBinder.forField(name).asRequired("Must chose a role name").bind(Role::getName, Role::setName);
@@ -144,7 +149,7 @@ public class RoleView extends AbstractView {
         this.currentEntity = entity;
         roleBinder.setBean(currentEntity);
 
-        permissionListBox.setItems(permissionRepository.findAll());
+        permissionListBox.setItems(permissions);
         if (null != currentEntity.getPermissions()) {
             permissionListBox.select(this.currentEntity.getPermissions());
         }
@@ -159,15 +164,33 @@ public class RoleView extends AbstractView {
         if (StringUtils.isEmpty(filterText)) {
             roleGrid.setItems(roles);
         } else {
-            // TODO: move to service
-            roleGrid.setItems(roleRepository.findByNameStartsWithIgnoreCase(filterText));
+            roleGrid.setItems(listRolesByName(filterText, roles));
+        }
+    }
+
+    private List<Role> listRolesByName(String filterText, List<Role> allowedRoles) {
+        if (null == filterText) {
+            return allowedRoles;
+        } else {
+            List<Role> matchedRoles = new ArrayList<>();
+            for (Role role : allowedRoles) {
+                if (null != role.getName() && role.getName().toUpperCase().startsWith(filterText.toUpperCase())) {
+                    matchedRoles.add(role);
+                }
+            }
+            return matchedRoles;
         }
     }
 
     // TODO: move to service
-    private void refreshData() {
+    private void refreshRoles() {
         roles = roleRepository.findAll();
         roleGrid.setItems(roles);
+    }
+    // TODO: move to service
+    private void refreshPermissions() {
+        permissions = permissionRepository.findAll();
+        permissionListBox.setItems(permissions);
     }
 
     public Grid<Role> createGrid() {
