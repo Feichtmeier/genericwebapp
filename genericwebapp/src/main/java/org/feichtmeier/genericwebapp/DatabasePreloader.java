@@ -54,6 +54,12 @@ public class DatabasePreloader {
             admin.setPermissions(allPermissions);
             roleRepository.save(admin);
 
+            Role user = new Role("user");
+            Set<Permission> userPermissions = new HashSet<>();
+            userPermissions.add(homeViewPermission);
+            user.setPermissions(userPermissions);
+            roleRepository.save(user);
+
             User heinrich = new User("heinrich", "Heinrich Schmidt", passwordEncoder.encode("password"),
                     "heinrich@schmidt.de", false);
             Set<Role> roles = new HashSet<>();
@@ -70,6 +76,9 @@ public class DatabasePreloader {
                 String email = firstName + i + "@gmail.com";
 
                 User normalUser = new User(username, fullName, passwordEncoder.encode("password"), email, false);
+                Set<Role> normalUserRoles = new HashSet<>();
+                normalUserRoles.add(user);
+                normalUser.setRoles(normalUserRoles);
                 userRepository.save(normalUser);
             }
 
