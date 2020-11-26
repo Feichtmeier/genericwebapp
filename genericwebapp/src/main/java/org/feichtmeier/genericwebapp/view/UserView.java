@@ -213,6 +213,7 @@ public class UserView extends AbstractView implements UserFilter {
         viewTopLayout.getStyle().set("display", "flex");
         viewTopLayout.getStyle().set("flex-direction", "row");
         newUserButton.getStyle().set("flex-grow", "0");
+        newUserButton.getElement().getThemeList().add("primary");
         this.setAlignItems(Alignment.CENTER);
 
         saveButton.getElement().getThemeList().add("primary");

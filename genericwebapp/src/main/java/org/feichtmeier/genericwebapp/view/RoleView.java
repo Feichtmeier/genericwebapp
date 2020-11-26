@@ -203,6 +203,7 @@ public class RoleView extends AbstractView implements RoleFilter {
         viewTopLayout.getStyle().set("display", "flex");
         viewTopLayout.getStyle().set("flex-direction", "row");
         newRoleButton.getStyle().set("flex-grow", "0");
+        newRoleButton.getElement().getThemeList().add("primary");
         setAlignItems(Alignment.CENTER);
         roleEditorDialog.setHeight(null);
         saveButton.getElement().getThemeList().add("primary");
