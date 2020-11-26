@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.vaadin.flow.component.applayout.AppLayout;
+import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.tabs.Tab;
@@ -23,6 +25,10 @@ public class AppView extends AppLayout implements Styleable {
     private static final long serialVersionUID = 8375254280365769233L;
 
     private final Tabs viewTabs;
+    private final Tab homeTab;
+    private final Tab userTab;
+    private final Tab roleTab;
+    private final Tab settingsTab;
 
     private final Map<Tab, AbstractView> tabToViewMap;
 
@@ -31,10 +37,10 @@ public class AppView extends AppLayout implements Styleable {
         // Build Notebook based on permissions
         tabToViewMap = new HashMap<>();
 
-        Tab homeTab = createTabAndLinkToView(homeView, "Welcome", VaadinIcon.HOME.create());
-        Tab userTab = createTabAndLinkToView(userView, "User Administration", VaadinIcon.USERS.create());
-        Tab roleTab = createTabAndLinkToView(roleView, "Role Administration", VaadinIcon.KEY.create());
-        Tab settingsTab = createTabAndLinkToView(settingsView, "Settings", VaadinIcon.COG.create());
+        homeTab = createTabAndLinkToView(homeView, "Welcome", VaadinIcon.HOME.create());
+        userTab = createTabAndLinkToView(userView, "User Administration", VaadinIcon.USERS.create());
+        roleTab = createTabAndLinkToView(roleView, "Role Administration", VaadinIcon.KEY.create());
+        settingsTab = createTabAndLinkToView(settingsView, "Settings", VaadinIcon.COG.create());
 
         boolean userViewAllowed = SecurityUtils.isAccessGranted(UserView.class);
         boolean roleViewAllowed = SecurityUtils.isAccessGranted(RoleView.class);
@@ -79,9 +85,20 @@ public class AppView extends AppLayout implements Styleable {
         viewTabs.setOrientation(Tabs.Orientation.HORIZONTAL);
         viewTabs.addSelectedChangeListener(event -> {
             final Tab selectedTab = event.getSelectedTab();
+            final Tab previousTab = event.getPreviousTab();
             final AbstractView view = tabToViewMap.get(selectedTab);
             view.refresh();
-            setContent(view);
+            if (!selectedTab.equals(settingsTab)) {
+                setContent(view);
+            } else {
+                Dialog settingsDialog = new Dialog(settingsView);
+                settingsDialog.addDialogCloseActionListener(e -> {
+                    click(previousTab);
+                    settingsDialog.close();
+                });
+                settingsDialog.open();
+            }
+            
         });
 
         addToNavbar(true, viewTabs);

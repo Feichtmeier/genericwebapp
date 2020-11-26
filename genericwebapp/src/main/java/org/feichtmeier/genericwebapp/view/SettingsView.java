@@ -5,10 +5,8 @@ import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.spring.annotation.VaadinSessionScope;
 
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Component;
 
-@Secured(ViewNames.SETTINGS_VIEW)
 @VaadinSessionScope
 @Component
 public class SettingsView extends AbstractView {
