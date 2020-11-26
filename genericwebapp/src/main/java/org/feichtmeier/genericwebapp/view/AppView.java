@@ -4,12 +4,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.vaadin.flow.component.applayout.AppLayout;
-import com.vaadin.flow.component.applayout.DrawerToggle;
-import com.vaadin.flow.component.html.Anchor;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
-import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.router.PreserveOnRefresh;
@@ -27,19 +24,18 @@ public class AppView extends AppLayout implements Styleable {
     private static final long serialVersionUID = 8375254280365769233L;
 
     private final Tabs viewTabs;
-    private final HorizontalLayout navbarLayout;
-    private final DrawerToggle drawerToggle;
 
     private final Map<Tab, AbstractView> tabToViewMap;
 
-    public AppView(RoleView roleView, UserView userView, HomeView homeView) {
+    public AppView(RoleView roleView, UserView userView, HomeView homeView, SettingsView settingsView) {
 
         // Build Notebook based on permissions
         tabToViewMap = new HashMap<>();
 
         Tab homeTab = createTabAndLinkToView(homeView, "Welcome", VaadinIcon.HOME.create());
-        Tab userTab = createTabAndLinkToView(userView, "User Administration", VaadinIcon.USER.create());
+        Tab userTab = createTabAndLinkToView(userView, "User Administration", VaadinIcon.USERS.create());
         Tab roleTab = createTabAndLinkToView(roleView, "Role Administration", VaadinIcon.KEY.create());
+        Tab settingsTab = createTabAndLinkToView(settingsView, "Settings", VaadinIcon.COG.create());
 
         boolean userViewAllowed = SecurityUtils.isAccessGranted(UserView.class);
         boolean roleViewAllowed = SecurityUtils.isAccessGranted(RoleView.class);
@@ -79,6 +75,7 @@ public class AppView extends AppLayout implements Styleable {
         else {
             viewTabs = new Tabs();
         }
+        viewTabs.add(settingsTab);
 
         viewTabs.setOrientation(Tabs.Orientation.HORIZONTAL);
         viewTabs.addSelectedChangeListener(event -> {
@@ -88,14 +85,9 @@ public class AppView extends AppLayout implements Styleable {
             setContent(view);
         });
 
-        navbarLayout = new HorizontalLayout();
-        drawerToggle = new DrawerToggle();
-        navbarLayout.add(drawerToggle, viewTabs);
-
-        addToNavbar(true, navbarLayout);
+        addToNavbar(true, viewTabs);
 
         getElement().executeJs(JavaScripts.USE_SYSTEM_THEME_SCRIPT);
-        addToDrawer(new VerticalLayout(new Anchor("logout", "Log out")));
         setDrawerOpened(false);
 
         applyStyling();
@@ -118,11 +110,7 @@ public class AppView extends AppLayout implements Styleable {
     @Override
     public void applyStyling() {
         viewTabs.setFlexGrowForEnclosedTabs(1);
-        viewTabs.getStyle().set("flex-grow", "1");
-        viewTabs.getStyle().set("margin-right", "35px");
-        navbarLayout.getStyle().set("display", "flex");
-        drawerToggle.getStyle().set("flex-grow", "0");
-        navbarLayout.setSizeFull();
+        viewTabs.setWidthFull();
     }
 
 }
