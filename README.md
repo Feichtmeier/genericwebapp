@@ -4,18 +4,17 @@
 
 ## About
 
-This is a mobile ready, responsive, persistent, generic webapp built with [Spring Boot](https://github.com/spring-projects/spring-boot) and [Vaadin](https://github.com/vaadin/) with a RESTful API.
+This is a mobile ready, responsive, persistent, generic webapp built with [Spring Boot](https://github.com/spring-projects/spring-boot) and [Vaadin](https://github.com/vaadin/).
 
 ## Use case
 
-This webapp and API is not meant to be used in production and needs to be extended for individual use cases. It provides a basic user, permission and role management and project selection.
+This webapp is not meant to be used in production and needs to be extended for individual use cases. It provides a basic user, permission and role management.
 
-Each new view needs to be extended from `GenericGridView.java`, having a specific editor dialog which needs to be extended from `GenericEntityEditor.java`.
 New views/tabs can be added either into the existing notebook in `AppView.java` or somewhere else.
 
 A REST Api exists in the controller package to manipulate the database, but should be excluded from this repository in a production environment and used in a second "REST only" repository, with the same entities.
 
-The login is secured via Spring Security but currently allows the `.../api/...` requests for testing REST calls.
+The login is secured via Spring Security, which currently disallows API calls.
 
 ## Build
 
