@@ -7,20 +7,27 @@ import org.feichtmeier.genericwebapp.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
 @Service
- // TODO: WIP
-public class UserService {
+public class UserService implements DataService<User> {
     
-    private List<User> users;
     private UserRepository userRepository;
 
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
-    // Create
+    @Override
+    public List<User> findAll() {
+        return userRepository.findAll();
+    }
 
-    // Update
+    @Override
+    public void save(User entity) {
+        userRepository.save(entity);
+    }
 
-    // Delete
+    @Override
+    public void delete(User entity) {
+        userRepository.delete(entity);
+    }
     
 }

@@ -19,8 +19,8 @@ import com.vaadin.flow.spring.annotation.VaadinSessionScope;
 import org.apache.commons.lang3.StringUtils;
 import org.feichtmeier.genericwebapp.entity.Permission;
 import org.feichtmeier.genericwebapp.entity.Role;
-import org.feichtmeier.genericwebapp.repository.PermissionRepository;
-import org.feichtmeier.genericwebapp.repository.RoleRepository;
+import org.feichtmeier.genericwebapp.service.PermissionService;
+import org.feichtmeier.genericwebapp.service.RoleService;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Component;
 
@@ -47,15 +47,15 @@ public class RoleView extends AbstractView {
     private final MultiSelectListBox<Permission> dialogPermissionListBox;
     // Data Fields
     private Role currentEntity;
-    private final RoleRepository roleRepository;
-    private final PermissionRepository permissionRepository;
+    private final RoleService roleService;
+    private final PermissionService permissionService;
     private List<Role> roles;
     private List<Permission> permissions;
 
-    public RoleView(RoleRepository roleRepository, PermissionRepository permissionRepository) {
+    public RoleView(RoleService roleService, PermissionService permissionService) {
         // Data
-        this.permissionRepository = permissionRepository;
-        this.roleRepository = roleRepository;
+        this.permissionService = permissionService;
+        this.roleService = roleService;
         roleBinder = new Binder<>(Role.class);
         // View Top
         viewTopLayout = new HorizontalLayout();
@@ -90,8 +90,7 @@ public class RoleView extends AbstractView {
         // Dialog bottom
         dialogSaveButton = new Button("", VaadinIcon.CHECK.create(), e -> {
             if (roleBinder.validate().isOk()) {
-                // TODO: move to service
-                roleRepository.save(currentEntity);
+                roleService.save(currentEntity);
                 createNotification("Saved Role " + currentEntity.getName());
                 goBackToView();
             } else {
@@ -102,8 +101,7 @@ public class RoleView extends AbstractView {
             goBackToView();
         });
         dialogDeleteButton = new Button("", VaadinIcon.TRASH.create(), e -> {
-            // TODO: move to service
-            roleRepository.delete(currentEntity);
+            roleService.delete(currentEntity);
             createNotification("Deleted " + currentEntity.getName());
             goBackToView();
         });
@@ -144,7 +142,6 @@ public class RoleView extends AbstractView {
         refreshRoles();
         refreshPermissions();
         viewRoleFilter.clear();
-        // TODO: refresh users!
     }
 
     private void listEntities(String filterText) {
@@ -169,15 +166,13 @@ public class RoleView extends AbstractView {
         }
     }
 
-    // TODO: move to service
     private void refreshRoles() {
-        roles = roleRepository.findAll();
+        roles = roleService.findAll();
         viewRoleGrid.setItems(roles);
     }
 
-    // TODO: move to service
     private void refreshPermissions() {
-        permissions = permissionRepository.findAll();
+        permissions = permissionService.findAll();
         dialogPermissionListBox.setItems(permissions);
     }
 

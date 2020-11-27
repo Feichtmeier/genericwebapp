@@ -22,8 +22,8 @@ import com.vaadin.flow.spring.annotation.VaadinSessionScope;
 import org.apache.commons.lang3.StringUtils;
 import org.feichtmeier.genericwebapp.entity.Role;
 import org.feichtmeier.genericwebapp.entity.User;
-import org.feichtmeier.genericwebapp.repository.RoleRepository;
-import org.feichtmeier.genericwebapp.repository.UserRepository;
+import org.feichtmeier.genericwebapp.service.RoleService;
+import org.feichtmeier.genericwebapp.service.UserService;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -53,16 +53,16 @@ public class UserView extends AbstractView {
     private final MultiSelectListBox<Role> dialogRolesListBox;
     private final Label dialogRolesLabel;
     // Data Fields
-    private UserRepository userRepository;
-    private RoleRepository roleRepository;
+    private UserService userService;
+    private RoleService roleService;
     private List<User> users;
     private List<Role> roles;
     private User currentUser;
 
-    public UserView(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder) {
+    public UserView(UserService userService, RoleService roleService, PasswordEncoder passwordEncoder) {
         // Data
-        this.userRepository = userRepository;
-        this.roleRepository = roleRepository;
+        this.userService = userService;
+        this.roleService = roleService;
         userBinder = new Binder<>(User.class);
         // View Top
         viewUserFilter = new TextField("", "Search ...");
@@ -102,8 +102,7 @@ public class UserView extends AbstractView {
         // Dialog Bottom
         dialogSaveButton = new Button("", VaadinIcon.CHECK.create(), e -> {
             if (userBinder.validate().isOk()) {
-                // TODO: move to service
-                userRepository.save(currentUser);
+                userService.save(currentUser);
                 createNotification("Saved User: " + currentUser.getFullName());
 
                 goBackToView();
@@ -115,8 +114,7 @@ public class UserView extends AbstractView {
             goBackToView();
         });
         dialogDeleteButton = new Button("", VaadinIcon.TRASH.create(), e -> {
-            // TODO: move to service
-            userRepository.delete(currentUser);
+            userService.delete(currentUser);
             createNotification("Deleted User: " + currentUser.getFullName());
 
             goBackToView();
@@ -173,15 +171,13 @@ public class UserView extends AbstractView {
 
     }
 
-    // TODO: move to service, do not connect to db so often
     private void refreshUsers() {
-        users = userRepository.findAll();
+        users = userService.findAll();
         viewUserGrid.setItems(users);
     }
 
-    // TODO: move to service
     private void refreshRoles() {
-        roles = roleRepository.findAll();
+        roles = roleService.findAll();
         dialogRolesListBox.setItems(roles);
     }
 
