@@ -12,6 +12,10 @@ TODO:
 
 This is a mobile ready, responsive, persistent, generic webapp built with [Spring Boot](https://github.com/spring-projects/spring-boot) and [Vaadin](https://github.com/vaadin/).
 
+![](showcaseassets/mobile.gif)
+
+![](showcaseassets/desktop.gif)
+
 ## Use case
 
 This webapp is not meant to be used in production and needs to be extended for individual use cases. It provides a basic user, permission and role management.
