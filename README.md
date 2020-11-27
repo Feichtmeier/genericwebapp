@@ -52,3 +52,4 @@ The login is secured via Spring Security, which currently disallows API calls.
 11. start your local database
 12. Open your local clone of the repository with vscode and press the play button in the spring-boot dashboard
     ![](showcaseassets/start.gif)
+13. Navigate to `localhost:8080` in your browser to access the webapp
