@@ -30,66 +30,65 @@ import org.springframework.stereotype.Component;
 public class RoleView extends AbstractView {
 
     private static final long serialVersionUID = 1L;
-
-    private final Grid<Role> roleGrid;
+    // UI Fields
+    private final Grid<Role> viewRoleGrid;
     private final Dialog roleEditorDialog;
-    private final Button newRoleButton;
-    private final TextField roleFilter;
+    private final Button viewNewRoleButton;
+    private final TextField viewRoleFilter;
     private final HorizontalLayout viewTopLayout;
     private final VerticalLayout viewScrollLayout;
-    private Role currentEntity;
-    private final VerticalLayout topLayout;
-    private final HorizontalLayout bottomLayout;
+    private final VerticalLayout dialogTopLayout;
+    private final HorizontalLayout dialogBottomLayout;
     private final VerticalLayout dialogBody;
     private final Binder<Role> roleBinder;
-    private final Button saveButton, cancelButton, deleteButton;
+    private final Button dialogSaveButton, dialogCancelButton, dialogDeleteButton;
+    private final TextField dialogNameTextField;
+    private final Label dialogPermissionLabel;
+    private final MultiSelectListBox<Permission> dialogPermissionListBox;
+    // Data Fields
+    private Role currentEntity;
     private final RoleRepository roleRepository;
-
-    private final TextField name;
-    private final Label permissionLabel;
-    private final MultiSelectListBox<Permission> permissionListBox;
-
     private final PermissionRepository permissionRepository;
-
     private List<Role> roles;
-
     private List<Permission> permissions;
 
     public RoleView(RoleRepository roleRepository, PermissionRepository permissionRepository) {
+        // Data
         this.permissionRepository = permissionRepository;
         this.roleRepository = roleRepository;
-
-        roleEditorDialog = new Dialog();
-
+        roleBinder = new Binder<>(Role.class);
+        // View Top
         viewTopLayout = new HorizontalLayout();
-        roleFilter = new TextField("", "Search ...");
-        roleFilter.setValueChangeMode(ValueChangeMode.EAGER);
-        roleFilter.addValueChangeListener(e -> listEntities(e.getValue()));
-
-        
-        roleGrid = new Grid<>(Role.class);
-        roleGrid.removeAllColumns();
-        roleGrid.addColumn("name");
-        refreshRoles();
-
-        newRoleButton = new Button(VaadinIcon.PLUS.create(), e -> {
+        viewRoleFilter = new TextField("", "Search ...");
+        viewRoleFilter.setValueChangeMode(ValueChangeMode.EAGER);
+        viewRoleFilter.addValueChangeListener(e -> listEntities(e.getValue()));
+        viewNewRoleButton = new Button(VaadinIcon.PLUS.create(), e -> {
             editEntity(new Role(""));
         });
-
-        viewTopLayout.add(newRoleButton, roleFilter);
-
-        roleGrid.asSingleSelect().addValueChangeListener(event -> {
+        viewTopLayout.add(viewNewRoleButton, viewRoleFilter);
+        // View Bottom
+        viewRoleGrid = new Grid<>(Role.class);
+        viewRoleGrid.removeAllColumns();
+        viewRoleGrid.addColumn("name");
+        refreshRoles();
+        viewRoleGrid.asSingleSelect().addValueChangeListener(event -> {
             editEntity(event.getValue());
         });
-
         viewScrollLayout = new VerticalLayout();
-        viewScrollLayout.add(roleGrid);
-
+        viewScrollLayout.add(viewRoleGrid);
+        // Add to view
         this.add(viewTopLayout, viewScrollLayout);
-
-        roleBinder = new Binder<>(Role.class);
-
-        saveButton = new Button("", VaadinIcon.CHECK.create(), e -> {
+        // Edit Dialog
+        roleEditorDialog = new Dialog();
+        // Dialog top
+        dialogTopLayout = new VerticalLayout();
+        dialogNameTextField = new TextField("");
+        dialogNameTextField.setLabel("Name of the role");
+        dialogPermissionListBox = new MultiSelectListBox<>();
+        dialogPermissionLabel = new Label("Allowed views");
+        dialogTopLayout.add(dialogNameTextField, dialogPermissionLabel, dialogPermissionListBox);
+        // Dialog bottom
+        dialogSaveButton = new Button("", VaadinIcon.CHECK.create(), e -> {
             if (roleBinder.validate().isOk()) {
                 // TODO: move to service
                 roleRepository.save(currentEntity);
@@ -99,44 +98,32 @@ public class RoleView extends AbstractView {
                 createNotification("NOT saved Role " + currentEntity.getName());
             }
         });
-
-        cancelButton = new Button("", VaadinIcon.CLOSE.create(), e -> {
+        dialogCancelButton = new Button("", VaadinIcon.CLOSE.create(), e -> {
             goBackToView();
         });
-
-        deleteButton = new Button("", VaadinIcon.TRASH.create(), e -> {
+        dialogDeleteButton = new Button("", VaadinIcon.TRASH.create(), e -> {
             // TODO: move to service
             roleRepository.delete(currentEntity);
             createNotification("Deleted " + currentEntity.getName());
             goBackToView();
         });
-
-        bottomLayout = new HorizontalLayout(saveButton, cancelButton, deleteButton);
-
-        topLayout = new VerticalLayout();
-
-        dialogBody = new VerticalLayout(topLayout, bottomLayout);
-
+        dialogBottomLayout = new HorizontalLayout(dialogSaveButton, dialogCancelButton, dialogDeleteButton);
+        // Add to dialog
+        dialogBody = new VerticalLayout(dialogTopLayout, dialogBottomLayout);
         roleEditorDialog.add(dialogBody);
         roleEditorDialog.setCloseOnEsc(false);
         roleEditorDialog.setCloseOnOutsideClick(false);
-
-        name = new TextField("");
-        name.setLabel("Name of the role");
-
-        permissionListBox = new MultiSelectListBox<>();
-        permissionLabel = new Label("Allowed views");
-        topLayout.add(name, permissionLabel, permissionListBox);
-        roleBinder.forField(name).asRequired("Must chose a role name").bind(Role::getName, Role::setName);
-
-        permissionListBox.addSelectionListener(e -> {
+        // Bind data in dialog
+        roleBinder.forField(dialogNameTextField).asRequired("Must chose a role name").bind(Role::getName,
+                Role::setName);
+        dialogPermissionListBox.addSelectionListener(e -> {
             currentEntity.setPermissions(e.getValue());
         });
 
         applyStyling();
     }
 
-    public void editEntity(Role entity) {        
+    public void editEntity(Role entity) {
         if (entity == null) {
             roleEditorDialog.close();
             return;
@@ -147,22 +134,24 @@ public class RoleView extends AbstractView {
 
         refreshPermissions();
         if (null != currentEntity.getPermissions()) {
-            permissionListBox.select(this.currentEntity.getPermissions());
+            dialogPermissionListBox.select(this.currentEntity.getPermissions());
         }
     }
 
     private void goBackToView() {
-        permissionListBox.deselectAll();
+        dialogPermissionListBox.deselectAll();
         roleEditorDialog.close();
         refreshRoles();
         refreshPermissions();
+        viewRoleFilter.clear();
+        // TODO: refresh users!
     }
 
     private void listEntities(String filterText) {
         if (StringUtils.isEmpty(filterText)) {
-            roleGrid.setItems(roles);
+            viewRoleGrid.setItems(roles);
         } else {
-            roleGrid.setItems(listRolesByName(filterText, roles));
+            viewRoleGrid.setItems(listRolesByName(filterText, roles));
         }
     }
 
@@ -183,70 +172,64 @@ public class RoleView extends AbstractView {
     // TODO: move to service
     private void refreshRoles() {
         roles = roleRepository.findAll();
-        roleGrid.setItems(roles);
+        viewRoleGrid.setItems(roles);
     }
+
     // TODO: move to service
     private void refreshPermissions() {
         permissions = permissionRepository.findAll();
-        permissionListBox.setItems(permissions);
-    }
-
-    public Grid<Role> createGrid() {
-        Grid<Role> roleGrid = new Grid<>(Role.class);
-        roleGrid.removeAllColumns();
-        roleGrid.addColumn("name");
-        return roleGrid;
+        dialogPermissionListBox.setItems(permissions);
     }
 
     @Override
     public void applyStyling() {
         setSizeFull();
-        roleFilter.setMinWidth("7em");
-        roleFilter.getStyle().set("flex-grow", "1");
-        roleGrid.setHeightByRows(true);
+        viewRoleFilter.setMinWidth("7em");
+        viewRoleFilter.getStyle().set("flex-grow", "1");
+        viewRoleGrid.setHeightByRows(true);
         viewScrollLayout.setWidthFull();
         viewScrollLayout.setHeight(null);
         viewScrollLayout.getStyle().set("overflow-y", "auto");
         viewScrollLayout.getStyle().set("padding", "0");
-        roleGrid.getStyle().set("overflow-y", "auto");
+        viewRoleGrid.getStyle().set("overflow-y", "auto");
         dialogBody.setHeightFull();
         dialogBody.setPadding(false);
         dialogBody.setMargin(false);
         viewTopLayout.setWidthFull();
         viewTopLayout.getStyle().set("display", "flex");
         viewTopLayout.getStyle().set("flex-direction", "row");
-        newRoleButton.getStyle().set("flex-grow", "0");
-        newRoleButton.getElement().getThemeList().add("primary");
+        viewNewRoleButton.getStyle().set("flex-grow", "0");
+        viewNewRoleButton.getElement().getThemeList().add("primary");
         setAlignItems(Alignment.CENTER);
         roleEditorDialog.setHeight(null);
-        saveButton.getElement().getThemeList().add("primary");
-        saveButton.getStyle().set("flex-grow", "1");
-        saveButton.getStyle().set("margin-top", "0");
-        saveButton.getStyle().set("margin-bottom", "0");
-        cancelButton.getStyle().set("flex-grow", "1");
-        cancelButton.getStyle().set("margin-top", "0");
-        cancelButton.getStyle().set("margin-bottom", "0");
-        deleteButton.getElement().getThemeList().add("error");
-        deleteButton.getStyle().set("flex-grow", "1");
-        deleteButton.getStyle().set("margin-top", "0");
-        deleteButton.getStyle().set("margin-bottom", "0");
-        bottomLayout.setAlignItems(Alignment.CENTER);
-        bottomLayout.setWidthFull();
-        bottomLayout.getStyle().set("flex-grow", "0");
-        topLayout.setPadding(false);
-        topLayout.getStyle().set("flex-grow", "1");
-        topLayout.setWidthFull();
-        topLayout.setHeight(null);
-        topLayout.getStyle().set("overflow-y", "auto");
-        topLayout.setPadding(false);
-        topLayout.setMargin(false);
-        name.setWidthFull();
-        permissionLabel.setWidthFull();
-        permissionLabel.getStyle().set("margin-top", "10px");
-        permissionLabel.getStyle().set("font-size", "0.875rem");
-        permissionLabel.getStyle().set("color", "var(--lumo-primary-color)");
-        permissionLabel.getStyle().set("font-weight", "bold");
-        permissionListBox.setWidthFull();
+        dialogSaveButton.getElement().getThemeList().add("primary");
+        dialogSaveButton.getStyle().set("flex-grow", "1");
+        dialogSaveButton.getStyle().set("margin-top", "0");
+        dialogSaveButton.getStyle().set("margin-bottom", "0");
+        dialogCancelButton.getStyle().set("flex-grow", "1");
+        dialogCancelButton.getStyle().set("margin-top", "0");
+        dialogCancelButton.getStyle().set("margin-bottom", "0");
+        dialogDeleteButton.getElement().getThemeList().add("error");
+        dialogDeleteButton.getStyle().set("flex-grow", "1");
+        dialogDeleteButton.getStyle().set("margin-top", "0");
+        dialogDeleteButton.getStyle().set("margin-bottom", "0");
+        dialogBottomLayout.setAlignItems(Alignment.CENTER);
+        dialogBottomLayout.setWidthFull();
+        dialogBottomLayout.getStyle().set("flex-grow", "0");
+        dialogTopLayout.setPadding(false);
+        dialogTopLayout.getStyle().set("flex-grow", "1");
+        dialogTopLayout.setWidthFull();
+        dialogTopLayout.setHeight(null);
+        dialogTopLayout.getStyle().set("overflow-y", "auto");
+        dialogTopLayout.setPadding(false);
+        dialogTopLayout.setMargin(false);
+        dialogNameTextField.setWidthFull();
+        dialogPermissionLabel.setWidthFull();
+        dialogPermissionLabel.getStyle().set("margin-top", "10px");
+        dialogPermissionLabel.getStyle().set("font-size", "0.875rem");
+        dialogPermissionLabel.getStyle().set("color", "var(--lumo-primary-color)");
+        dialogPermissionLabel.getStyle().set("font-weight", "bold");
+        dialogPermissionListBox.setWidthFull();
     }
 
 }

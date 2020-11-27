@@ -34,135 +34,126 @@ import org.springframework.stereotype.Component;
 public class UserView extends AbstractView {
 
     private static final long serialVersionUID = 7368213324544313846L;
-
-    private final Grid<User> userGrid;
-    private final Button newUserButton;
-    private final TextField userFilter;
+    // UI Fields
+    private final Grid<User> viewUserGrid;
+    private final Button viewNewUserButton;
+    private final TextField viewUserFilter;
     private final HorizontalLayout viewTopLayout;
     private final VerticalLayout viewScrollLayout;
-
-    private UserRepository userRepository;
-
-    private User currentUser;
+    private Dialog userEditorDialog;
     private final VerticalLayout dialogTopLayout;
     private final HorizontalLayout dialogBottomLayout;
     private final VerticalLayout dialogBody;
     private final Binder<User> userBinder;
-    private final Button saveButton, cancelButton, deleteButton;
-
-    private final TextField fullName;
-    private final TextField username;
-    private final EmailField email;
-    private final PasswordField password;
-    private final MultiSelectListBox<Role> rolesListBox;
-    private final Label rolesLabel;
+    private final Button dialogSaveButton, dialogCancelButton, dialogDeleteButton;
+    private final TextField dialogFullNameTextField;
+    private final TextField dialogUsernameTextField;
+    private final EmailField dialogEmailTextField;
+    private final PasswordField dialogPasswordTextField;
+    private final MultiSelectListBox<Role> dialogRolesListBox;
+    private final Label dialogRolesLabel;
+    // Data Fields
+    private UserRepository userRepository;
     private RoleRepository roleRepository;
-
-    private Dialog userEditorDialog;
-
     private List<User> users;
     private List<Role> roles;
+    private User currentUser;
 
     public UserView(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder) {
+        // Data
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
-
-        userEditorDialog = new Dialog();
-
-        userFilter = new TextField("", "Search ...");
-        userFilter.setValueChangeMode(ValueChangeMode.EAGER);
-        userFilter.addValueChangeListener(e -> listEntities(e.getValue()));
-
-        newUserButton = new Button(VaadinIcon.PLUS.create(), e -> {
+        userBinder = new Binder<>(User.class);
+        // View Top
+        viewUserFilter = new TextField("", "Search ...");
+        viewUserFilter.setValueChangeMode(ValueChangeMode.EAGER);
+        viewUserFilter.addValueChangeListener(e -> listEntities(e.getValue()));
+        viewNewUserButton = new Button(VaadinIcon.PLUS.create(), e -> {
             editEntity(new User("", ""));
         });
-
         viewTopLayout = new HorizontalLayout();
-        viewTopLayout.add(newUserButton, userFilter);
-
-        userGrid = new Grid<>(User.class);
-        userGrid.removeAllColumns();
-        userGrid.addColumns("username", "fullName");
+        viewTopLayout.add(viewNewUserButton, viewUserFilter);
+        // View Bottom
+        viewUserGrid = new Grid<>(User.class);
+        viewUserGrid.removeAllColumns();
+        viewUserGrid.addColumns("username", "fullName");
         refreshUsers();
-
-        userGrid.asSingleSelect().addValueChangeListener(event -> {
+        viewUserGrid.asSingleSelect().addValueChangeListener(event -> {
             editEntity(event.getValue());
         });
-        viewScrollLayout = new VerticalLayout(userGrid);
-
+        viewScrollLayout = new VerticalLayout(viewUserGrid);
+        // Add to view
         add(viewTopLayout, viewScrollLayout);
-
-        userBinder = new Binder<>(User.class);
-
-        saveButton = new Button("", VaadinIcon.CHECK.create(), e -> {
+        // Dialog
+        userEditorDialog = new Dialog();
+        // Dialog Top
+        dialogFullNameTextField = new TextField("");
+        dialogUsernameTextField = new TextField("");
+        dialogEmailTextField = new EmailField("");
+        dialogPasswordTextField = new PasswordField("");
+        dialogRolesLabel = new Label("Roles");
+        dialogRolesListBox = new MultiSelectListBox<>();
+        dialogRolesListBox.addSelectionListener(e -> {
+            currentUser.setRoles(e.getValue());
+        });
+        dialogTopLayout = new VerticalLayout();
+        dialogTopLayout.add(dialogFullNameTextField, dialogUsernameTextField, dialogEmailTextField,
+                dialogPasswordTextField, dialogRolesLabel, dialogRolesListBox);
+        // Dialog Bottom
+        dialogSaveButton = new Button("", VaadinIcon.CHECK.create(), e -> {
             if (userBinder.validate().isOk()) {
                 // TODO: move to service
                 userRepository.save(currentUser);
                 createNotification("Saved User: " + currentUser.getFullName());
-                
+
                 goBackToView();
             } else {
                 createNotification("NOT saved User: " + currentUser.getFullName());
             }
         });
-
-        cancelButton = new Button("", VaadinIcon.CLOSE.create(), e -> {
+        dialogCancelButton = new Button("", VaadinIcon.CLOSE.create(), e -> {
             goBackToView();
         });
-
-        deleteButton = new Button("", VaadinIcon.TRASH.create(), e -> {
+        dialogDeleteButton = new Button("", VaadinIcon.TRASH.create(), e -> {
             // TODO: move to service
             userRepository.delete(currentUser);
             createNotification("Deleted User: " + currentUser.getFullName());
-            
+
             goBackToView();
         });
-
-        dialogBottomLayout = new HorizontalLayout(saveButton, cancelButton, deleteButton);
-        dialogTopLayout = new VerticalLayout();
+        dialogBottomLayout = new HorizontalLayout(dialogSaveButton, dialogCancelButton, dialogDeleteButton);
+        // Add to dialog
         dialogBody = new VerticalLayout(dialogTopLayout, dialogBottomLayout);
-
         userEditorDialog.add(dialogBody);
         userEditorDialog.setCloseOnEsc(false);
         userEditorDialog.setCloseOnOutsideClick(false);
-
-        fullName = new TextField("");
-        username = new TextField("");
-        email = new EmailField("");
-        password = new PasswordField("");
-        rolesLabel = new Label("Roles");
-        rolesListBox = new MultiSelectListBox<>();
-        rolesListBox.addSelectionListener(e -> {
-            currentUser.setRoles(e.getValue());
-        });
-
-        userBinder.forField(fullName).asRequired("Must provide a full name")
+        // bind Data
+        userBinder.forField(dialogFullNameTextField).asRequired("Must provide a full name")
                 .withValidator(new RegexpValidator("Not a valid full name", "(?i)[a-z]+(\\s+[a-z]+)*"))
                 .bind("fullName");
 
-        userBinder.forField(username).asRequired("Must provide a username")
+        userBinder.forField(dialogUsernameTextField).asRequired("Must provide a username")
                 .withValidator(new RegexpValidator("Not a valid username", "^[a-zA-Z0-9]+$")).bind("username");
 
-        userBinder.forField(password).asRequired("Password is not allowed to be empty")
+        userBinder.forField(dialogPasswordTextField).asRequired("Password is not allowed to be empty")
                 .withValidator(pass -> pass.matches("^(|(?=.*\\d)(?=.*[a-z])(?=.*[A-Z]).{6,})$"),
                         "need 6 or more chars, mixing digits, lowercase and uppercase letters")
-                .bind(user -> password.getEmptyValue(), (user, pass) -> {
-                    if (!password.getEmptyValue().equals(pass)) {
+                .bind(user -> dialogPasswordTextField.getEmptyValue(), (user, pass) -> {
+                    if (!dialogPasswordTextField.getEmptyValue().equals(pass)) {
                         user.setPasswordHash(passwordEncoder.encode(pass));
                     }
                 });
-        userBinder.forField(email).asRequired("Must provide an e-mail address").bind(User::getEmail, User::setEmail);
-
-        dialogTopLayout.add(fullName, username, email, password, rolesLabel, rolesListBox);
+        userBinder.forField(dialogEmailTextField).asRequired("Must provide an e-mail address").bind(User::getEmail,
+                User::setEmail);
 
         applyStyling();
     }
 
     private void listEntities(String filterText) {
         if (StringUtils.isEmpty(filterText)) {
-            userGrid.setItems(users);
+            viewUserGrid.setItems(users);
         } else {
-            userGrid.setItems(listUsersByFullName(filterText, users));
+            viewUserGrid.setItems(listUsersByFullName(filterText, users));
         }
     }
 
@@ -182,15 +173,16 @@ public class UserView extends AbstractView {
 
     }
 
-    // TODO: move to service, do not connect to  db so often
+    // TODO: move to service, do not connect to db so often
     private void refreshUsers() {
         users = userRepository.findAll();
-        userGrid.setItems(users);
+        viewUserGrid.setItems(users);
     }
+
     // TODO: move to service
     private void refreshRoles() {
         roles = roleRepository.findAll();
-        rolesListBox.setItems(roles);
+        dialogRolesListBox.setItems(roles);
     }
 
     public void editEntity(User entity) {
@@ -203,50 +195,52 @@ public class UserView extends AbstractView {
         this.currentUser = entity;
         userBinder.setBean(currentUser);
 
-        refreshRoles();        
+        refreshRoles();
         if (null != currentUser.getRoles()) {
-            rolesListBox.select(this.currentUser.getRoles());
+            dialogRolesListBox.select(this.currentUser.getRoles());
         }
     }
 
     private void goBackToView() {
-        rolesListBox.deselectAll();
-        userGrid.deselectAll();
+        dialogRolesListBox.deselectAll();
+        viewUserGrid.deselectAll();
         userEditorDialog.close();
         refreshUsers();
+        refreshRoles();
+        viewUserFilter.clear();
     }
 
     @Override
     public void applyStyling() {
         this.setSizeFull();
-        userFilter.setMinWidth("7em");
-        userFilter.getStyle().set("flex-grow", "1");
+        viewUserFilter.setMinWidth("7em");
+        viewUserFilter.getStyle().set("flex-grow", "1");
         viewTopLayout.setWidthFull();
-        userGrid.setHeightByRows(true);
+        viewUserGrid.setHeightByRows(true);
         viewScrollLayout.setWidthFull();
         viewScrollLayout.setHeight(null);
         viewScrollLayout.getStyle().set("overflow-y", "auto");
         viewScrollLayout.getStyle().set("padding", "0");
-        userGrid.getStyle().set("overflow-y", "auto");
+        viewUserGrid.getStyle().set("overflow-y", "auto");
         viewTopLayout.getStyle().set("display", "flex");
         viewTopLayout.getStyle().set("flex-direction", "row");
-        newUserButton.getStyle().set("flex-grow", "0");
-        newUserButton.getElement().getThemeList().add("primary");
+        viewNewUserButton.getStyle().set("flex-grow", "0");
+        viewNewUserButton.getElement().getThemeList().add("primary");
         this.setAlignItems(Alignment.CENTER);
 
-        saveButton.getElement().getThemeList().add("primary");
-        saveButton.getStyle().set("flex-grow", "1");
-        saveButton.getStyle().set("margin-top", "0");
-        saveButton.getStyle().set("margin-bottom", "0");
+        dialogSaveButton.getElement().getThemeList().add("primary");
+        dialogSaveButton.getStyle().set("flex-grow", "1");
+        dialogSaveButton.getStyle().set("margin-top", "0");
+        dialogSaveButton.getStyle().set("margin-bottom", "0");
 
-        cancelButton.getStyle().set("flex-grow", "1");
-        cancelButton.getStyle().set("margin-top", "0");
-        cancelButton.getStyle().set("margin-bottom", "0");
+        dialogCancelButton.getStyle().set("flex-grow", "1");
+        dialogCancelButton.getStyle().set("margin-top", "0");
+        dialogCancelButton.getStyle().set("margin-bottom", "0");
 
-        deleteButton.getElement().getThemeList().add("error");
-        deleteButton.getStyle().set("flex-grow", "1");
-        deleteButton.getStyle().set("margin-top", "0");
-        deleteButton.getStyle().set("margin-bottom", "0");
+        dialogDeleteButton.getElement().getThemeList().add("error");
+        dialogDeleteButton.getStyle().set("flex-grow", "1");
+        dialogDeleteButton.getStyle().set("margin-top", "0");
+        dialogDeleteButton.getStyle().set("margin-bottom", "0");
 
         dialogBottomLayout.setAlignItems(Alignment.CENTER);
         dialogBottomLayout.setWidthFull();
@@ -264,34 +258,34 @@ public class UserView extends AbstractView {
         dialogBody.setPadding(false);
         dialogBody.setMargin(false);
 
-        fullName.setLabel("Full Name");
-        fullName.setWidthFull();
-        fullName.getStyle().set("paddin-top", "0");
-        fullName.getStyle().set("margin-top", "0");
-        fullName.getStyle().set("margin-bottom", "0");
+        dialogFullNameTextField.setLabel("Full Name");
+        dialogFullNameTextField.setWidthFull();
+        dialogFullNameTextField.getStyle().set("paddin-top", "0");
+        dialogFullNameTextField.getStyle().set("margin-top", "0");
+        dialogFullNameTextField.getStyle().set("margin-bottom", "0");
 
-        username.setLabel("Username");
-        username.setWidthFull();
-        username.getStyle().set("margin-top", "0");
-        username.getStyle().set("margin-bottom", "0");
+        dialogUsernameTextField.setLabel("Username");
+        dialogUsernameTextField.setWidthFull();
+        dialogUsernameTextField.getStyle().set("margin-top", "0");
+        dialogUsernameTextField.getStyle().set("margin-bottom", "0");
 
-        email.setLabel("E-Mail");
-        email.setWidthFull();
-        email.getStyle().set("margin-top", "0");
-        email.getStyle().set("margin-bottom", "0");
+        dialogEmailTextField.setLabel("E-Mail");
+        dialogEmailTextField.setWidthFull();
+        dialogEmailTextField.getStyle().set("margin-top", "0");
+        dialogEmailTextField.getStyle().set("margin-bottom", "0");
 
-        password.setLabel("Password");
-        password.setWidthFull();
-        password.getStyle().set("margin-top", "0");
-        password.getStyle().set("margin-bottom", "0");
+        dialogPasswordTextField.setLabel("Password");
+        dialogPasswordTextField.setWidthFull();
+        dialogPasswordTextField.getStyle().set("margin-top", "0");
+        dialogPasswordTextField.getStyle().set("margin-bottom", "0");
 
-        rolesLabel.setWidthFull();
-        rolesLabel.getStyle().set("margin-top", "10px");
-        rolesLabel.getStyle().set("font-size", "0.875rem");
-        rolesLabel.getStyle().set("color", "var(--lumo-primary-color)");
-        rolesLabel.getStyle().set("font-weight", "bold");
+        dialogRolesLabel.setWidthFull();
+        dialogRolesLabel.getStyle().set("margin-top", "10px");
+        dialogRolesLabel.getStyle().set("font-size", "0.875rem");
+        dialogRolesLabel.getStyle().set("color", "var(--lumo-primary-color)");
+        dialogRolesLabel.getStyle().set("font-weight", "bold");
 
-        rolesListBox.setWidthFull();
+        dialogRolesListBox.setWidthFull();
 
         userEditorDialog.setHeight(null);
     }
