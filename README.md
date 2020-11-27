@@ -42,8 +42,13 @@ The login is secured via Spring Security, which currently disallows API calls.
    * Ubuntu: `sudo snap install code --classic`
 5. Install the vscode java extension pack: https://marketplace.visualstudio.com/items?itemName=vscjava.vscode-java-pack
 6. Install the vscode spring boot extension pack: https://marketplace.visualstudio.com/items?itemName=Pivotal.vscode-boot-dev-pack
-7. Install git
+7. Setup a local database and database user ([Tutorial](https://github.com/hs-duesseldorf/se2rest#2-database))
+8. Change `application.properties` to match your database/user/password
+9. Install git
    * Windows: https://git-scm.com/download
    * MacOs: `brew install git`
    * Ubuntu: `sudo apt install git`
-8. clone this repository & open in vscode and press the play button in the spring-boot dashboard
+10. clone this repository with `git clone https://github.com/Feichtmeier/genericwebapp`
+11. start your local database
+12. Open your local clone of the repository with vscode and press the play button in the spring-boot dashboard
+    ![](showcaseassets/start.gif)
