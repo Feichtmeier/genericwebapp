@@ -22,6 +22,7 @@ import com.vaadin.flow.spring.annotation.VaadinSessionScope;
 import org.apache.commons.lang3.StringUtils;
 import org.feichtmeier.genericwebapp.entity.Role;
 import org.feichtmeier.genericwebapp.entity.User;
+import org.feichtmeier.genericwebapp.security.SecurityUtils;
 import org.feichtmeier.genericwebapp.service.RoleService;
 import org.feichtmeier.genericwebapp.service.UserService;
 import org.springframework.security.access.annotation.Secured;
@@ -104,7 +105,6 @@ public class UserView extends AbstractView {
             if (userBinder.validate().isOk()) {
                 userService.save(currentUser);
                 createNotification("Saved User: " + currentUser.getFullName());
-
                 goBackToView();
             } else {
                 createNotification("NOT saved User: " + currentUser.getFullName());
@@ -114,10 +114,13 @@ public class UserView extends AbstractView {
             goBackToView();
         });
         dialogDeleteButton = new Button("", VaadinIcon.TRASH.create(), e -> {
-            userService.delete(currentUser);
-            createNotification("Deleted User: " + currentUser.getFullName());
-
-            goBackToView();
+            if (!SecurityUtils.getUsername().equals(currentUser.getUsername())) {
+                userService.delete(currentUser);
+                createNotification("Deleted User: " + currentUser.getFullName());
+                goBackToView();
+            } else {
+                createNotification("You can't delete your own user here, " + currentUser.getFullName());
+            }            
         });
         dialogBottomLayout = new HorizontalLayout(dialogSaveButton, dialogCancelButton, dialogDeleteButton);
         // Add to dialog
