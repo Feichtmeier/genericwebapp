@@ -1,0 +1,28 @@
+spring:
+    jpa:
+        hibernate:
+            ddl-auto: create-drop
+    datasource:
+        url: jdbc:mysql://localhost:3306/genericwebapp?serverTimezone=Europe/Berlin
+        username: genericwebapp
+        password: genericwebapp
+    jackson:
+        serialization:
+            fail-on-empty-beans: false
+
+    servlet:
+        multipart:
+            max-file-size: 10MB
+            max-request-size: 10MB
+
+    data:
+        rest:
+            base-path: /api
+
+    security:
+        user:
+            name: user
+            password: password
+
+server:
+  port: 1337

@@ -1,9 +1,9 @@
-package org.feichtmeier.genericwebapp.controller;
+package org.feichtmeier.restapi.controller;
 
 import java.util.List;
 
-import org.feichtmeier.genericwebapp.entity.AbstractEntity;
-import org.feichtmeier.genericwebapp.repository.GenericRepository;
+import org.feichtmeier.restapi.entity.AbstractEntity;
+import org.feichtmeier.restapi.repository.GenericRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;

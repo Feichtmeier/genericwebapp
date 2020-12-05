@@ -1,6 +1,6 @@
-package org.feichtmeier.genericwebapp.controller;
+package org.feichtmeier.restapi.controller;
 
-import org.feichtmeier.genericwebapp.entity.Permission;
+import org.feichtmeier.restapi.entity.Permission;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
