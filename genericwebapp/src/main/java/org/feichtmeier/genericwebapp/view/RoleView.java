@@ -30,7 +30,7 @@ import org.springframework.stereotype.Component;
 @Component
 @VaadinSessionScope
 @Secured(ViewNames.ROLE_VIEW)
-public class RoleView extends VerticalLayout implements Styleable {
+public class RoleView extends VerticalLayout {
 
     private static final long serialVersionUID = 1L;
     // UI Fields
@@ -180,7 +180,7 @@ public class RoleView extends VerticalLayout implements Styleable {
         dialogPermissionListBox.setItems(permissions);
     }
 
-    @Override
+    // TODO: move to css
     public void applyStyling() {
         setSizeFull();
         viewRoleFilter.setMinWidth("7em");

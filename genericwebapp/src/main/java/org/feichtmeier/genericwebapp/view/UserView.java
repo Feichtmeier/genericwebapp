@@ -35,7 +35,7 @@ import org.springframework.stereotype.Component;
 @Component
 @Secured(ViewNames.USER_VIEW)
 @VaadinSessionScope
-public class UserView extends VerticalLayout implements Styleable {
+public class UserView extends VerticalLayout {
 
     private static final long serialVersionUID = 7368213324544313846L;
     // UI Fields
@@ -213,7 +213,7 @@ public class UserView extends VerticalLayout implements Styleable {
         viewUserFilter.clear();
     }
 
-    @Override
+    // TODO: move to CSS
     public void applyStyling() {
         this.setSizeFull();
         viewUserFilter.setMinWidth("7em");
