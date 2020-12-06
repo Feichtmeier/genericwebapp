@@ -13,7 +13,7 @@ import org.feichtmeier.genericwebapp.repository.PermissionRepository;
 import org.feichtmeier.genericwebapp.repository.RoleRepository;
 import org.feichtmeier.genericwebapp.repository.UserRepository;
 import org.feichtmeier.genericwebapp.repository.ViewRepository;
-import org.feichtmeier.genericwebapp.view.ViewNames;
+import org.feichtmeier.genericwebapp.view.constants.ViewNames;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;

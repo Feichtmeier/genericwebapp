@@ -27,6 +27,7 @@ import org.feichtmeier.genericwebapp.entity.User;
 import org.feichtmeier.genericwebapp.security.SecurityUtils;
 import org.feichtmeier.genericwebapp.service.RoleService;
 import org.feichtmeier.genericwebapp.service.UserService;
+import org.feichtmeier.genericwebapp.view.constants.ViewNames;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;

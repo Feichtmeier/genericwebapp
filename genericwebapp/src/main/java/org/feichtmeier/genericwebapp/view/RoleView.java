@@ -23,6 +23,7 @@ import org.feichtmeier.genericwebapp.entity.Permission;
 import org.feichtmeier.genericwebapp.entity.Role;
 import org.feichtmeier.genericwebapp.service.PermissionService;
 import org.feichtmeier.genericwebapp.service.RoleService;
+import org.feichtmeier.genericwebapp.view.constants.ViewNames;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Component;
 

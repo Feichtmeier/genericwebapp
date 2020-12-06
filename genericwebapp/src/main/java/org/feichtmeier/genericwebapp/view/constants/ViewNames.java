@@ -1,4 +1,4 @@
-package org.feichtmeier.genericwebapp.view;
+package org.feichtmeier.genericwebapp.view.constants;
 
 public final class ViewNames {
     

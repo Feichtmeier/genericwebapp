@@ -9,6 +9,7 @@ import com.vaadin.flow.spring.annotation.VaadinSessionScope;
 import org.feichtmeier.genericwebapp.entity.User;
 import org.feichtmeier.genericwebapp.repository.UserRepository;
 import org.feichtmeier.genericwebapp.security.SecurityUtils;
+import org.feichtmeier.genericwebapp.view.constants.ViewNames;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Component;
 
