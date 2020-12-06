@@ -7,6 +7,7 @@ import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.router.PreserveOnRefresh;
@@ -29,7 +30,7 @@ public class AppView extends AppLayout implements Styleable {
     private final Tab roleTab;
     private final Tab settingsTab;
 
-    private final Map<Tab, AbstractView> tabToViewMap;
+    private final Map<Tab, VerticalLayout> tabToViewMap;
 
     public AppView(RoleView roleView, UserView userView, HomeView homeView, SettingsView settingsView) {
 
@@ -85,7 +86,7 @@ public class AppView extends AppLayout implements Styleable {
         viewTabs.addSelectedChangeListener(event -> {
             final Tab selectedTab = event.getSelectedTab();
             final Tab previousTab = event.getPreviousTab();
-            final AbstractView view = tabToViewMap.get(selectedTab);
+            final VerticalLayout view = tabToViewMap.get(selectedTab);
             if (!selectedTab.equals(settingsTab)) {
                 setContent(view);
             } else {
@@ -109,11 +110,11 @@ public class AppView extends AppLayout implements Styleable {
 
     private void click(Tab tab) {
         viewTabs.setSelectedTab(tab);
-        final AbstractView view = tabToViewMap.get(tab);
+        final VerticalLayout view = tabToViewMap.get(tab);
         setContent(view);
     }
 
-    private Tab createTabAndLinkToView(AbstractView view, String tabText, Icon icon) {
+    private Tab createTabAndLinkToView(VerticalLayout view, String tabText, Icon icon) {
         final Tab tab = new Tab(icon);
         this.tabToViewMap.put(tab, view);
 

@@ -2,6 +2,7 @@ package org.feichtmeier.genericwebapp.view;
 
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.H2;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.spring.annotation.VaadinSessionScope;
 
 import org.feichtmeier.genericwebapp.entity.User;
@@ -13,7 +14,7 @@ import org.springframework.stereotype.Component;
 @Component
 @Secured(ViewNames.HOME_VIEW)
 @VaadinSessionScope
-public class HomeView extends AbstractView {
+public class HomeView extends VerticalLayout implements Styleable {
 
     private static final long serialVersionUID = -2333684897315095897L;
 

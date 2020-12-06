@@ -9,6 +9,7 @@ import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.listbox.MultiSelectListBox;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.EmailField;
@@ -32,7 +33,7 @@ import org.springframework.stereotype.Component;
 @Component
 @Secured(ViewNames.USER_VIEW)
 @VaadinSessionScope
-public class UserView extends AbstractView {
+public class UserView extends VerticalLayout implements Styleable {
 
     private static final long serialVersionUID = 7368213324544313846L;
     // UI Fields
@@ -104,10 +105,10 @@ public class UserView extends AbstractView {
         dialogSaveButton = new Button("", VaadinIcon.CHECK.create(), e -> {
             if (userBinder.validate().isOk()) {
                 userService.save(currentUser);
-                createNotification("Saved User: " + currentUser.getFullName());
+                Notification.show("Saved User: " + currentUser.getFullName());
                 goBackToView();
             } else {
-                createNotification("NOT saved User: " + currentUser.getFullName());
+                Notification.show("NOT saved User: " + currentUser.getFullName());
             }
         });
         dialogCancelButton = new Button("", VaadinIcon.CLOSE.create(), e -> {
@@ -116,10 +117,10 @@ public class UserView extends AbstractView {
         dialogDeleteButton = new Button("", VaadinIcon.TRASH.create(), e -> {
             if (!SecurityUtils.getUsername().equals(currentUser.getUsername())) {
                 userService.delete(currentUser);
-                createNotification("Deleted User: " + currentUser.getFullName());
+                Notification.show("Deleted User: " + currentUser.getFullName());
                 goBackToView();
             } else {
-                createNotification("You can't delete your own user here, " + currentUser.getFullName());
+                Notification.show("You can't delete your own user here, " + currentUser.getFullName());
             }            
         });
         dialogBottomLayout = new HorizontalLayout(dialogSaveButton, dialogCancelButton, dialogDeleteButton);

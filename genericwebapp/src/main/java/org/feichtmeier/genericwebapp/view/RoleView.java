@@ -9,6 +9,7 @@ import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.listbox.MultiSelectListBox;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
@@ -27,7 +28,7 @@ import org.springframework.stereotype.Component;
 @Component
 @VaadinSessionScope
 @Secured(ViewNames.ROLE_VIEW)
-public class RoleView extends AbstractView {
+public class RoleView extends VerticalLayout implements Styleable {
 
     private static final long serialVersionUID = 1L;
     // UI Fields
@@ -91,10 +92,10 @@ public class RoleView extends AbstractView {
         dialogSaveButton = new Button("", VaadinIcon.CHECK.create(), e -> {
             if (roleBinder.validate().isOk()) {
                 roleService.save(currentEntity);
-                createNotification("Saved Role " + currentEntity.getName());
+                Notification.show("Saved Role " + currentEntity.getName());
                 goBackToView();
             } else {
-                createNotification("NOT saved Role " + currentEntity.getName());
+                Notification.show("NOT saved Role " + currentEntity.getName());
             }
         });
         dialogCancelButton = new Button("", VaadinIcon.CLOSE.create(), e -> {
@@ -102,7 +103,7 @@ public class RoleView extends AbstractView {
         });
         dialogDeleteButton = new Button("", VaadinIcon.TRASH.create(), e -> {
             roleService.delete(currentEntity);
-            createNotification("Deleted " + currentEntity.getName());
+            Notification.show("Deleted " + currentEntity.getName());
             goBackToView();
         });
         dialogBottomLayout = new HorizontalLayout(dialogSaveButton, dialogCancelButton, dialogDeleteButton);

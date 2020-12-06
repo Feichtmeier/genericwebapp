@@ -3,13 +3,14 @@ package org.feichtmeier.genericwebapp.view;
 import com.vaadin.flow.component.html.Anchor;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.spring.annotation.VaadinSessionScope;
 
 import org.springframework.stereotype.Component;
 
 @VaadinSessionScope
 @Component
-public class SettingsView extends AbstractView {
+public class SettingsView extends VerticalLayout implements Styleable {
 
     private static final long serialVersionUID = 1L;
 
