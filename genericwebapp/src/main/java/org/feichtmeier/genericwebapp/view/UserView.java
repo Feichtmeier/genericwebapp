@@ -76,6 +76,7 @@ public class UserView extends VerticalLayout {
         viewNewUserButton = new Button(VaadinIcon.PLUS.create(), e -> {
             editEntity(new User("", ""));
         });
+        viewNewUserButton.getElement().getThemeList().add("primary");
         viewTopLayout = new HorizontalLayout();
         viewTopLayout.add(viewNewUserButton, viewUserFilter);
         // View Bottom
@@ -93,10 +94,11 @@ public class UserView extends VerticalLayout {
         // Dialog
         userEditorDialog = new Dialog();
         // Dialog Top
-        dialogFullNameTextField = new TextField("");
-        dialogUsernameTextField = new TextField("");
-        dialogEmailTextField = new EmailField("");
-        dialogPasswordTextField = new PasswordField("");
+
+        dialogFullNameTextField = new TextField("Full Name");
+        dialogUsernameTextField = new TextField("Username");
+        dialogEmailTextField = new EmailField("E-Mail");
+        dialogPasswordTextField = new PasswordField("Password");
         dialogRolesLabel = new Label("Roles");
         dialogRolesListBox = new MultiSelectListBox<>();
         dialogRolesListBox.addSelectionListener(e -> {
@@ -115,6 +117,7 @@ public class UserView extends VerticalLayout {
                 Notification.show("NOT saved User: " + currentUser.getFullName());
             }
         });
+        dialogSaveButton.getElement().getThemeList().add("primary");
         dialogCancelButton = new Button("", VaadinIcon.CLOSE.create(), e -> {
             goBackToView();
         });
@@ -127,6 +130,7 @@ public class UserView extends VerticalLayout {
                 Notification.show("You can't delete your own user here, " + currentUser.getFullName());
             }            
         });
+        dialogDeleteButton.getElement().getThemeList().add("error");
         dialogBottomLayout = new HorizontalLayout(dialogSaveButton, dialogCancelButton, dialogDeleteButton);
         // Add to dialog
         dialogBody = new VerticalLayout(dialogTopLayout, dialogBottomLayout);
@@ -229,10 +233,8 @@ public class UserView extends VerticalLayout {
         viewTopLayout.getStyle().set("display", "flex");
         viewTopLayout.getStyle().set("flex-direction", "row");
         viewNewUserButton.getStyle().set("flex-grow", "0");
-        viewNewUserButton.getElement().getThemeList().add("primary");
         this.setAlignItems(Alignment.CENTER);
 
-        dialogSaveButton.getElement().getThemeList().add("primary");
         dialogSaveButton.getStyle().set("flex-grow", "1");
         dialogSaveButton.getStyle().set("margin-top", "0");
         dialogSaveButton.getStyle().set("margin-bottom", "0");
@@ -241,7 +243,6 @@ public class UserView extends VerticalLayout {
         dialogCancelButton.getStyle().set("margin-top", "0");
         dialogCancelButton.getStyle().set("margin-bottom", "0");
 
-        dialogDeleteButton.getElement().getThemeList().add("error");
         dialogDeleteButton.getStyle().set("flex-grow", "1");
         dialogDeleteButton.getStyle().set("margin-top", "0");
         dialogDeleteButton.getStyle().set("margin-bottom", "0");
@@ -262,23 +263,19 @@ public class UserView extends VerticalLayout {
         dialogBody.setPadding(false);
         dialogBody.setMargin(false);
 
-        dialogFullNameTextField.setLabel("Full Name");
         dialogFullNameTextField.setWidthFull();
         dialogFullNameTextField.getStyle().set("paddin-top", "0");
         dialogFullNameTextField.getStyle().set("margin-top", "0");
         dialogFullNameTextField.getStyle().set("margin-bottom", "0");
 
-        dialogUsernameTextField.setLabel("Username");
         dialogUsernameTextField.setWidthFull();
         dialogUsernameTextField.getStyle().set("margin-top", "0");
         dialogUsernameTextField.getStyle().set("margin-bottom", "0");
 
-        dialogEmailTextField.setLabel("E-Mail");
         dialogEmailTextField.setWidthFull();
         dialogEmailTextField.getStyle().set("margin-top", "0");
         dialogEmailTextField.getStyle().set("margin-bottom", "0");
 
-        dialogPasswordTextField.setLabel("Password");
         dialogPasswordTextField.setWidthFull();
         dialogPasswordTextField.getStyle().set("margin-top", "0");
         dialogPasswordTextField.getStyle().set("margin-bottom", "0");

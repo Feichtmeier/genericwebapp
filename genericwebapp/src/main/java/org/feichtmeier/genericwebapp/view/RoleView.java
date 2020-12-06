@@ -69,6 +69,7 @@ public class RoleView extends VerticalLayout {
         viewNewRoleButton = new Button(VaadinIcon.PLUS.create(), e -> {
             editEntity(new Role(""));
         });
+        viewNewRoleButton.getElement().getThemeList().add("primary");
         viewTopLayout.add(viewNewRoleButton, viewRoleFilter);
         // View Bottom
         viewRoleGrid = new Grid<>(Role.class);
@@ -87,8 +88,7 @@ public class RoleView extends VerticalLayout {
         roleEditorDialog = new Dialog();
         // Dialog top
         dialogTopLayout = new VerticalLayout();
-        dialogNameTextField = new TextField("");
-        dialogNameTextField.setLabel("Name of the role");
+        dialogNameTextField = new TextField("Role name");
         dialogPermissionListBox = new MultiSelectListBox<>();
         dialogPermissionLabel = new Label("Allowed views");
         dialogTopLayout.add(dialogNameTextField, dialogPermissionLabel, dialogPermissionListBox);
@@ -102,6 +102,7 @@ public class RoleView extends VerticalLayout {
                 Notification.show("NOT saved Role " + currentEntity.getName());
             }
         });
+        dialogSaveButton.getElement().getThemeList().add("primary");
         dialogCancelButton = new Button("", VaadinIcon.CLOSE.create(), e -> {
             goBackToView();
         });
@@ -110,6 +111,7 @@ public class RoleView extends VerticalLayout {
             Notification.show("Deleted " + currentEntity.getName());
             goBackToView();
         });
+        dialogDeleteButton.getElement().getThemeList().add("error");
         dialogBottomLayout = new HorizontalLayout(dialogSaveButton, dialogCancelButton, dialogDeleteButton);
         // Add to dialog
         dialogBody = new VerticalLayout(dialogTopLayout, dialogBottomLayout);
@@ -198,17 +200,14 @@ public class RoleView extends VerticalLayout {
         viewTopLayout.getStyle().set("display", "flex");
         viewTopLayout.getStyle().set("flex-direction", "row");
         viewNewRoleButton.getStyle().set("flex-grow", "0");
-        viewNewRoleButton.getElement().getThemeList().add("primary");
         setAlignItems(Alignment.CENTER);
         roleEditorDialog.setHeight(null);
-        dialogSaveButton.getElement().getThemeList().add("primary");
         dialogSaveButton.getStyle().set("flex-grow", "1");
         dialogSaveButton.getStyle().set("margin-top", "0");
         dialogSaveButton.getStyle().set("margin-bottom", "0");
         dialogCancelButton.getStyle().set("flex-grow", "1");
         dialogCancelButton.getStyle().set("margin-top", "0");
         dialogCancelButton.getStyle().set("margin-bottom", "0");
-        dialogDeleteButton.getElement().getThemeList().add("error");
         dialogDeleteButton.getStyle().set("flex-grow", "1");
         dialogDeleteButton.getStyle().set("margin-top", "0");
         dialogDeleteButton.getStyle().set("margin-bottom", "0");
