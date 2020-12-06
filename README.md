@@ -18,13 +18,13 @@ This is a mobile ready, responsive, persistent, generic webapp built with [Sprin
 
 ## Use case
 
-This webapp is not meant to be used in production and needs to be extended for individual use cases. It provides a basic user, permission and role management.
+This webapp is needs to be extended for individual use cases. It provides a basic user, permission and role management.
 
 New views/tabs can be added either into the existing notebook in `AppView.java` or somewhere else.
 
-A REST Api exists in the controller package to manipulate the database, but should be excluded from this repository in a production environment and used in a second "REST only" repository, with the same entities.
+The login is secured via Spring Security.
 
-The login is secured via Spring Security, which currently disallows API calls.
+An insecure REST Api exists in the `restapi` maven project.
 
 ## Build
 
