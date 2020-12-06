@@ -94,7 +94,7 @@ public class AppView extends AppLayout {
             if (!selectedTab.equals(settingsTab)) {
                 setContent(view);
             } else {
-                Dialog settingsDialog = new Dialog(settingsView);
+                final Dialog settingsDialog = new Dialog(settingsView);
                 settingsDialog.addDialogCloseActionListener(e -> {
                     click(previousTab);
                     settingsDialog.close();

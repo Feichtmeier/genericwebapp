@@ -45,7 +45,7 @@ public class UserView extends VerticalLayout {
     private final TextField viewUserFilter;
     private final HorizontalLayout viewTopLayout;
     private final VerticalLayout viewScrollLayout;
-    private Dialog userEditorDialog;
+    private final Dialog userEditorDialog;
     private final VerticalLayout dialogTopLayout;
     private final HorizontalLayout dialogBottomLayout;
     private final VerticalLayout dialogBody;
@@ -58,8 +58,8 @@ public class UserView extends VerticalLayout {
     private final MultiSelectListBox<Role> dialogRolesListBox;
     private final Label dialogRolesLabel;
     // Data Fields
-    private UserService userService;
-    private RoleService roleService;
+    private final UserService userService;
+    private final RoleService roleService;
     private List<User> users;
     private List<Role> roles;
     private User currentUser;

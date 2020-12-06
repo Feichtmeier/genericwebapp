@@ -11,23 +11,22 @@ import com.vaadin.flow.server.PWA;
 
 import org.feichtmeier.genericwebapp.view.util.JavaScripts;
 
-@Route("login") 
+@Route("login")
 @PWA(name = "Generic Webapp", shortName = "Generic Webapp", startPath = "login")
 @Viewport("width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes, viewport-fit=cover")
 @PageTitle("Generic Webapp")
-
 public class LoginView extends VerticalLayout implements BeforeEnterObserver {
-	
+
 	private static final long serialVersionUID = -9004111472318582084L;
 	private LoginForm login = new LoginForm();
 
-	public LoginView(){
+	public LoginView() {
 		addClassName("login-view");
 		setSizeFull();
-		setAlignItems(Alignment.CENTER); 
+		setAlignItems(Alignment.CENTER);
 		setJustifyContentMode(JustifyContentMode.CENTER);
 
-		login.setAction("login");		
+		login.setAction("login");
 
 		add(login);
 
@@ -37,11 +36,8 @@ public class LoginView extends VerticalLayout implements BeforeEnterObserver {
 	@Override
 	public void beforeEnter(BeforeEnterEvent beforeEnterEvent) {
 		// inform the user about an authentication error
-		if(beforeEnterEvent.getLocation() 
-        .getQueryParameters()
-        .getParameters()
-        .containsKey("error")) {
-            login.setError(true);
-        }
+		if (beforeEnterEvent.getLocation().getQueryParameters().getParameters().containsKey("error")) {
+			login.setError(true);
+		}
 	}
 }

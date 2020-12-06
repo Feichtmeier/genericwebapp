@@ -50,11 +50,11 @@ public class RoleView extends VerticalLayout {
     private final Label dialogPermissionLabel;
     private final MultiSelectListBox<Permission> dialogPermissionListBox;
     // Data Fields
-    private Role currentEntity;
     private final RoleService roleService;
     private final PermissionService permissionService;
     private List<Role> roles;
     private List<Permission> permissions;
+    private Role currentEntity;
 
     public RoleView(RoleService roleService, PermissionService permissionService) {
         // Data
