@@ -77,6 +77,7 @@ public class RoleView extends VerticalLayout implements Styleable {
         viewRoleGrid.asSingleSelect().addValueChangeListener(event -> {
             editEntity(event.getValue());
         });
+        viewRoleGrid.setHeightByRows(true);
         viewScrollLayout = new VerticalLayout();
         viewScrollLayout.add(viewRoleGrid);
         // Add to view
@@ -184,7 +185,6 @@ public class RoleView extends VerticalLayout implements Styleable {
         setSizeFull();
         viewRoleFilter.setMinWidth("7em");
         viewRoleFilter.getStyle().set("flex-grow", "1");
-        viewRoleGrid.setHeightByRows(true);
         viewScrollLayout.setWidthFull();
         viewScrollLayout.setHeight(null);
         viewScrollLayout.getStyle().set("overflow-y", "auto");

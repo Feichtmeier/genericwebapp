@@ -85,6 +85,7 @@ public class UserView extends VerticalLayout implements Styleable {
         viewUserGrid.asSingleSelect().addValueChangeListener(event -> {
             editEntity(event.getValue());
         });
+        viewUserGrid.setHeightByRows(true);
         viewScrollLayout = new VerticalLayout(viewUserGrid);
         // Add to view
         add(viewTopLayout, viewScrollLayout);
@@ -218,7 +219,7 @@ public class UserView extends VerticalLayout implements Styleable {
         viewUserFilter.setMinWidth("7em");
         viewUserFilter.getStyle().set("flex-grow", "1");
         viewTopLayout.setWidthFull();
-        viewUserGrid.setHeightByRows(true);
+
         viewScrollLayout.setWidthFull();
         viewScrollLayout.setHeight(null);
         viewScrollLayout.getStyle().set("overflow-y", "auto");
