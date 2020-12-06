@@ -20,11 +20,11 @@ import org.feichtmeier.genericwebapp.security.SecurityUtils;
 import org.feichtmeier.genericwebapp.view.util.JavaScripts;
 
 @JsModule("./styles/shared-styles.js")
-@CssImport("./styles/views/main/main-view.css")
+@CssImport("./styles/views/app-view.css")
 @Route(value = "")
 @PreserveOnRefresh
 @VaadinSessionScope
-public class AppView extends AppLayout implements Styleable {
+public class AppView extends AppLayout {
 
     private static final long serialVersionUID = 8375254280365769233L;
 
@@ -109,7 +109,7 @@ public class AppView extends AppLayout implements Styleable {
         getElement().executeJs(JavaScripts.USE_SYSTEM_THEME_SCRIPT);
         setDrawerOpened(false);
 
-        applyStyling();
+        viewTabs.setId("viewTabs");
     }
 
     private void click(Tab tab) {
@@ -124,11 +124,4 @@ public class AppView extends AppLayout implements Styleable {
 
         return tab;
     }
-
-    @Override
-    public void applyStyling() {
-        viewTabs.setFlexGrowForEnclosedTabs(1);
-        viewTabs.setWidthFull();
-    }
-
 }

@@ -1,0 +1,7 @@
+#viewTabs {
+  width: 100%;
+}
+
+#viewTabs vaadin-tab {
+  flex-grow: 1;
+}

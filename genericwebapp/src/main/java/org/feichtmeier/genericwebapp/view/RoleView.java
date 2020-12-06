@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Label;
@@ -25,6 +26,7 @@ import org.feichtmeier.genericwebapp.service.RoleService;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Component;
 
+@CssImport("./styles/views/role-view.css")
 @Component
 @VaadinSessionScope
 @Secured(ViewNames.ROLE_VIEW)
