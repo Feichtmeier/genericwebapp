@@ -7,11 +7,12 @@ import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.server.PWA;
 
 import org.feichtmeier.genericwebapp.view.util.JavaScripts;
 
 @Route("login") 
-// @PWA(name = "app", shortName = "app", startPath = "login")
+@PWA(name = "Generic Webapp", shortName = "Generic Webapp", startPath = "login")
 @Viewport("width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes, viewport-fit=cover")
 @PageTitle("Generic Webapp")
 

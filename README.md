@@ -5,16 +5,20 @@
 TODO:
 
 - [ ] use current github action to deploy the container with mariadb, node, java, maven, and genericwebapp on cloud XYZ
-- [ ] make vaadins `@PWA` work
+- [X] make vaadins `@PWA` work
 - [ ] make parts of the gridviews re-usable via generic classes and/or interfaces
 
 ## About
 
-This is a mobile ready, responsive, persistent, generic webapp built with [Spring Boot](https://github.com/spring-projects/spring-boot) and [Vaadin](https://github.com/vaadin/).
+This is a mobile ready, responsive, persistent, generic webapp built with [Spring Boot](https://github.com/spring-projects/spring-boot) and [Vaadin](https://github.com/vaadin/) which can also be installed as a progressive webapp (PWA) directly from within your browsers (currently Firefox desktop does not support PWAs fully yet).
 
 ![](showcaseassets/mobile.gif)
 
 ![](showcaseassets/desktop.gif)
+
+![](showcaseassets/pwa_01.gif)
+
+![](showcaseassets/pwa_02.gif)
 
 ## Use case
 
