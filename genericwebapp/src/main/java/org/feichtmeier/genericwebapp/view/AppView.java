@@ -19,7 +19,6 @@ import com.vaadin.flow.spring.annotation.VaadinSessionScope;
 import org.feichtmeier.genericwebapp.security.SecurityUtils;
 import org.feichtmeier.genericwebapp.view.util.JavaScripts;
 
-@JsModule("./styles/shared-styles.js")
 @CssImport("./styles/views/app-view.css")
 @Route(value = "")
 @PreserveOnRefresh

@@ -1,5 +1,6 @@
 package org.feichtmeier.genericwebapp.view;
 
+import com.vaadin.flow.component.dependency.JsModule;
 import com.vaadin.flow.component.login.LoginForm;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.page.Viewport;
@@ -11,6 +12,7 @@ import com.vaadin.flow.server.PWA;
 
 import org.feichtmeier.genericwebapp.view.util.JavaScripts;
 
+@JsModule("./styles/shared-styles.js")
 @Route("login")
 @PWA(name = "Generic Webapp", shortName = "Generic Webapp", startPath = "login")
 @Viewport("width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes, viewport-fit=cover")
