@@ -15,11 +15,16 @@ spring:
             max-file-size: 10MB
             max-request-size: 10MB
 
-    # data:
-    #     rest:
-    #         # base-path: /api
+# if https is needed:
+# cd inside_the_maven_project
+# keytool -genkeypair -alias tomcat -keyalg RSA -keysize 2048 -keystore keystore.jks -validity 3650 -storepass password
 
-    security:
-        user:
-            name: user
-            password: password
+# server:
+#   ssl:
+#     key-store: keystore.jks
+#     key-store-password: password
+#     key-store-type: jks
+#     key-alias: tomcat
+#     key-password: password
+#   port: 8443
+    
