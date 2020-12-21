@@ -30,7 +30,7 @@ public class HomeView extends VerticalLayout {
         userName.setText(currentUser.getFullName());
         welcomeHeader = new H1("Welcome");
         add(welcomeHeader, userName);
-        setId("homeView");
+        setId("home-view");
     }
     
 }

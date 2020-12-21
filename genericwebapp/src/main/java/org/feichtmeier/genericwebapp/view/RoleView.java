@@ -102,7 +102,6 @@ public class RoleView extends VerticalLayout {
                 Notification.show("NOT saved Role " + currentEntity.getName());
             }
         });
-        dialogSaveButton.getElement().getThemeList().add("primary");
         dialogCancelButton = new Button("", VaadinIcon.CLOSE.create(), e -> {
             goBackToView();
         });
@@ -111,7 +110,6 @@ public class RoleView extends VerticalLayout {
             Notification.show("Deleted " + currentEntity.getName());
             goBackToView();
         });
-        dialogDeleteButton.getElement().getThemeList().add("error");
         dialogBottomLayout = new HorizontalLayout(dialogSaveButton, dialogCancelButton, dialogDeleteButton);
         // Add to dialog
         dialogBody = new VerticalLayout(dialogTopLayout, dialogBottomLayout);
@@ -125,7 +123,7 @@ public class RoleView extends VerticalLayout {
             currentEntity.setPermissions(e.getValue());
         });
 
-        applyStyling();
+        linkComponentsToCss();
     }
 
     public void editEntity(Role entity) {
@@ -183,51 +181,24 @@ public class RoleView extends VerticalLayout {
         dialogPermissionListBox.setItems(permissions);
     }
 
-    // TODO: move to css
-    public void applyStyling() {
-        setSizeFull();
-        viewRoleFilter.setMinWidth("7em");
-        viewRoleFilter.getStyle().set("flex-grow", "1");
-        viewScrollLayout.setWidthFull();
-        viewScrollLayout.setHeight(null);
-        viewScrollLayout.getStyle().set("overflow-y", "auto");
-        viewScrollLayout.getStyle().set("padding", "0");
-        viewRoleGrid.getStyle().set("overflow-y", "auto");
-        dialogBody.setHeightFull();
-        dialogBody.setPadding(false);
-        dialogBody.setMargin(false);
-        viewTopLayout.setWidthFull();
-        viewTopLayout.getStyle().set("display", "flex");
-        viewTopLayout.getStyle().set("flex-direction", "row");
-        viewNewRoleButton.getStyle().set("flex-grow", "0");
-        setAlignItems(Alignment.CENTER);
-        roleEditorDialog.setHeight(null);
-        dialogSaveButton.getStyle().set("flex-grow", "1");
-        dialogSaveButton.getStyle().set("margin-top", "0");
-        dialogSaveButton.getStyle().set("margin-bottom", "0");
-        dialogCancelButton.getStyle().set("flex-grow", "1");
-        dialogCancelButton.getStyle().set("margin-top", "0");
-        dialogCancelButton.getStyle().set("margin-bottom", "0");
-        dialogDeleteButton.getStyle().set("flex-grow", "1");
-        dialogDeleteButton.getStyle().set("margin-top", "0");
-        dialogDeleteButton.getStyle().set("margin-bottom", "0");
-        dialogBottomLayout.setAlignItems(Alignment.CENTER);
-        dialogBottomLayout.setWidthFull();
-        dialogBottomLayout.getStyle().set("flex-grow", "0");
-        dialogTopLayout.setPadding(false);
-        dialogTopLayout.getStyle().set("flex-grow", "1");
-        dialogTopLayout.setWidthFull();
-        dialogTopLayout.setHeight(null);
-        dialogTopLayout.getStyle().set("overflow-y", "auto");
-        dialogTopLayout.setPadding(false);
-        dialogTopLayout.setMargin(false);
-        dialogNameTextField.setWidthFull();
-        dialogPermissionLabel.setWidthFull();
-        dialogPermissionLabel.getStyle().set("margin-top", "10px");
-        dialogPermissionLabel.getStyle().set("font-size", "0.875rem");
-        dialogPermissionLabel.getStyle().set("color", "var(--lumo-primary-color)");
-        dialogPermissionLabel.getStyle().set("font-weight", "bold");
-        dialogPermissionListBox.setWidthFull();
+    public void linkComponentsToCss() {
+        setId("role-view");
+        addClassName("grid-view");
+        viewTopLayout.addClassName("grid-view-top-layout");
+        viewRoleFilter.addClassName("grid-view-filter");
+        viewNewRoleButton.addClassName("grid-view-add-entity-button");
+        viewScrollLayout.addClassName("grid-view-scroll-layout");
+        viewRoleGrid.addClassName("grid-view-entity-grid");
+        dialogBody.addClassName("grid-view-editor-dialog-body");
+        dialogTopLayout.addClassName("grid-view-editor-dialog-top-layout");
+        dialogBottomLayout.addClassName("grid-view-editor-dialog-bottom-layout");
+        dialogSaveButton.getElement().getThemeList().add("primary");
+        dialogSaveButton.addClassName("grid-view-editor-save-button");
+        dialogCancelButton.addClassName("grid-view-editor-cancel-button");
+        dialogDeleteButton.getElement().getThemeList().add("error");
+        dialogDeleteButton.addClassName("grid-view-editor-delete-button");
+        dialogNameTextField.setId("role-editor-role-name-textfield");
+        dialogPermissionLabel.setId("role-editor-permission-label");
+        dialogPermissionListBox.setId("role-editor-permission-listbox");
     }
-
 }

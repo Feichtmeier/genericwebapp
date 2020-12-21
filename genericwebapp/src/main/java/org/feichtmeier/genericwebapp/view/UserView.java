@@ -117,7 +117,6 @@ public class UserView extends VerticalLayout {
                 Notification.show("NOT saved User: " + currentUser.getFullName());
             }
         });
-        dialogSaveButton.getElement().getThemeList().add("primary");
         dialogCancelButton = new Button("", VaadinIcon.CLOSE.create(), e -> {
             goBackToView();
         });
@@ -128,9 +127,8 @@ public class UserView extends VerticalLayout {
                 goBackToView();
             } else {
                 Notification.show("You can't delete your own user here, " + currentUser.getFullName());
-            }            
+            }
         });
-        dialogDeleteButton.getElement().getThemeList().add("error");
         dialogBottomLayout = new HorizontalLayout(dialogSaveButton, dialogCancelButton, dialogDeleteButton);
         // Add to dialog
         dialogBody = new VerticalLayout(dialogTopLayout, dialogBottomLayout);
@@ -156,7 +154,7 @@ public class UserView extends VerticalLayout {
         userBinder.forField(dialogEmailTextField).asRequired("Must provide an e-mail address").bind(User::getEmail,
                 User::setEmail);
 
-        applyStyling();
+        linkComponentsToCss();
     }
 
     private void listEntities(String filterText) {
@@ -218,76 +216,25 @@ public class UserView extends VerticalLayout {
         viewUserFilter.clear();
     }
 
-    // TODO: move to CSS
-    public void applyStyling() {
-        this.setSizeFull();
-        viewUserFilter.setMinWidth("7em");
-        viewUserFilter.getStyle().set("flex-grow", "1");
-        viewTopLayout.setWidthFull();
-
-        viewScrollLayout.setWidthFull();
-        viewScrollLayout.setHeight(null);
-        viewScrollLayout.getStyle().set("overflow-y", "auto");
-        viewScrollLayout.getStyle().set("padding", "0");
-        viewUserGrid.getStyle().set("overflow-y", "auto");
-        viewTopLayout.getStyle().set("display", "flex");
-        viewTopLayout.getStyle().set("flex-direction", "row");
-        viewNewUserButton.getStyle().set("flex-grow", "0");
-        this.setAlignItems(Alignment.CENTER);
-
-        dialogSaveButton.getStyle().set("flex-grow", "1");
-        dialogSaveButton.getStyle().set("margin-top", "0");
-        dialogSaveButton.getStyle().set("margin-bottom", "0");
-
-        dialogCancelButton.getStyle().set("flex-grow", "1");
-        dialogCancelButton.getStyle().set("margin-top", "0");
-        dialogCancelButton.getStyle().set("margin-bottom", "0");
-
-        dialogDeleteButton.getStyle().set("flex-grow", "1");
-        dialogDeleteButton.getStyle().set("margin-top", "0");
-        dialogDeleteButton.getStyle().set("margin-bottom", "0");
-
-        dialogBottomLayout.setAlignItems(Alignment.CENTER);
-        dialogBottomLayout.setWidthFull();
-        dialogBottomLayout.getStyle().set("flex-grow", "0");
-
-        dialogTopLayout.setPadding(false);
-        dialogTopLayout.getStyle().set("flex-grow", "1");
-        dialogTopLayout.setWidthFull();
-        dialogTopLayout.setHeight(null);
-        dialogTopLayout.getStyle().set("overflow-y", "auto");
-        dialogTopLayout.setPadding(false);
-        dialogTopLayout.setMargin(false);
-
-        dialogBody.setHeightFull();
-        dialogBody.setPadding(false);
-        dialogBody.setMargin(false);
-
-        dialogFullNameTextField.setWidthFull();
-        dialogFullNameTextField.getStyle().set("paddin-top", "0");
-        dialogFullNameTextField.getStyle().set("margin-top", "0");
-        dialogFullNameTextField.getStyle().set("margin-bottom", "0");
-
-        dialogUsernameTextField.setWidthFull();
-        dialogUsernameTextField.getStyle().set("margin-top", "0");
-        dialogUsernameTextField.getStyle().set("margin-bottom", "0");
-
-        dialogEmailTextField.setWidthFull();
-        dialogEmailTextField.getStyle().set("margin-top", "0");
-        dialogEmailTextField.getStyle().set("margin-bottom", "0");
-
-        dialogPasswordTextField.setWidthFull();
-        dialogPasswordTextField.getStyle().set("margin-top", "0");
-        dialogPasswordTextField.getStyle().set("margin-bottom", "0");
-
-        dialogRolesLabel.setWidthFull();
-        dialogRolesLabel.getStyle().set("margin-top", "10px");
-        dialogRolesLabel.getStyle().set("font-size", "0.875rem");
-        dialogRolesLabel.getStyle().set("color", "var(--lumo-primary-color)");
-        dialogRolesLabel.getStyle().set("font-weight", "bold");
-
-        dialogRolesListBox.setWidthFull();
-
-        userEditorDialog.setHeight(null);
+    public void linkComponentsToCss() {
+        setId("user-view");
+        addClassName("grid-view");
+        viewTopLayout.addClassName("grid-view-top-layout");
+        viewUserFilter.addClassName("grid-view-filter");
+        viewNewUserButton.addClassName("grid-view-add-entity-button");
+        viewScrollLayout.addClassName("grid-view-scroll-layout");
+        viewUserGrid.addClassName("grid-view-entity-grid");
+        dialogBody.addClassName("grid-view-editor-dialog-body");
+        dialogTopLayout.addClassName("grid-view-editor-dialog-top-layout");
+        dialogBottomLayout.addClassName("grid-view-editor-dialog-bottom-layout");
+        dialogSaveButton.getElement().getThemeList().add("primary");
+        dialogSaveButton.addClassName("grid-view-editor-save-button");
+        dialogCancelButton.addClassName("grid-view-editor-cancel-button");
+        dialogDeleteButton.getElement().getThemeList().add("error");
+        dialogDeleteButton.addClassName("grid-view-editor-delete-button");
+        dialogFullNameTextField.setId("user-editor-fullname-textfield");
+        dialogUsernameTextField.setId("user-editor-username-textfield");
+        dialogPasswordTextField.setId("user-editor-password-textfield");
+        dialogEmailTextField.setId("user-editor-email-textfield");
     }
 }

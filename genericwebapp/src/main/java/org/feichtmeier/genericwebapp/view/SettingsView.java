@@ -20,7 +20,7 @@ public class SettingsView extends VerticalLayout {
     private final H1 header = new H1("Settings");
 
     public SettingsView() {
-        setId("settingsView");
+        setId("settings-view");
         logout.setId("logout");
         add(header);
         add(new HorizontalLayout(logout));

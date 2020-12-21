@@ -1,0 +1,23 @@
+#user-editor-fullname-textfield {
+    width: 100%;
+    margin-bottom: 0;
+
+}
+
+#user-editor-username-textfield, #user-editor-password-textfield, #user-editor-email-textfield {
+    width: 100%;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+#user-editor-roles-label {
+    width: 100%;
+    margin-top: 10px;
+    font-size: 0.875rem;
+    color: var(--lumo-primary-color);
+    font-weight: bold;
+}
+
+#user-editor-roles-listbox {
+    width: 100%;
+}

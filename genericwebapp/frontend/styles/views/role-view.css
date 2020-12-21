@@ -1,0 +1,15 @@
+#role-editor-role-name-textfield {
+    width: 100%;
+}
+
+#role-editor-permission-label {
+    width: 100%;
+    margin-top: 10px;
+    font-size: 0.875rem;
+    color: var(--lumo-primary-color);
+    font-weight: bold;
+}
+
+#role-editor-permission-listbox {
+    width: 100%;
+}
