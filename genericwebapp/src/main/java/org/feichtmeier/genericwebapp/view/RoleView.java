@@ -69,7 +69,6 @@ public class RoleView extends VerticalLayout {
         viewNewRoleButton = new Button(VaadinIcon.PLUS.create(), e -> {
             editEntity(new Role(""));
         });
-        viewNewRoleButton.getElement().getThemeList().add("primary");
         viewTopLayout.add(viewNewRoleButton, viewRoleFilter);
         // View Bottom
         viewRoleGrid = new Grid<>(Role.class);
@@ -186,6 +185,7 @@ public class RoleView extends VerticalLayout {
         addClassName("grid-view");
         viewTopLayout.addClassName("grid-view-top-layout");
         viewRoleFilter.addClassName("grid-view-filter");
+        viewNewRoleButton.getElement().getThemeList().add("primary");
         viewNewRoleButton.addClassName("grid-view-add-entity-button");
         viewScrollLayout.addClassName("grid-view-scroll-layout");
         viewRoleGrid.addClassName("grid-view-entity-grid");

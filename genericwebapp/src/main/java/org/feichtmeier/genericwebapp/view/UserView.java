@@ -76,7 +76,6 @@ public class UserView extends VerticalLayout {
         viewNewUserButton = new Button(VaadinIcon.PLUS.create(), e -> {
             editEntity(new User("", ""));
         });
-        viewNewUserButton.getElement().getThemeList().add("primary");
         viewTopLayout = new HorizontalLayout();
         viewTopLayout.add(viewNewUserButton, viewUserFilter);
         // View Bottom
@@ -94,7 +93,6 @@ public class UserView extends VerticalLayout {
         // Dialog
         userEditorDialog = new Dialog();
         // Dialog Top
-
         dialogFullNameTextField = new TextField("Full Name");
         dialogUsernameTextField = new TextField("Username");
         dialogEmailTextField = new EmailField("E-Mail");
@@ -221,6 +219,7 @@ public class UserView extends VerticalLayout {
         addClassName("grid-view");
         viewTopLayout.addClassName("grid-view-top-layout");
         viewUserFilter.addClassName("grid-view-filter");
+        viewNewUserButton.getElement().getThemeList().add("primary");
         viewNewUserButton.addClassName("grid-view-add-entity-button");
         viewScrollLayout.addClassName("grid-view-scroll-layout");
         viewUserGrid.addClassName("grid-view-entity-grid");
