@@ -1,6 +1,7 @@
 package org.feichtmeier.genericwebapp;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import com.github.javafaker.Faker;
@@ -31,23 +32,17 @@ public class DatabasePreloader {
             PermissionRepository permissionRepository, ViewRepository viewRepository, PasswordEncoder passwordEncoder) {
         return args -> {
 
-            Permission userViewPermission = new Permission();
-            View userViewEntity = new View(ViewNames.USER_VIEW);
-            userViewPermission.setView(userViewEntity);
-            viewRepository.save(userViewEntity);
-            permissionRepository.save(userViewPermission);
-
-            Permission homeViewPermission = new Permission();
-            View homeViewEntity = new View(ViewNames.HOME_VIEW);
-            homeViewPermission.setView(homeViewEntity);
-            viewRepository.save(homeViewEntity);
-            permissionRepository.save(homeViewPermission);
-
-            Permission roleViewPermission = new Permission();
-            View roleViewEntity = new View(ViewNames.ROLE_VIEW);
-            roleViewPermission.setView(roleViewEntity);
-            viewRepository.save(roleViewEntity);
-            permissionRepository.save(roleViewPermission);
+            Permission homePermission = null;
+            for (String viewName : ViewNames.viewNames) {
+                Permission permission = new Permission();
+                View view = new View(viewName);
+                if (viewName.equals(ViewNames.HOME_VIEW)) {
+                    homePermission = permission;
+                }
+                permission.setView(view);
+                viewRepository.save(view);
+                permissionRepository.save(permission);
+            }
 
             Role admin = new Role("admin");
             Set<Permission> allPermissions = new HashSet<>(permissionRepository.findAll());
@@ -56,7 +51,9 @@ public class DatabasePreloader {
 
             Role user = new Role("user");
             Set<Permission> userPermissions = new HashSet<>();
-            userPermissions.add(homeViewPermission);
+            if (null != homePermission) {
+                userPermissions.add(homePermission);
+            }
             user.setPermissions(userPermissions);
             roleRepository.save(user);
 
