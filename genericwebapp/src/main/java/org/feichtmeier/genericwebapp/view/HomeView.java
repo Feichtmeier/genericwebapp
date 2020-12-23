@@ -3,7 +3,6 @@ package org.feichtmeier.genericwebapp.view;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.H2;
-import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.spring.annotation.VaadinSessionScope;
 
 import org.feichtmeier.genericwebapp.entity.User;

@@ -10,6 +10,7 @@ import javax.imageio.ImageReader;
 import javax.imageio.stream.ImageInputStream;
 
 import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.html.Anchor;
 import com.vaadin.flow.component.html.H3;
@@ -33,18 +34,18 @@ public class SettingsView extends AbstractView {
     private final Anchor logout = new Anchor("logout", "Logout");
     private final H3 header = new H3("Settings");
     private final Image defaultAvatarImage;
-    private final Label avatarLabel;
     private final HorizontalLayout avatarContainer;
     private final Upload upload;
     private final MemoryBuffer buffer;
 
     public SettingsView() {
-        avatarLabel = new Label("Avatar");
         defaultAvatarImage = new Image("https://dummyimage.com/50x50/e7ebef/3b3b3b", "Avatar");
         avatarContainer = new HorizontalLayout(defaultAvatarImage);
 
         buffer = new MemoryBuffer();
         upload = new Upload(buffer);
+        upload.setUploadButton(new Button("Avatar..."));
+        upload.setDropLabel(new Label("Drop image here"));
         upload.setAcceptedFileTypes("image/png", "image/jpeg");
         upload.addSucceededListener(event -> {
             if (event.getMIMEType().startsWith("image")) {
@@ -55,7 +56,7 @@ public class SettingsView extends AbstractView {
             }
         });
 
-        add(header, avatarLabel, avatarContainer, upload, new HorizontalLayout(logout));
+        add(header, avatarContainer, upload, new HorizontalLayout(logout));
     }
 
     @Override

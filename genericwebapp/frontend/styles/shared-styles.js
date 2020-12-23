@@ -46,7 +46,7 @@ $_documentContainer.innerHTML = `
     }
 
     .grid-view-entity-grid {
-      overflow-y: auto;
+      overflow-y: inherit;
     }
 
     .grid-view-editor-dialog-body {
