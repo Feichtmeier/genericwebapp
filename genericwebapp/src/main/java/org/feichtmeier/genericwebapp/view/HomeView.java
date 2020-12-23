@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
 @Component
 @Secured(ViewNames.HOME_VIEW)
 @VaadinSessionScope
-public class HomeView extends VerticalLayout {
+public class HomeView extends AbstractView {
 
     private static final long serialVersionUID = -2333684897315095897L;
 
@@ -30,7 +30,10 @@ public class HomeView extends VerticalLayout {
         userName.setText(currentUser.getFullName());
         welcomeHeader = new H1("Welcome");
         add(welcomeHeader, userName);
+    }
+
+    @Override
+    public void linkComponentsToCss() {
         setId("home-view");
     }
-    
 }

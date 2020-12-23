@@ -31,7 +31,7 @@ import org.springframework.stereotype.Component;
 @Component
 @VaadinSessionScope
 @Secured(ViewNames.ROLE_VIEW)
-public class RoleView extends VerticalLayout {
+public class RoleView extends AbstractView {
 
     private static final long serialVersionUID = 1L;
     // UI Fields
@@ -121,8 +121,6 @@ public class RoleView extends VerticalLayout {
         dialogPermissionListBox.addSelectionListener(e -> {
             currentEntity.setPermissions(e.getValue());
         });
-
-        linkComponentsToCss();
     }
 
     public void editEntity(Role entity) {

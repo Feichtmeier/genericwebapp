@@ -36,7 +36,7 @@ import org.springframework.stereotype.Component;
 @Component
 @Secured(ViewNames.USER_VIEW)
 @VaadinSessionScope
-public class UserView extends VerticalLayout {
+public class UserView extends AbstractView {
 
     private static final long serialVersionUID = 7368213324544313846L;
     // UI Fields
@@ -151,8 +151,6 @@ public class UserView extends VerticalLayout {
                 });
         userBinder.forField(dialogEmailTextField).asRequired("Must provide an e-mail address").bind(User::getEmail,
                 User::setEmail);
-
-        linkComponentsToCss();
     }
 
     private void listEntities(String filterText) {
