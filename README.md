@@ -6,7 +6,9 @@ TODO:
 
 - [ ] use current github action to deploy the container with mariadb, node, java, maven, and genericwebapp on cloud XYZ
 - [X] make vaadins `@PWA` work
-- [ ] make parts of the gridviews re-usable via generic classes and/or interfaces
+- [X] make parts of the gridviews re-usable via abstract class and/or interface
+- [X] use proper CSS theming
+- [ ] add a big padding area via media queries for desktop devices in CSS
 
 ## About
 
