@@ -3,6 +3,8 @@ package org.feichtmeier.genericwebapp.view;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.annotation.PostConstruct;
+
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.dialog.Dialog;
@@ -22,7 +24,7 @@ import org.feichtmeier.genericwebapp.view.util.JavaScripts;
 @Route(value = "")
 @PreserveOnRefresh
 @VaadinSessionScope
-public class AppView extends AppLayout {
+public class AppView extends AppLayout implements StyledView {
 
     private static final long serialVersionUID = 8375254280365769233L;
 
@@ -106,8 +108,6 @@ public class AppView extends AppLayout {
 
         getElement().executeJs(JavaScripts.USE_SYSTEM_THEME_SCRIPT);
         setDrawerOpened(false);
-
-        viewTabs.setId("viewTabs");
     }
 
     private void click(Tab tab) {
@@ -121,5 +121,12 @@ public class AppView extends AppLayout {
         this.tabToViewMap.put(tab, view);
 
         return tab;
+    }
+
+    @Override
+    @PostConstruct
+    public void linkComponentsToCss() {
+        viewTabs.setId("view-tabs");
+        this.setId("app-view");
     }
 }

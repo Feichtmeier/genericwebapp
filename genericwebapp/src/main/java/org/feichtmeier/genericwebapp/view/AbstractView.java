@@ -4,7 +4,7 @@ import javax.annotation.PostConstruct;
 
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 
-public abstract class AbstractView extends VerticalLayout {
+public abstract class AbstractView extends VerticalLayout implements StyledView {
 
     private static final long serialVersionUID = -3072319566313232865L;
 
@@ -12,5 +12,5 @@ public abstract class AbstractView extends VerticalLayout {
     }
 
     @PostConstruct
-    protected abstract void linkComponentsToCss();
+    public abstract void linkComponentsToCss();
 }

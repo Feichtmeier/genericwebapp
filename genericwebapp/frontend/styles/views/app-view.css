@@ -1,7 +1,26 @@
-#viewTabs {
+#view-tabs {
   width: 100%;
 }
 
-#viewTabs vaadin-tab {
+#view-tabs vaadin-tab {
   flex-grow: 1;
+}
+
+@media only screen and (min-width: 801px) {
+  #view-tabs, #app-view {
+    padding-left: 10%;
+    padding-right: 10%;
+  }
+}
+@media only screen and (min-width: 1201px) {
+  #view-tabs, #app-view {
+    padding-left: 20%;
+    padding-right: 20%;
+  }
+}
+@media only screen and (min-width: 2001px) {
+  #view-tabs, #app-view {
+    padding-left: 30%;
+    padding-right: 30%;
+  }
 }

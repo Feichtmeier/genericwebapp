@@ -8,7 +8,7 @@ TODO:
 - [X] make vaadins `@PWA` work
 - [X] make parts of the gridviews re-usable via abstract class and/or interface
 - [X] use proper CSS theming
-- [ ] add a big padding area via media queries for desktop devices in CSS
+- [X] add responsive padding
 
 ## About
 
