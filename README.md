@@ -9,6 +9,7 @@ TODO:
 - [X] make parts of the gridviews re-usable via abstract class and/or interface
 - [X] use proper CSS theming
 - [X] add responsive padding
+- [ ] make avatars persistent
 
 ## About
 
