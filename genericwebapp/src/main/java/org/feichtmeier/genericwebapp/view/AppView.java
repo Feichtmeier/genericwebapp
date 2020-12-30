@@ -5,7 +5,6 @@ import java.util.Map;
 
 import javax.annotation.PostConstruct;
 
-import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.dialog.Dialog;
@@ -13,9 +12,7 @@ import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.FlexLayout;
-import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment;
 import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.router.PreserveOnRefresh;
@@ -48,8 +45,8 @@ public class AppView extends AppLayout implements StyledView {
         tabToViewMap = new HashMap<>();
 
         homeTab = createTabAndLinkToView(homeView, "Welcome", VaadinIcon.HOME.create());
-        userTab = createTabAndLinkToView(userView, "User Administration", VaadinIcon.USERS.create());
-        roleTab = createTabAndLinkToView(roleView, "Role Administration", VaadinIcon.KEY.create());
+        userTab = createTabAndLinkToView(userView, "Users", VaadinIcon.USERS.create());
+        roleTab = createTabAndLinkToView(roleView, "Roles", VaadinIcon.KEY.create());
         settingsTab = createTabAndLinkToView(settingsView, "Settings", VaadinIcon.COG.create());
 
         viewTabs = new Tabs(homeTab);
@@ -94,8 +91,9 @@ public class AppView extends AppLayout implements StyledView {
     }
 
     private Tab createTabAndLinkToView(VerticalLayout view, String tabText, Icon icon) {
-
-        FlexLayout tabLayout = new FlexLayout(icon, new Text(tabText));
+        Label label = new Label(tabText);
+        label.setClassName("tab-label");
+        FlexLayout tabLayout = new FlexLayout(icon, label);
         tabLayout.setClassName("tab-with-icon");
         icon.setClassName("tab-icon");
         final Tab tab = new Tab(tabLayout);
