@@ -6,21 +6,63 @@
   flex-grow: 1;
 }
 
+.tab-with-icon {
+  flex-direction: column;
+  align-items: center;
+}
+.tab-icon {
+  display: flex;
+  flex-grow: 1;
+  margin-right: 0;
+}
+
 @media only screen and (min-width: 801px) {
   #view-tabs, #app-view {
     padding-left: 10%;
     padding-right: 10%;
   }
+  .tab-with-icon {
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .tab-icon {
+    display: flex;
+    flex-grow: 1;
+    margin-right: 0;
+  }
+  
 }
 @media only screen and (min-width: 1201px) {
   #view-tabs, #app-view {
     padding-left: 20%;
     padding-right: 20%;
   }
+  .tab-with-icon {
+    flex-direction: row;
+    align-items: stretch;
+    justify-content: space-between;
+  }
+  .tab-icon {
+    display: flex;
+    flex-grow: 1;
+    margin-right: 10px;
+  }
 }
 @media only screen and (min-width: 2001px) {
   #view-tabs, #app-view {
     padding-left: 30%;
     padding-right: 30%;
+  }
+  .tab-with-icon {
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: space-between;
+  }
+  .tab-icon {
+    display: flex;
+    flex-grow: 1;
+    margin-right: 10px;
+    height: 20px;
   }
 }

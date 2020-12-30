@@ -5,12 +5,17 @@ import java.util.Map;
 
 import javax.annotation.PostConstruct;
 
+import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.dialog.Dialog;
+import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.orderedlayout.FlexLayout;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment;
 import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.router.PreserveOnRefresh;
@@ -39,6 +44,7 @@ public class AppView extends AppLayout implements StyledView {
     public AppView(RoleView roleView, UserView userView, HomeView homeView, SettingsView settingsView) {
 
         // Build Notebook based on permissions
+        // HomeView and SettingsView are not secured
         tabToViewMap = new HashMap<>();
 
         homeTab = createTabAndLinkToView(homeView, "Welcome", VaadinIcon.HOME.create());
@@ -46,45 +52,17 @@ public class AppView extends AppLayout implements StyledView {
         roleTab = createTabAndLinkToView(roleView, "Role Administration", VaadinIcon.KEY.create());
         settingsTab = createTabAndLinkToView(settingsView, "Settings", VaadinIcon.COG.create());
 
-        boolean userViewAllowed = SecurityUtils.isAccessGranted(UserView.class);
-        boolean roleViewAllowed = SecurityUtils.isAccessGranted(RoleView.class);
-        boolean homeViewAllowed = SecurityUtils.isAccessGranted(HomeView.class);
-
-        // 1 0 0
-        if (homeViewAllowed && !userViewAllowed && !roleViewAllowed) {
-            viewTabs = new Tabs(homeTab);
-            click(homeTab);
+        viewTabs = new Tabs(homeTab);
+        if (SecurityUtils.isAccessGranted(UserView.class)) {
+            viewTabs.add(userTab);
         }
-        // 0 1 0
-        else if (!homeViewAllowed && userViewAllowed && !roleViewAllowed) {
-            viewTabs = new Tabs(userTab);
-            click(userTab);
-        }
-        // 0 0 1
-        else if (!homeViewAllowed && !userViewAllowed && roleViewAllowed) {
-            viewTabs = new Tabs(roleTab);
-            click(roleTab);
-        }
-        // 0 1 1
-        else if (!homeViewAllowed && userViewAllowed && roleViewAllowed) {
-            viewTabs = new Tabs(userTab, roleTab);
-            click(userTab);
-        }
-        // 1 0 1
-        else if (homeViewAllowed && !userViewAllowed && roleViewAllowed) {
-            viewTabs = new Tabs(homeTab, roleTab);
-            click(homeTab);
-        }
-        // 1 1 1
-        else if (homeViewAllowed && userViewAllowed && roleViewAllowed) {
-            viewTabs = new Tabs(homeTab, userTab, roleTab);
-            click(homeTab);
-        }
-        // 0 0 0
-        else {
-            viewTabs = new Tabs();
+        if (SecurityUtils.isAccessGranted(RoleView.class)) {
+            viewTabs.add(roleTab);
         }
         viewTabs.add(settingsTab);
+        if (viewTabs.getComponentCount() > 0) {
+            click((Tab)viewTabs.getComponentAt(0));
+        }
 
         viewTabs.setOrientation(Tabs.Orientation.HORIZONTAL);
         viewTabs.addSelectedChangeListener(event -> {
@@ -100,8 +78,7 @@ public class AppView extends AppLayout implements StyledView {
                     settingsDialog.close();
                 });
                 settingsDialog.open();
-            }
-            
+            }            
         });
 
         addToNavbar(true, viewTabs);
@@ -117,9 +94,14 @@ public class AppView extends AppLayout implements StyledView {
     }
 
     private Tab createTabAndLinkToView(VerticalLayout view, String tabText, Icon icon) {
-        final Tab tab = new Tab(icon);
-        this.tabToViewMap.put(tab, view);
 
+        FlexLayout tabLayout = new FlexLayout(icon, new Text(tabText));
+        tabLayout.setClassName("tab-with-icon");
+        icon.setClassName("tab-icon");
+        final Tab tab = new Tab(tabLayout);
+        
+        this.tabToViewMap.put(tab, view);
+        
         return tab;
     }
 
