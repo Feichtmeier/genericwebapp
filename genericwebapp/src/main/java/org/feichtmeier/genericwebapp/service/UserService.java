@@ -29,5 +29,9 @@ public class UserService implements DataService<User> {
     public void delete(User entity) {
         userRepository.delete(entity);
     }
+
+    public User findByUsername(String username) {
+        return userRepository.findByUsername(username);
+    }
     
 }

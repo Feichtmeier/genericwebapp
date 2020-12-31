@@ -1,6 +1,7 @@
 package org.feichtmeier.genericwebapp.view;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Iterator;
@@ -23,6 +24,10 @@ import com.vaadin.flow.server.StreamResource;
 import com.vaadin.flow.spring.annotation.VaadinSessionScope;
 
 import org.apache.commons.io.IOUtils;
+import org.feichtmeier.genericwebapp.entity.AvatarImage;
+import org.feichtmeier.genericwebapp.security.SecurityUtils;
+import org.feichtmeier.genericwebapp.service.AvatarImageService;
+import org.feichtmeier.genericwebapp.service.UserService;
 
 @CssImport("./styles/views/settings-view.css")
 @VaadinSessionScope
@@ -37,11 +42,12 @@ public class SettingsView extends AbstractView {
     private final HorizontalLayout avatarContainer;
     private final Upload upload;
     private final MemoryBuffer buffer;
+    private final String sessionUsername;
 
-    public SettingsView() {
+    public SettingsView(UserService userService, AvatarImageService avatarImageService) {
         defaultAvatarImage = new Image("https://dummyimage.com/50x50/e7ebef/3b3b3b", "Avatar");
         avatarContainer = new HorizontalLayout(defaultAvatarImage);
-
+        sessionUsername =  SecurityUtils.getUsername();
         buffer = new MemoryBuffer();
         upload = new Upload(buffer);
         upload.setUploadButton(new Button("Avatar..."));
@@ -49,10 +55,20 @@ public class SettingsView extends AbstractView {
         upload.setAcceptedFileTypes("image/png", "image/jpeg");
         upload.addSucceededListener(event -> {
             if (event.getMIMEType().startsWith("image")) {
-                Component component = createImage(event.getMIMEType(), event.getFileName(),
-                        buffer.getInputStream());
+                final Image image = createImage(event.getMIMEType(), event.getFileName(), buffer.getInputStream());
                 avatarContainer.removeAll();
-                avatarContainer.add(component);
+                avatarContainer.add(image);
+
+                ByteArrayOutputStream pngContent = new ByteArrayOutputStream();
+                try {
+                    ImageIO.write(ImageIO.read(buffer.getInputStream()), "png", pngContent);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                
+                final AvatarImage avatarImage = new AvatarImage(pngContent.toByteArray(), event.getFileName(),
+                        event.getMIMEType(), userService.findByUsername(sessionUsername));
+                avatarImageService.save(avatarImage);
             }
         });
 

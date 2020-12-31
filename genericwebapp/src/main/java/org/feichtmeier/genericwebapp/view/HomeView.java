@@ -6,8 +6,8 @@ import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.spring.annotation.VaadinSessionScope;
 
 import org.feichtmeier.genericwebapp.entity.User;
-import org.feichtmeier.genericwebapp.repository.UserRepository;
 import org.feichtmeier.genericwebapp.security.SecurityUtils;
+import org.feichtmeier.genericwebapp.service.UserService;
 import org.springframework.stereotype.Component;
 
 @CssImport("./styles/views/home-view.css")
@@ -20,9 +20,9 @@ public class HomeView extends AbstractView {
     private final H1 welcomeHeader;
     private final H2 userName;
 
-    public HomeView(UserRepository userRepository) {
+    public HomeView(UserService userService) {
         userName = new H2("");
-        User currentUser = userRepository.findByUsername(SecurityUtils.getUsername());
+        User currentUser = userService.findByUsername(SecurityUtils.getUsername());
         userName.setText(currentUser.getFullName());
         welcomeHeader = new H1("Welcome");
         add(welcomeHeader, userName);
