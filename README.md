@@ -4,12 +4,15 @@
 
 TODO:
 
-- [ ] use current github action to deploy the container with mariadb, node, java, maven, and genericwebapp on cloud XYZ
+- [ ] use current github action to deploy dev branch on azure / google / amazon
 - [X] make vaadins `@PWA` work
 - [X] make parts of the gridviews re-usable via abstract class and/or interface
 - [X] use proper CSS theming
 - [X] add responsive padding
-- [ ] make avatars persistent
+- [X] make avatars persistent
+- [ ] add delete account option in settings
+- [ ] use international Strings
+- [ ] add oAuth account creation via google and/or github
 
 ## About
 
