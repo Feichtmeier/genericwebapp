@@ -28,9 +28,9 @@ This is a mobile ready, responsive, persistent, generic webapp built with [Sprin
 
 ## Use case
 
-This webapp is needs to be extended for individual use cases. It provides a basic user, permission and role management.
+This webapp provides a basic user, permission and role management.
 
-New views/tabs can be added either into the existing notebook in `AppView.java` or somewhere else.
+New views can be injected to [AppView.java](https://github.com/Feichtmeier/genericwebapp/blob/415faace1343e40281d07c5760015183eb68525d/genericwebapp/src/main/java/org/feichtmeier/genericwebapp/view/AppView.java#L41).
 
 The login is secured via Spring Security.
 
