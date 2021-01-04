@@ -141,7 +141,7 @@ public class UserView extends AbstractView {
         userBinder.forField(dialogUsernameTextField).asRequired("Must provide a username")
                 .withValidator(new RegexpValidator("Not a valid username", "^[a-zA-Z0-9]+$")).bind("username");
 
-        userBinder.forField(dialogPasswordTextField).asRequired("Password is not allowed to be empty")
+        userBinder.forField(dialogPasswordTextField)
                 .withValidator(pass -> pass.matches("^(|(?=.*\\d)(?=.*[a-z])(?=.*[A-Z]).{6,})$"),
                         "need 6 or more chars, mixing digits, lowercase and uppercase letters")
                 .bind(user -> dialogPasswordTextField.getEmptyValue(), (user, pass) -> {

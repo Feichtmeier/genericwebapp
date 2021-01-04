@@ -51,7 +51,7 @@ public class SettingsView extends AbstractView {
         AvatarImage userAvatar = avatarImageService.findMostRecentUserAvatarImage(sessionUsername);
         if (null == userAvatar) {
             defaultAvatarImage = new Image("https://dummyimage.com/50x50/e7ebef/3b3b3b", "Avatar");
-        } else {            
+        } else {
             defaultAvatarImage = createImageFromAvatarImage(userAvatar);
         }
 
@@ -74,7 +74,6 @@ public class SettingsView extends AbstractView {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-
 
                 final AvatarImage avatarImage = new AvatarImage(pngContent.toByteArray(), event.getFileName(),
                         event.getMIMEType(), userService.findByUsername(sessionUsername), LocalDateTime.now());
