@@ -1,5 +1,6 @@
 package org.feichtmeier.genericwebapp.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.feichtmeier.genericwebapp.entity.AvatarImage;
@@ -29,5 +30,35 @@ public class AvatarImageService implements DataService<AvatarImage> {
     public void delete(AvatarImage entity) {
         avatarImageRepository.delete(entity);
     }
-    
+
+    public List<AvatarImage> findUserAvatarImages(String username) {
+
+        List<AvatarImage> userAvatarImages = new ArrayList<>();
+
+        List<AvatarImage> aImages = findAll();
+        for (AvatarImage avatarImage : aImages) {
+            if (username.equals(avatarImage.getUser().getUsername())) {
+                userAvatarImages.add(avatarImage);
+            }
+        }
+        ;
+        return userAvatarImages;
+    }
+
+    public AvatarImage findMostRecentUserAvatarImage(String username) {
+        List<AvatarImage> avatarImages = findUserAvatarImages(username);
+        if (avatarImages.isEmpty()) {
+            return null;
+        }
+        AvatarImage mostRecentAvatarImage = avatarImages.get(0);
+
+        for (AvatarImage avatarImage : avatarImages) {
+            if (avatarImage.getTimeStamp().isAfter(mostRecentAvatarImage.getTimeStamp())) {
+                mostRecentAvatarImage = avatarImage;
+            }
+        }
+
+        return mostRecentAvatarImage;
+    }
+
 }

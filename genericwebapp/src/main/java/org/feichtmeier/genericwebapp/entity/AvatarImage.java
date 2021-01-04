@@ -1,5 +1,6 @@
 package org.feichtmeier.genericwebapp.entity;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 
 import javax.persistence.Basic;
@@ -25,17 +26,22 @@ public class AvatarImage extends AbstractEntity {
     private String MIMEType;
 
     @NotNull
+    private LocalDateTime timeStamp;
+
+    @NotNull
     @OneToOne
-    User user;
+    private User user;
 
     public AvatarImage() {
     }
 
-    public AvatarImage(byte[] byteArray, @NotNull String fileName, @NotNull String mIMEType, @NotNull User user) {
+    public AvatarImage(byte[] byteArray, @NotNull String fileName, @NotNull String mIMEType, @NotNull User user,
+            @NotNull LocalDateTime timeStamp) {
         this.byteArray = byteArray;
         this.fileName = fileName;
         MIMEType = mIMEType;
         this.user = user;
+        this.timeStamp = timeStamp;
     }
 
     public byte[] getByteArray() {
@@ -70,6 +76,14 @@ public class AvatarImage extends AbstractEntity {
         this.user = user;
     }
 
+    public LocalDateTime getTimeStamp() {
+        return timeStamp;
+    }
+
+    public void setTimeStamp(LocalDateTime timeStamp) {
+        this.timeStamp = timeStamp;
+    }
+
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -77,6 +91,7 @@ public class AvatarImage extends AbstractEntity {
         result = prime * result + ((MIMEType == null) ? 0 : MIMEType.hashCode());
         result = prime * result + Arrays.hashCode(byteArray);
         result = prime * result + ((fileName == null) ? 0 : fileName.hashCode());
+        result = prime * result + ((timeStamp == null) ? 0 : timeStamp.hashCode());
         result = prime * result + ((user == null) ? 0 : user.hashCode());
         return result;
     }
@@ -102,6 +117,11 @@ public class AvatarImage extends AbstractEntity {
                 return false;
         } else if (!fileName.equals(other.fileName))
             return false;
+        if (timeStamp == null) {
+            if (other.timeStamp != null)
+                return false;
+        } else if (!timeStamp.equals(other.timeStamp))
+            return false;
         if (user == null) {
             if (other.user != null)
                 return false;
@@ -112,9 +132,7 @@ public class AvatarImage extends AbstractEntity {
 
     @Override
     public String toString() {
-        return "AvatarImage [MIMEType=" + MIMEType + ", byteArray=" + Arrays.toString(byteArray) + ", fileName="
-                + fileName + ", user=" + user + "]";
+        return "AvatarImage [MIMEType=" + MIMEType + ", fileName=" + fileName + ", timeStamp=" + timeStamp + ", user="
+                + user + "]";
     }
-    
-
 }

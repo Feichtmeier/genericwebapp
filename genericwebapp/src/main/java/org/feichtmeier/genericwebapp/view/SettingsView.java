@@ -4,13 +4,13 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.LocalDateTime;
 import java.util.Iterator;
 
 import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
 import javax.imageio.stream.ImageInputStream;
 
-import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.html.Anchor;
@@ -45,9 +45,17 @@ public class SettingsView extends AbstractView {
     private final String sessionUsername;
 
     public SettingsView(UserService userService, AvatarImageService avatarImageService) {
-        defaultAvatarImage = new Image("https://dummyimage.com/50x50/e7ebef/3b3b3b", "Avatar");
+
+        sessionUsername = SecurityUtils.getUsername();
+
+        AvatarImage userAvatar = avatarImageService.findMostRecentUserAvatarImage(sessionUsername);
+        if (null == userAvatar) {
+            defaultAvatarImage = new Image("https://dummyimage.com/50x50/e7ebef/3b3b3b", "Avatar");
+        } else {            
+            defaultAvatarImage = createImageFromAvatarImage(userAvatar);
+        }
+
         avatarContainer = new HorizontalLayout(defaultAvatarImage);
-        sessionUsername =  SecurityUtils.getUsername();
         buffer = new MemoryBuffer();
         upload = new Upload(buffer);
         upload.setUploadButton(new Button("Avatar..."));
@@ -55,7 +63,8 @@ public class SettingsView extends AbstractView {
         upload.setAcceptedFileTypes("image/png", "image/jpeg");
         upload.addSucceededListener(event -> {
             if (event.getMIMEType().startsWith("image")) {
-                final Image image = createImage(event.getMIMEType(), event.getFileName(), buffer.getInputStream());
+                final Image image = createImageFromUpload(event.getMIMEType(), event.getFileName(),
+                        buffer.getInputStream());
                 avatarContainer.removeAll();
                 avatarContainer.add(image);
 
@@ -65,9 +74,10 @@ public class SettingsView extends AbstractView {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                
+
+
                 final AvatarImage avatarImage = new AvatarImage(pngContent.toByteArray(), event.getFileName(),
-                        event.getMIMEType(), userService.findByUsername(sessionUsername));
+                        event.getMIMEType(), userService.findByUsername(sessionUsername), LocalDateTime.now());
                 avatarImageService.save(avatarImage);
             }
         });
@@ -84,7 +94,7 @@ public class SettingsView extends AbstractView {
 
     }
 
-    private Image createImage(String mimeType, String fileName, InputStream stream) {
+    private Image createImageFromUpload(String mimeType, String fileName, InputStream stream) {
         Image image = new Image();
         try {
             byte[] bytes = IOUtils.toByteArray(stream);
@@ -104,6 +114,17 @@ public class SettingsView extends AbstractView {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        return image;
+    }
+
+    private Image createImageFromAvatarImage(AvatarImage avatarImage) {
+        StreamResource sr = new StreamResource("activityImage", () -> {
+            return new ByteArrayInputStream(avatarImage.getByteArray());
+        });
+        sr.setContentType("image/png");
+        Image image = new Image(sr, avatarImage.getFileName());
+        image.setClassName("avatar");
 
         return image;
     }
