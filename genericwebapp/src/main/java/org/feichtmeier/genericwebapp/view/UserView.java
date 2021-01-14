@@ -6,6 +6,7 @@ import java.util.List;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.dialog.Dialog;
+import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.icon.VaadinIcon;
@@ -46,7 +47,7 @@ public class UserView extends AbstractView {
     private final HorizontalLayout viewTopLayout;
     private final VerticalLayout viewScrollLayout;
     private final Dialog userEditorDialog;
-    private final VerticalLayout dialogTopLayout;
+    private final FormLayout dialogTopLayout;
     private final HorizontalLayout dialogBottomLayout;
     private final VerticalLayout dialogBody;
     private final Binder<User> userBinder;
@@ -102,7 +103,7 @@ public class UserView extends AbstractView {
         dialogRolesListBox.addSelectionListener(e -> {
             currentUser.setRoles(e.getValue());
         });
-        dialogTopLayout = new VerticalLayout();
+        dialogTopLayout = new FormLayout();
         dialogTopLayout.add(dialogFullNameTextField, dialogUsernameTextField, dialogEmailTextField,
                 dialogPasswordTextField, dialogRolesLabel, dialogRolesListBox);
         // Dialog Bottom

@@ -6,6 +6,7 @@ import java.util.List;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.dialog.Dialog;
+import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.icon.VaadinIcon;
@@ -41,7 +42,7 @@ public class RoleView extends AbstractView {
     private final TextField viewRoleFilter;
     private final HorizontalLayout viewTopLayout;
     private final VerticalLayout viewScrollLayout;
-    private final VerticalLayout dialogTopLayout;
+    private final FormLayout dialogTopLayout;
     private final HorizontalLayout dialogBottomLayout;
     private final VerticalLayout dialogBody;
     private final Binder<Role> roleBinder;
@@ -86,7 +87,7 @@ public class RoleView extends AbstractView {
         // Edit Dialog
         roleEditorDialog = new Dialog();
         // Dialog top
-        dialogTopLayout = new VerticalLayout();
+        dialogTopLayout = new FormLayout();
         dialogNameTextField = new TextField("Role name");
         dialogPermissionListBox = new MultiSelectListBox<>();
         dialogPermissionLabel = new Label("Allowed views");
