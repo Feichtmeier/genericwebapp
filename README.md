@@ -44,22 +44,19 @@ An insecure REST Api exists in the `restapi` maven project.
 2. Install maven
    * Windows/MacOs: https://maven.apache.org/download.cgi
    * Ubuntu: `sudo apt install maven`
-3. Install nodejs
-   * Windows/MacOs: https://nodejs.org/en/
-   * Ubuntu: `sudo snap install node --classic`
-4. Install vscode
+3. Install vscode
    * Windows/MacOs: https://code.visualstudio.com/
    * Ubuntu: `sudo snap install code --classic`
-5. Install the vscode java extension pack: https://marketplace.visualstudio.com/items?itemName=vscjava.vscode-java-pack
-6. Install the vscode spring boot extension pack: https://marketplace.visualstudio.com/items?itemName=Pivotal.vscode-boot-dev-pack
-7. Setup a local database and database user ([Tutorial](https://github.com/hs-duesseldorf/se2rest#2-database))
-8. Change `application.properties` to match your database/user/password
-9. Install git
+4. Install the vscode java extension pack: https://marketplace.visualstudio.com/items?itemName=vscjava.vscode-java-pack
+5. Install the vscode spring boot extension pack: https://marketplace.visualstudio.com/items?itemName=Pivotal.vscode-boot-dev-pack
+6. Setup a local database and database user ([Tutorial](https://github.com/hs-duesseldorf/se2rest#2-database))
+7. Change `application.properties` to match your database/user/password
+8. Install git
    * Windows: https://git-scm.com/download
    * MacOs: `brew install git`
    * Ubuntu: `sudo apt install git`
-10. clone this repository with `git clone https://github.com/Feichtmeier/genericwebapp`
-11. start your local database
-12. Open your local clone of the repository with vscode and press the play button in the spring-boot dashboard
+9. clone this repository with `git clone https://github.com/Feichtmeier/genericwebapp`
+10. start your local database
+11. Open your local clone of the repository with vscode and press the play button in the spring-boot dashboard
     ![](showcaseassets/start.gif)
-13. Navigate to `localhost:8080` in your browser to access the webapp
+12. Navigate to `localhost:8080` in your browser to access the webapp
