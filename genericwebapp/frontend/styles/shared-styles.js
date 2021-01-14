@@ -74,6 +74,7 @@ $_documentContainer.innerHTML = `
       flex-grow: 1;
       margin-top: 0;
       margin-bottom: 0;
+      min-width: 80px;
     }
   </style>
 </custom-style>
