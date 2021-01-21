@@ -9,12 +9,14 @@ $_documentContainer.innerHTML = `
     html {
       --lumo-primary-color: hsl(161, 100%, 34%);
       --lumo-primary-text-color: hsl(161, 100%, 34%);
+      --lumo-primary-color-50pct: hsla(161, 100%, 34%, 0.5);
     }
 
     [theme~="dark"] {
       --lumo-base-color: hsl(214, 0%, 24%);
       --lumo-primary-color: hsl(161, 100%, 34%);
       --lumo-primary-text-color: hsl(161, 100%, 34%);
+      --lumo-primary-color-50pct: hsla(161, 100%, 34%, 0.5);
     }
 
     .grid-view {
