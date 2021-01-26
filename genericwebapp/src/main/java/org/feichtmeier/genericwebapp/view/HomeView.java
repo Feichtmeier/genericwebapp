@@ -1,5 +1,6 @@
 package org.feichtmeier.genericwebapp.view;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import com.vaadin.flow.component.button.Button;
@@ -10,6 +11,7 @@ import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.value.ValueChangeMode;
@@ -36,7 +38,8 @@ public class HomeView extends AbstractView {
     private final Dialog articleEditorDialog;
     private final Button dialogSaveButton, dialogCancelButton, dialogDeleteButton;
     private final FormLayout dialogTopLayout;
-    private final TextField dialogArticleTitleTextField;
+    private final TextField dialogArticleTitleTextField, dialogArticleDateTextField;
+    private final TextArea dialogArticleTextBodyTextArea;
     private final HorizontalLayout dialogBottomLayout;
     private final VerticalLayout dialogBody;
     private final Binder<Article> articleBinder;
@@ -60,7 +63,7 @@ public class HomeView extends AbstractView {
 
         });
         viewNewArticleButton = new Button(VaadinIcon.PLUS.create(), e -> {
-            editEntity(new Article(LocalDateTime.now(), "", "", null, userService.findByUsername(SecurityUtils.getUsername())));
+            editEntity(new Article(LocalDateTime.now(), "", "", userService.findByUsername(SecurityUtils.getUsername())));
         });
         viewTopLayout.add(viewNewArticleButton, viewArticleFilter);
 
@@ -72,11 +75,14 @@ public class HomeView extends AbstractView {
         // Dialog top
         dialogTopLayout = new FormLayout();
         dialogArticleTitleTextField = new TextField("Title");
+        dialogArticleDateTextField = new TextField("Date");
+        dialogArticleTextBodyTextArea = new TextArea("Article Body");
 
-        dialogTopLayout.add(dialogArticleTitleTextField);
+        dialogTopLayout.add(dialogArticleDateTextField, dialogArticleTitleTextField, dialogArticleTextBodyTextArea);
         // Dialog bottom
         dialogSaveButton = new Button("", VaadinIcon.CHECK.create(), e -> {
             if (articleBinder.validate().isOk()) {
+                currentEntity.setTimeStamp(LocalDateTime.now());
                 articleService.save(currentEntity);
                 Notification.show("Saved Role " + currentEntity.getTitle());
                 goBackToView();
@@ -101,6 +107,7 @@ public class HomeView extends AbstractView {
         // Bind data in dialog
         articleBinder.forField(dialogArticleTitleTextField).asRequired("Must chose a role name").bind(Article::getTitle,
                 Article::setTitle);
+        articleBinder.bind(dialogArticleTextBodyTextArea, "textBody");
     }
 
     public void editEntity(Article entity) {
@@ -111,8 +118,7 @@ public class HomeView extends AbstractView {
         articleEditorDialog.open();
         this.currentEntity = entity;
         articleBinder.setBean(currentEntity);
-
-        // refreshPermissions();
+        dialogArticleDateTextField.setValue(LocalDateTime.now().toString());
     }
 
     private void goBackToView() {

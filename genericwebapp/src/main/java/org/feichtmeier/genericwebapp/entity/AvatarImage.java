@@ -1,7 +1,6 @@
 package org.feichtmeier.genericwebapp.entity;
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
 
 import javax.persistence.Entity;
 import javax.persistence.OneToOne;

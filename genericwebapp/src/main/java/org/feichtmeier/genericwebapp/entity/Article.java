@@ -1,9 +1,9 @@
 package org.feichtmeier.genericwebapp.entity;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 import javax.persistence.Entity;
+import javax.persistence.OneToOne;
 import javax.validation.constraints.NotNull;
 
 @Entity
@@ -15,19 +15,18 @@ public class Article extends AbstractEntity {
     private LocalDateTime timeStamp;
     @NotNull
     private String title;
-    private String textBody;    
-    private List<ArticleImage> articleImages;
+    private String textBody;
+    @NotNull
+    @OneToOne
     private User user;
 
     public Article() {
     }
 
-    public Article(@NotNull LocalDateTime timeStamp, @NotNull String title, String textBody,
-            List<ArticleImage> articleImages, @NotNull User user) {
+    public Article(@NotNull LocalDateTime timeStamp, @NotNull String title, String textBody, @NotNull User user) {
         this.timeStamp = timeStamp;
         this.title = title;
         this.textBody = textBody;
-        this.articleImages = articleImages;
         this.user = user;
     }
 
@@ -53,14 +52,6 @@ public class Article extends AbstractEntity {
 
     public void setTextBody(String textBody) {
         this.textBody = textBody;
-    }
-
-    public List<ArticleImage> getArticleImages() {
-        return articleImages;
-    }
-
-    public void setArticleImages(List<ArticleImage> articleImages) {
-        this.articleImages = articleImages;
     }
 
     public User getUser() {
@@ -111,5 +102,5 @@ public class Article extends AbstractEntity {
     @Override
     public String toString() {
         return "Article [timeStamp=" + timeStamp + ", title=" + title + ", user=" + user + "]";
-    }    
+    }
 }
