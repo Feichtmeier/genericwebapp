@@ -3,30 +3,14 @@ package org.feichtmeier.genericwebapp.entity;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 
-import javax.persistence.Basic;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Lob;
 import javax.persistence.OneToOne;
 import javax.validation.constraints.NotNull;
 
 @Entity
-public class AvatarImage extends AbstractEntity {
+public class AvatarImage extends AbstractImage {
 
     private static final long serialVersionUID = 1L;
-
-    @Lob
-    @Basic(fetch = FetchType.LAZY)
-    private byte[] byteArray;
-
-    @NotNull
-    private String fileName;
-
-    @NotNull
-    private String MIMEType;
-
-    @NotNull
-    private LocalDateTime timeStamp;
 
     @NotNull
     @OneToOne
@@ -44,44 +28,12 @@ public class AvatarImage extends AbstractEntity {
         this.timeStamp = timeStamp;
     }
 
-    public byte[] getByteArray() {
-        return byteArray;
-    }
-
-    public void setByteArray(byte[] byteArray) {
-        this.byteArray = byteArray;
-    }
-
-    public String getFileName() {
-        return fileName;
-    }
-
-    public void setFileName(String fileName) {
-        this.fileName = fileName;
-    }
-
-    public String getMIMEType() {
-        return MIMEType;
-    }
-
-    public void setMIMEType(String mIMEType) {
-        MIMEType = mIMEType;
-    }
-
     public User getUser() {
         return user;
     }
 
     public void setUser(User user) {
         this.user = user;
-    }
-
-    public LocalDateTime getTimeStamp() {
-        return timeStamp;
-    }
-
-    public void setTimeStamp(LocalDateTime timeStamp) {
-        this.timeStamp = timeStamp;
     }
 
     @Override
