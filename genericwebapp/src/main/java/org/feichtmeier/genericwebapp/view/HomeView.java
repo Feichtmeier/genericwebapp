@@ -3,10 +3,13 @@ package org.feichtmeier.genericwebapp.view;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.formlayout.FormLayout;
+import com.vaadin.flow.component.html.H2;
+import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -33,6 +36,7 @@ public class HomeView extends AbstractView {
 
     // UI Fields
     private final HorizontalLayout viewTopLayout;
+    private final VerticalLayout viewBottomLayout;
     private final TextField viewArticleFilter;
     private final Button viewNewArticleButton;
     private final Dialog articleEditorDialog;
@@ -50,11 +54,11 @@ public class HomeView extends AbstractView {
     private final ArticleImageService articleImageService;
 
     public HomeView(UserService userService, ArticleService articleService, ArticleImageService articleImageService) {
-        
+
         this.userService = userService;
         this.articleService = articleService;
         this.articleImageService = articleImageService;
-        
+
         // View Top
         viewTopLayout = new HorizontalLayout();
         viewArticleFilter = new TextField("", "Search ...");
@@ -63,11 +67,14 @@ public class HomeView extends AbstractView {
 
         });
         viewNewArticleButton = new Button(VaadinIcon.PLUS.create(), e -> {
-            editEntity(new Article(LocalDateTime.now(), "", "", userService.findByUsername(SecurityUtils.getUsername())));
+            editEntity(
+                    new Article(LocalDateTime.now(), "", "", userService.findByUsername(SecurityUtils.getUsername())));
         });
         viewTopLayout.add(viewNewArticleButton, viewArticleFilter);
 
-        add(viewTopLayout);
+        viewBottomLayout = new VerticalLayout();
+
+        add(viewTopLayout, viewBottomLayout);
 
         // Edit Dialog
         articleBinder = new Binder<>(Article.class);
@@ -84,6 +91,7 @@ public class HomeView extends AbstractView {
             if (articleBinder.validate().isOk()) {
                 currentEntity.setTimeStamp(LocalDateTime.now());
                 articleService.save(currentEntity);
+                addArticleToView(currentEntity.getTitle(), currentEntity.getTextBody());
                 Notification.show("Saved Role " + currentEntity.getTitle());
                 goBackToView();
             } else {
@@ -110,6 +118,15 @@ public class HomeView extends AbstractView {
         articleBinder.bind(dialogArticleTextBodyTextArea, "textBody");
     }
 
+    private void addArticleToView(String titleString, String body) {
+        final VerticalLayout aVerticalLayout = new VerticalLayout();
+        final H2 title = new H2(titleString);
+        final Text text = new Text(body);
+        aVerticalLayout.add(title, text);
+        aVerticalLayout.setClassName("article");
+        viewBottomLayout.add(aVerticalLayout);
+    }
+
     public void editEntity(Article entity) {
         if (entity == null) {
             articleEditorDialog.close();
@@ -131,7 +148,9 @@ public class HomeView extends AbstractView {
     @Override
     public void linkComponentsToCss() {
         setId("home-view");
+        setClassName("grid-view");
         viewTopLayout.addClassName("grid-view-top-layout");
+        viewBottomLayout.addClassName("grid-view-scroll-layout");
         viewArticleFilter.addClassName("grid-view-filter");
         viewNewArticleButton.getElement().getThemeList().add("primary");
         viewNewArticleButton.addClassName("grid-view-add-entity-button");
@@ -143,5 +162,6 @@ public class HomeView extends AbstractView {
         dialogCancelButton.addClassName("grid-view-editor-cancel-button");
         dialogDeleteButton.getElement().getThemeList().add("error");
         dialogDeleteButton.addClassName("grid-view-editor-delete-button");
+
     }
 }
