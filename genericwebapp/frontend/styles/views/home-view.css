@@ -2,7 +2,37 @@
     align-items: center;
 }
 
+.article-editor {
+    max-width: 500px;
+}
+
 .article {
     background-color: var(--lumo-contrast-5pct);
     border-radius: 5px;
+    cursor: pointer;
+}
+
+.article:hover {
+    background-color: var(--lumo-contrast-10pct);
+}
+
+.article:active {
+    background-color: var(--lumo-contrast-20pct);
+}
+
+.article-title {
+    margin-top: 5px;
+}
+
+.article-date {
+    font-size: small;
+}
+
+.article-editor-title {
+    width: 100%;
+}
+
+.article-editor-date {
+    width: 100%;
+    margin-top: 35px;
 }

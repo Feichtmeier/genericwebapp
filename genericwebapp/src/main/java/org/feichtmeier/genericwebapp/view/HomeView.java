@@ -1,24 +1,26 @@
 package org.feichtmeier.genericwebapp.view;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-import com.vaadin.flow.component.Text;
+import com.vaadin.flow.component.Html;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.dialog.Dialog;
-import com.vaadin.flow.component.formlayout.FormLayout;
+import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.component.upload.Upload;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.spring.annotation.VaadinSessionScope;
+import com.vladsch.flexmark.html.HtmlRenderer;
+import com.vladsch.flexmark.parser.Parser;
 
 import org.feichtmeier.genericwebapp.entity.Article;
 import org.feichtmeier.genericwebapp.security.SecurityUtils;
@@ -26,6 +28,8 @@ import org.feichtmeier.genericwebapp.service.ArticleImageService;
 import org.feichtmeier.genericwebapp.service.ArticleService;
 import org.feichtmeier.genericwebapp.service.UserService;
 import org.springframework.stereotype.Component;
+import org.vaadin.maxime.MarkdownArea;
+import org.vaadin.maxime.StringUtil;
 
 @CssImport("./styles/views/home-view.css")
 @Component
@@ -41,9 +45,11 @@ public class HomeView extends AbstractView {
     private final Button viewNewArticleButton;
     private final Dialog articleEditorDialog;
     private final Button dialogSaveButton, dialogCancelButton, dialogDeleteButton;
-    private final FormLayout dialogTopLayout;
-    private final TextField dialogArticleTitleTextField, dialogArticleDateTextField;
-    private final TextArea dialogArticleTextBodyTextArea;
+    private final VerticalLayout dialogTopLayout;
+    private final TextField dialogArticleTitleTextField;
+    private final DatePicker dialogArticleDateTextField;
+    private final Upload imageUpload;
+    private final MarkdownArea markdownArea;
     private final HorizontalLayout dialogBottomLayout;
     private final VerticalLayout dialogBody;
     private final Binder<Article> articleBinder;
@@ -52,6 +58,8 @@ public class HomeView extends AbstractView {
     private final UserService userService;
     private final ArticleService articleService;
     private final ArticleImageService articleImageService;
+    private final Parser parser = Parser.builder().build();
+    private final HtmlRenderer renderer = HtmlRenderer.builder().build();
 
     public HomeView(UserService userService, ArticleService articleService, ArticleImageService articleImageService) {
 
@@ -68,7 +76,8 @@ public class HomeView extends AbstractView {
         });
         viewNewArticleButton = new Button(VaadinIcon.PLUS.create(), e -> {
             editEntity(
-                    new Article(LocalDateTime.now(), "", "", userService.findByUsername(SecurityUtils.getUsername())));
+                    new Article(LocalDateTime.now(), "", "", "",
+                            userService.findByUsername(SecurityUtils.getUsername())));
         });
         viewTopLayout.add(viewNewArticleButton, viewArticleFilter);
 
@@ -80,18 +89,22 @@ public class HomeView extends AbstractView {
         articleBinder = new Binder<>(Article.class);
         articleEditorDialog = new Dialog();
         // Dialog top
-        dialogTopLayout = new FormLayout();
+        dialogTopLayout = new VerticalLayout();
         dialogArticleTitleTextField = new TextField("Title");
-        dialogArticleDateTextField = new TextField("Date");
-        dialogArticleTextBodyTextArea = new TextArea("Article Body");
+        dialogArticleDateTextField = new DatePicker();
+        markdownArea = new MarkdownArea();
+        markdownArea.getInput().setHeight("200px");
+        imageUpload = new Upload();
+        dialogTopLayout.add(dialogArticleDateTextField, dialogArticleTitleTextField, markdownArea, imageUpload);
 
-        dialogTopLayout.add(dialogArticleDateTextField, dialogArticleTitleTextField, dialogArticleTextBodyTextArea);
         // Dialog bottom
         dialogSaveButton = new Button("", VaadinIcon.CHECK.create(), e -> {
             if (articleBinder.validate().isOk()) {
-                currentEntity.setTimeStamp(LocalDateTime.now());
+                final LocalDateTime localDateTime = LocalDateTime.now();
+                String germanDate = localDateTime.getDayOfMonth() + "." + localDateTime.getMonth().getValue() + "." + localDateTime.getYear();
+                currentEntity.setTimeStamp(localDateTime);
                 articleService.save(currentEntity);
-                addArticleToView(currentEntity.getTitle(), currentEntity.getTextBody());
+                addArticleToView(currentEntity.getTitle(), currentEntity.getTextBody(), germanDate);
                 Notification.show("Saved Role " + currentEntity.getTitle());
                 goBackToView();
             } else {
@@ -115,16 +128,35 @@ public class HomeView extends AbstractView {
         // Bind data in dialog
         articleBinder.forField(dialogArticleTitleTextField).asRequired("Must chose a role name").bind(Article::getTitle,
                 Article::setTitle);
-        articleBinder.bind(dialogArticleTextBodyTextArea, "textBody");
+        articleBinder.bind(markdownArea.getInput(), "textBody");
     }
 
-    private void addArticleToView(String titleString, String body) {
+    private void addArticleToView(String titleString, String body, String dateString) {
         final VerticalLayout aVerticalLayout = new VerticalLayout();
         final H2 title = new H2(titleString);
-        final Text text = new Text(body);
-        aVerticalLayout.add(title, text);
+        title.setClassName("article-title");
+        // final Text text = new Text(body);
+        final Div markdownOutput = new Div();
+        String text = markdownArea.getValue().isEmpty() ? "*Nothing to preview*" : markdownArea.getValue();
+        addMarkdown(text, markdownOutput);
+        final Label dateText = new Label(dateString);
+        dateText.setClassName("article-date");
+        aVerticalLayout.add(dateText, title, markdownOutput);
         aVerticalLayout.setClassName("article");
         viewBottomLayout.add(aVerticalLayout);
+    }
+
+    private void addMarkdown(String value, Div previewView) {
+		String html = String.format("<div>%s</div>",
+				parseMarkdown(StringUtil.getNullSafeString(value)));
+		Html item = new Html(html);
+		previewView.removeAll();
+		previewView.add(item);
+	}
+
+	private String parseMarkdown(String value) {
+        com.vladsch.flexmark.ast.Node text = parser.parse(value);
+        return renderer.render(text);
     }
 
     public void editEntity(Article entity) {
@@ -135,7 +167,7 @@ public class HomeView extends AbstractView {
         articleEditorDialog.open();
         this.currentEntity = entity;
         articleBinder.setBean(currentEntity);
-        dialogArticleDateTextField.setValue(LocalDateTime.now().toString());
+        dialogArticleDateTextField.setValue(LocalDateTime.now().toLocalDate());
     }
 
     private void goBackToView() {
@@ -155,6 +187,7 @@ public class HomeView extends AbstractView {
         viewNewArticleButton.getElement().getThemeList().add("primary");
         viewNewArticleButton.addClassName("grid-view-add-entity-button");
         dialogBody.addClassName("grid-view-editor-dialog-body");
+        dialogBody.addClassName("article-editor");
         dialogTopLayout.addClassName("grid-view-editor-dialog-top-layout");
         dialogBottomLayout.addClassName("grid-view-editor-dialog-bottom-layout");
         dialogSaveButton.getElement().getThemeList().add("primary");
@@ -162,6 +195,7 @@ public class HomeView extends AbstractView {
         dialogCancelButton.addClassName("grid-view-editor-cancel-button");
         dialogDeleteButton.getElement().getThemeList().add("error");
         dialogDeleteButton.addClassName("grid-view-editor-delete-button");
-
+        dialogArticleTitleTextField.addClassName("article-editor-title");
+        dialogArticleDateTextField.addClassName("article-editor-date");
     }
 }

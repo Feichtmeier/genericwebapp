@@ -15,7 +15,10 @@ public class Article extends AbstractEntity {
     private LocalDateTime timeStamp;
     @NotNull
     private String title;
+    @NotNull
     private String textBody;
+    @NotNull
+    private String textBodyShort;
     @NotNull
     @OneToOne
     private User user;
@@ -23,10 +26,12 @@ public class Article extends AbstractEntity {
     public Article() {
     }
 
-    public Article(@NotNull LocalDateTime timeStamp, @NotNull String title, String textBody, @NotNull User user) {
+    public Article(@NotNull LocalDateTime timeStamp, @NotNull String title, @NotNull String textBody,
+            @NotNull String textBodyShort, @NotNull User user) {
         this.timeStamp = timeStamp;
         this.title = title;
         this.textBody = textBody;
+        this.textBodyShort = textBodyShort;
         this.user = user;
     }
 
@@ -62,10 +67,20 @@ public class Article extends AbstractEntity {
         this.user = user;
     }
 
+    public String getTextBodyShort() {
+        return this.textBodyShort;
+    }
+
+    public void setTextBodyShort(String textBodyShort) {
+        this.textBodyShort = textBodyShort;
+    }
+
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = super.hashCode();
+        result = prime * result + ((textBody == null) ? 0 : textBody.hashCode());
+        result = prime * result + ((textBodyShort == null) ? 0 : textBodyShort.hashCode());
         result = prime * result + ((timeStamp == null) ? 0 : timeStamp.hashCode());
         result = prime * result + ((title == null) ? 0 : title.hashCode());
         result = prime * result + ((user == null) ? 0 : user.hashCode());
@@ -81,6 +96,16 @@ public class Article extends AbstractEntity {
         if (getClass() != obj.getClass())
             return false;
         Article other = (Article) obj;
+        if (textBody == null) {
+            if (other.textBody != null)
+                return false;
+        } else if (!textBody.equals(other.textBody))
+            return false;
+        if (textBodyShort == null) {
+            if (other.textBodyShort != null)
+                return false;
+        } else if (!textBodyShort.equals(other.textBodyShort))
+            return false;
         if (timeStamp == null) {
             if (other.timeStamp != null)
                 return false;
@@ -101,6 +126,8 @@ public class Article extends AbstractEntity {
 
     @Override
     public String toString() {
-        return "Article [timeStamp=" + timeStamp + ", title=" + title + ", user=" + user + "]";
+        return "Article [textBody=" + textBody + ", textBodyShort=" + textBodyShort + ", timeStamp=" + timeStamp
+                + ", title=" + title + ", user=" + user + "]";
     }
+
 }
