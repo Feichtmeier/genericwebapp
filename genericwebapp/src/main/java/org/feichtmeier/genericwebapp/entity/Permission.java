@@ -33,7 +33,7 @@ public class Permission extends AbstractEntity {
     private View view;
 
     @Column(columnDefinition = "tinyint(1) default 1")
-    private boolean edit = true;
+    private boolean edit = false;
 
     public View getView() {
         return view;

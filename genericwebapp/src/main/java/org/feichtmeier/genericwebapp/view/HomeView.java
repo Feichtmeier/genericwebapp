@@ -1,6 +1,7 @@
 package org.feichtmeier.genericwebapp.view;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import com.vaadin.flow.component.Html;
 import com.vaadin.flow.component.button.Button;
@@ -27,6 +28,7 @@ import org.feichtmeier.genericwebapp.security.SecurityUtils;
 import org.feichtmeier.genericwebapp.service.ArticleImageService;
 import org.feichtmeier.genericwebapp.service.ArticleService;
 import org.feichtmeier.genericwebapp.service.UserService;
+import org.feichtmeier.genericwebapp.view.constants.ViewNames;
 import org.springframework.stereotype.Component;
 import org.vaadin.maxime.MarkdownArea;
 import org.vaadin.maxime.StringUtil;
@@ -34,7 +36,7 @@ import org.vaadin.maxime.StringUtil;
 @CssImport("./styles/views/home-view.css")
 @Component
 @VaadinSessionScope
-public class HomeView extends AbstractView {
+public class HomeView extends AbstractView implements EntityEditor<Article> {
 
     private static final long serialVersionUID = -2333684897315095897L;
 
@@ -101,10 +103,9 @@ public class HomeView extends AbstractView {
         dialogSaveButton = new Button("", VaadinIcon.CHECK.create(), e -> {
             if (articleBinder.validate().isOk()) {
                 final LocalDateTime localDateTime = LocalDateTime.now();
-                String germanDate = localDateTime.getDayOfMonth() + "." + localDateTime.getMonth().getValue() + "." + localDateTime.getYear();
                 currentEntity.setTimeStamp(localDateTime);
                 articleService.save(currentEntity);
-                addArticleToView(currentEntity.getTitle(), currentEntity.getTextBody(), germanDate);
+                addArticleToView(currentEntity);
                 Notification.show("Saved Role " + currentEntity.getTitle());
                 goBackToView();
             } else {
@@ -131,17 +132,21 @@ public class HomeView extends AbstractView {
         articleBinder.bind(markdownArea.getInput(), "textBody");
     }
 
-    private void addArticleToView(String titleString, String body, String dateString) {
+    private void addArticleToView(Article article) {
         final VerticalLayout aVerticalLayout = new VerticalLayout();
-        final H2 title = new H2(titleString);
+        final H2 title = new H2(article.getTitle());
+        final Button editButton = new Button(VaadinIcon.EDIT.create(), e -> {
+            editEntity(article);
+        });
+        editButton.setVisible(userService.isViewEdit(userService.findByUsername(SecurityUtils.getUsername()), ViewNames.HOME_VIEW));
         title.setClassName("article-title");
         // final Text text = new Text(body);
         final Div markdownOutput = new Div();
         String text = markdownArea.getValue().isEmpty() ? "*Nothing to preview*" : markdownArea.getValue();
         addMarkdown(text, markdownOutput);
-        final Label dateText = new Label(dateString);
+        final Label dateText = new Label(article.getTimeStamp().format(DateTimeFormatter.ofPattern("DD.MM.YYYY")));
         dateText.setClassName("article-date");
-        aVerticalLayout.add(dateText, title, markdownOutput);
+        aVerticalLayout.add(dateText, title, markdownOutput, editButton);
         aVerticalLayout.setClassName("article");
         viewBottomLayout.add(aVerticalLayout);
     }
@@ -159,13 +164,14 @@ public class HomeView extends AbstractView {
         return renderer.render(text);
     }
 
-    public void editEntity(Article entity) {
-        if (entity == null) {
+    @Override
+    public void editEntity(Article article) {
+        if (article == null) {
             articleEditorDialog.close();
             return;
         }
         articleEditorDialog.open();
-        this.currentEntity = entity;
+        this.currentEntity = article;
         articleBinder.setBean(currentEntity);
         dialogArticleDateTextField.setValue(LocalDateTime.now().toLocalDate());
     }
@@ -175,6 +181,10 @@ public class HomeView extends AbstractView {
         // refreshRoles();
         // refreshPermissions();
         viewArticleFilter.clear();
+    }
+
+    private void showArticleDetails(Article article) {
+
     }
 
     @Override

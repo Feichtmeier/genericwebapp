@@ -32,7 +32,7 @@ import org.springframework.stereotype.Component;
 @Component
 @VaadinSessionScope
 @Secured(ViewNames.ROLE_VIEW)
-public class RoleView extends AbstractView {
+public class RoleView extends AbstractView implements EntityEditor<Role> {
 
     private static final long serialVersionUID = 1L;
     // UI Fields
@@ -124,6 +124,7 @@ public class RoleView extends AbstractView {
         });
     }
 
+    @Override
     public void editEntity(Role entity) {
         if (entity == null) {
             roleEditorDialog.close();

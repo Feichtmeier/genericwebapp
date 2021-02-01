@@ -44,8 +44,11 @@ public class DatabasePreloader {
             }
 
             Role admin = new Role("admin");
-            Set<Permission> allPermissions = new HashSet<>(permissionRepository.findAll());
-            admin.setPermissions(allPermissions);
+            Set<Permission> adminPermissions = new HashSet<>(permissionRepository.findAll());
+            for (Permission permission : adminPermissions) {
+                permission.setEdit(true);
+            }
+            admin.setPermissions(adminPermissions);
             roleRepository.save(admin);
 
             Role user = new Role("user");

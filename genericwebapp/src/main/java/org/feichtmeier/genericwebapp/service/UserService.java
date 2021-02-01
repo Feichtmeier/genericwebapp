@@ -2,6 +2,8 @@ package org.feichtmeier.genericwebapp.service;
 
 import java.util.List;
 
+import org.feichtmeier.genericwebapp.entity.Permission;
+import org.feichtmeier.genericwebapp.entity.Role;
 import org.feichtmeier.genericwebapp.entity.User;
 import org.feichtmeier.genericwebapp.repository.UserRepository;
 import org.springframework.stereotype.Service;
@@ -32,6 +34,28 @@ public class UserService implements DataService<User> {
 
     public User findByUsername(String username) {
         return userRepository.findByUsername(username);
+    }
+
+    public boolean isViewAllowed(User user, String viewName) {
+        for (Role role : user.getRoles()) {
+            for (Permission permission : role.getPermissions()) {
+                if (permission.getView().getName().equals(viewName)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public boolean isViewEdit(User user, String viewName) {
+        for (Role role : user.getRoles()) {
+            for (Permission permission : role.getPermissions()) {
+                if (permission.getView().getName().equals(viewName)) {
+                    return permission.isEdit();
+                }
+            }
+        }
+        return false;
     }
     
 }

@@ -37,7 +37,7 @@ import org.springframework.stereotype.Component;
 @Component
 @Secured(ViewNames.USER_VIEW)
 @VaadinSessionScope
-public class UserView extends AbstractView {
+public class UserView extends AbstractView implements EntityEditor<User> {
 
     private static final long serialVersionUID = 7368213324544313846L;
     // UI Fields
@@ -188,6 +188,7 @@ public class UserView extends AbstractView {
         dialogRolesListBox.setItems(roles);
     }
 
+    @Override
     public void editEntity(User entity) {
         if (entity == null) {
             goBackToView();
