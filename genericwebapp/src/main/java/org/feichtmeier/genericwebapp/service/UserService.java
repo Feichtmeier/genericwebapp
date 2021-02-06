@@ -47,7 +47,7 @@ public class UserService implements DataService<User> {
         return false;
     }
 
-    public boolean isViewEdit(User user, String viewName) {
+    public boolean isViewEditable(User user, String viewName) {
         for (Role role : user.getRoles()) {
             for (Permission permission : role.getPermissions()) {
                 if (permission.getView().getName().equals(viewName)) {

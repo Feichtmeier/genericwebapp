@@ -77,9 +77,8 @@ public class HomeView extends AbstractView implements EntityEditor<Article> {
 
         });
         viewNewArticleButton = new Button(VaadinIcon.PLUS.create(), e -> {
-            editEntity(
-                    new Article(LocalDateTime.now(), "", "", "",
-                            userService.findByUsername(SecurityUtils.getUsername())));
+            editEntity(new Article(LocalDateTime.now(), "", "", "",
+                    userService.findByUsername(SecurityUtils.getUsername())));
         });
         viewTopLayout.add(viewNewArticleButton, viewArticleFilter);
 
@@ -106,10 +105,10 @@ public class HomeView extends AbstractView implements EntityEditor<Article> {
                 currentEntity.setTimeStamp(localDateTime);
                 articleService.save(currentEntity);
                 addArticleToView(currentEntity);
-                Notification.show("Saved Role " + currentEntity.getTitle());
+                Notification.show("Saved Article " + currentEntity.getTitle());
                 goBackToView();
             } else {
-                Notification.show("NOT saved Role " + currentEntity.getTitle());
+                Notification.show("NOT saved Article " + currentEntity.getTitle());
             }
         });
         dialogCancelButton = new Button("", VaadinIcon.CLOSE.create(), e -> {
@@ -127,7 +126,7 @@ public class HomeView extends AbstractView implements EntityEditor<Article> {
         articleEditorDialog.setCloseOnEsc(false);
         articleEditorDialog.setCloseOnOutsideClick(false);
         // Bind data in dialog
-        articleBinder.forField(dialogArticleTitleTextField).asRequired("Must chose a role name").bind(Article::getTitle,
+        articleBinder.forField(dialogArticleTitleTextField).asRequired("Must chose an article title!").bind(Article::getTitle,
                 Article::setTitle);
         articleBinder.bind(markdownArea.getInput(), "textBody");
     }
@@ -138,7 +137,8 @@ public class HomeView extends AbstractView implements EntityEditor<Article> {
         final Button editButton = new Button(VaadinIcon.EDIT.create(), e -> {
             editEntity(article);
         });
-        editButton.setVisible(userService.isViewEdit(userService.findByUsername(SecurityUtils.getUsername()), ViewNames.HOME_VIEW));
+        editButton.setVisible(userService.isViewEditable(userService.findByUsername(SecurityUtils.getUsername()),
+                ViewNames.HOME_VIEW));
         title.setClassName("article-title");
         // final Text text = new Text(body);
         final Div markdownOutput = new Div();
@@ -152,14 +152,13 @@ public class HomeView extends AbstractView implements EntityEditor<Article> {
     }
 
     private void addMarkdown(String value, Div previewView) {
-		String html = String.format("<div>%s</div>",
-				parseMarkdown(StringUtil.getNullSafeString(value)));
-		Html item = new Html(html);
-		previewView.removeAll();
-		previewView.add(item);
-	}
+        String html = String.format("<div>%s</div>", parseMarkdown(StringUtil.getNullSafeString(value)));
+        Html item = new Html(html);
+        previewView.removeAll();
+        previewView.add(item);
+    }
 
-	private String parseMarkdown(String value) {
+    private String parseMarkdown(String value) {
         com.vladsch.flexmark.ast.Node text = parser.parse(value);
         return renderer.render(text);
     }

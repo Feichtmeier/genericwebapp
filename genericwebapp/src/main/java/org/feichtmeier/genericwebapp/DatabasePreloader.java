@@ -47,6 +47,7 @@ public class DatabasePreloader {
             Set<Permission> adminPermissions = new HashSet<>(permissionRepository.findAll());
             for (Permission permission : adminPermissions) {
                 permission.setEdit(true);
+                permissionRepository.save(permission);
             }
             admin.setPermissions(adminPermissions);
             roleRepository.save(admin);
