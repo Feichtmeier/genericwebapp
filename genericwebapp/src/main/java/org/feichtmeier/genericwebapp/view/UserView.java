@@ -93,6 +93,7 @@ public class UserView extends AbstractView implements EntityEditor<User> {
         add(viewTopLayout, viewScrollLayout);
         // Dialog
         userEditorDialog = new Dialog();
+        userEditorDialog.setMaxWidth("400px");
         // Dialog Top
         dialogFullNameTextField = new TextField("Full Name");
         dialogUsernameTextField = new TextField("Username");

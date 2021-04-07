@@ -89,6 +89,7 @@ public class HomeView extends AbstractView implements EntityEditor<Article> {
         // Edit Dialog
         articleBinder = new Binder<>(Article.class);
         articleEditorDialog = new Dialog();
+        articleEditorDialog.setMaxWidth("400px");
         // Dialog top
         dialogTopLayout = new VerticalLayout();
         dialogArticleTitleTextField = new TextField("Title");

@@ -86,6 +86,7 @@ public class RoleView extends AbstractView implements EntityEditor<Role> {
         this.add(viewTopLayout, viewScrollLayout);
         // Edit Dialog
         roleEditorDialog = new Dialog();
+        roleEditorDialog.setMaxWidth("400px");
         // Dialog top
         dialogTopLayout = new FormLayout();
         dialogNameTextField = new TextField("Role name");
