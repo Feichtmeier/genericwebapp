@@ -55,13 +55,14 @@ public class HomeView extends AbstractView implements EntityEditor<Article> {
     private final HorizontalLayout dialogBottomLayout;
     private final VerticalLayout dialogBody;
     private final Binder<Article> articleBinder;
+    // Markdown
+    private final Parser parser = Parser.builder().build();
+    private final HtmlRenderer renderer = HtmlRenderer.builder().build();
     // Data Fields
     private Article currentEntity;
     private final UserService userService;
     private final ArticleService articleService;
     private final ArticleImageService articleImageService;
-    private final Parser parser = Parser.builder().build();
-    private final HtmlRenderer renderer = HtmlRenderer.builder().build();
 
     public HomeView(UserService userService, ArticleService articleService, ArticleImageService articleImageService) {
 
@@ -102,10 +103,11 @@ public class HomeView extends AbstractView implements EntityEditor<Article> {
         // Dialog bottom
         dialogSaveButton = new Button("", VaadinIcon.CHECK.create(), e -> {
             if (articleBinder.validate().isOk()) {
-                final LocalDateTime localDateTime = LocalDateTime.now();
-                currentEntity.setTimeStamp(localDateTime);
+                currentEntity.setTimeStamp(LocalDateTime.now());
+
                 articleService.save(currentEntity);
-                addArticleToView(currentEntity);
+                refreshArticlesInView();
+
                 Notification.show("Saved Article " + currentEntity.getTitle());
                 goBackToView();
             } else {
@@ -127,9 +129,14 @@ public class HomeView extends AbstractView implements EntityEditor<Article> {
         articleEditorDialog.setCloseOnEsc(false);
         articleEditorDialog.setCloseOnOutsideClick(false);
         // Bind data in dialog
-        articleBinder.forField(dialogArticleTitleTextField).asRequired("Must chose an article title!").bind(Article::getTitle,
-                Article::setTitle);
+        articleBinder.forField(dialogArticleTitleTextField).asRequired("Must chose an article title!")
+                .bind(Article::getTitle, Article::setTitle);
         articleBinder.bind(markdownArea.getInput(), "textBody");
+    }
+
+    private void refreshArticlesInView() {
+        viewBottomLayout.removeAll();
+        articleService.findAll().forEach((article) -> addArticleToView(article));
     }
 
     private void addArticleToView(Article article) {

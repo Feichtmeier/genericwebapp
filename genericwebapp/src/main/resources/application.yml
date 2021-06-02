@@ -19,12 +19,12 @@ spring:
 # cd inside_the_maven_project
 # keytool -genkeypair -alias tomcat -keyalg RSA -keysize 2048 -keystore keystore.jks -validity 3650 -storepass password
 
-# server:
+server:
 #   ssl:
 #     key-store: keystore.jks
 #     key-store-password: password
 #     key-store-type: jks
 #     key-alias: tomcat
 #     key-password: password
-#   port: 8443
+  port: 3000
     

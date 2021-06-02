@@ -9,7 +9,6 @@ import javax.persistence.Lob;
 import javax.persistence.MappedSuperclass;
 import javax.validation.constraints.NotNull;
 
-@SuppressWarnings("serial")
 @MappedSuperclass
 public abstract class AbstractImage extends AbstractEntity {
 

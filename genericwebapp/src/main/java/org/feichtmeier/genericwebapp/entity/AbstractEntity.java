@@ -12,7 +12,6 @@ import javax.persistence.Version;
  * AbstractEntity
  */
 
-@SuppressWarnings("serial")
 @MappedSuperclass
 public abstract class AbstractEntity implements Serializable {
 
