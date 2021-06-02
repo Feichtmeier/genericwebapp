@@ -30,5 +30,14 @@ public class ArticleService implements DataService<Article> {
     public void delete(Article entity) {
         articleRepository.delete(entity);
     }
+
+    @Override
+    public Article getOne(Article entity) {
+        return articleRepository.getOne(entity.getId());
+    }
+
+    public boolean exists(Article entity) {
+        return articleRepository.existsById(entity.getId());
+    }
     
 }

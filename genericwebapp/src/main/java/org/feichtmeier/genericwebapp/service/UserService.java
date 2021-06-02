@@ -57,5 +57,10 @@ public class UserService implements DataService<User> {
         }
         return false;
     }
+
+    @Override
+    public User getOne(User entity) {
+        return userRepository.getOne(entity.getId());
+    }
     
 }

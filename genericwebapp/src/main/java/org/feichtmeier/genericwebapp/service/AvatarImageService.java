@@ -61,4 +61,9 @@ public class AvatarImageService implements DataService<AvatarImage> {
         return mostRecentAvatarImage;
     }
 
+    @Override
+    public AvatarImage getOne(AvatarImage entity) {
+        return avatarImageRepository.getOne(entity.getId());
+    }
+
 }

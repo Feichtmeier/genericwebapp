@@ -6,6 +6,8 @@ import org.feichtmeier.genericwebapp.entity.AbstractEntity;
 
 public interface DataService<E extends AbstractEntity> {
 
+    public E getOne(E entity);
+
     public List<E> findAll();
 
     public void save(E entity);

@@ -29,5 +29,10 @@ public class ArticleImageService implements DataService<ArticleImage> {
     public void delete(ArticleImage entity) {
         articleImageRepository.delete(entity);
     }
+
+    @Override
+    public ArticleImage getOne(ArticleImage entity) {
+        return articleImageRepository.getOne(entity.getId());
+    }
     
 }

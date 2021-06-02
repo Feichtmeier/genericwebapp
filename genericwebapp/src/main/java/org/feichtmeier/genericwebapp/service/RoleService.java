@@ -30,6 +30,11 @@ public class RoleService implements DataService<Role> {
         roleRepository.delete(entity);
     }
 
+    @Override
+    public Role getOne(Role entity) {
+        return roleRepository.getOne(entity.getId());
+    }
+
     
 
     

@@ -30,4 +30,9 @@ public class PermissionService implements DataService<Permission> {
         permissionRepository.delete(entity);
     }
 
+    @Override
+    public Permission getOne(Permission entity) {
+        return permissionRepository.getOne(entity.getId());
+    }
+
 }
