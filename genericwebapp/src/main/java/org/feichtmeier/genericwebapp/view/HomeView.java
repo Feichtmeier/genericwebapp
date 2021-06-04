@@ -1,14 +1,11 @@
 package org.feichtmeier.genericwebapp.view;
 
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
-import java.util.Locale;
 
 import com.vaadin.flow.component.Html;
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.datetimepicker.DateTimePicker;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.dialog.Dialog;
@@ -140,6 +137,7 @@ public class HomeView extends AbstractView implements EntityEditor<Article> {
         articleBinder.forField(dialogArticleTitleTextField).asRequired("Must chose an article title!")
                 .bind(Article::getTitle, Article::setTitle);
         articleBinder.bind(markdownArea.getInput(), "textBody");
+        refreshArticlesInView();
     }
 
     private void refreshArticlesInView() {
@@ -154,7 +152,7 @@ public class HomeView extends AbstractView implements EntityEditor<Article> {
             editEntity(article);
         });
         editButton.setVisible(userService.isViewEditable(userService.findByUsername(SecurityUtils.getUsername()),
-                ViewNames.HOME_VIEW));
+                ViewNames.ARTICLE_EDIT_BUTTON));
         title.setClassName("article-title");
         // final Text text = new Text(body);
         final Div markdownOutput = new Div();
