@@ -1,11 +1,15 @@
 package org.feichtmeier.genericwebapp.view;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
+import java.util.Locale;
 
 import com.vaadin.flow.component.Html;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.datepicker.DatePicker;
+import com.vaadin.flow.component.datetimepicker.DateTimePicker;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.Div;
@@ -49,7 +53,7 @@ public class HomeView extends AbstractView implements EntityEditor<Article> {
     private final Button dialogSaveButton, dialogCancelButton, dialogDeleteButton;
     private final VerticalLayout dialogTopLayout;
     private final TextField dialogArticleTitleTextField;
-    private final DatePicker dialogArticleDateTextField;
+    private final DateTimePicker dialogArticleDateTextField;
     private final Upload imageUpload;
     private final MarkdownArea markdownArea;
     private final HorizontalLayout dialogBottomLayout;
@@ -94,7 +98,9 @@ public class HomeView extends AbstractView implements EntityEditor<Article> {
         // Dialog top
         dialogTopLayout = new VerticalLayout();
         dialogArticleTitleTextField = new TextField("Title");
-        dialogArticleDateTextField = new DatePicker();
+        dialogArticleDateTextField = new DateTimePicker();
+        // dialogArticleDateTextField.setLocale(Locale.GERMANY);
+        articleBinder.bind(dialogArticleDateTextField, "timeStamp");
         markdownArea = new MarkdownArea();
         markdownArea.getInput().setHeight("200px");
         imageUpload = new Upload();
@@ -103,7 +109,9 @@ public class HomeView extends AbstractView implements EntityEditor<Article> {
         // Dialog bottom
         dialogSaveButton = new Button("", VaadinIcon.CHECK.create(), e -> {
             if (articleBinder.validate().isOk()) {
-                currentEntity.setTimeStamp(LocalDateTime.now());
+                if(currentEntity.getTimeStamp() == null) {
+                    currentEntity.setTimeStamp(LocalDateTime.now());
+                }
 
                 articleService.save(currentEntity);
                 refreshArticlesInView();
@@ -152,7 +160,7 @@ public class HomeView extends AbstractView implements EntityEditor<Article> {
         final Div markdownOutput = new Div();
         String text = markdownArea.getValue().isEmpty() ? "*Nothing to preview*" : markdownArea.getValue();
         addMarkdown(text, markdownOutput);
-        final Label dateText = new Label(article.getTimeStamp().format(DateTimeFormatter.ofPattern("DD.MM.YYYY")));
+        final Label dateText = new Label(DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL).format(article.getTimeStamp()));
         dateText.setClassName("article-date");
         aVerticalLayout.add(dateText, title, markdownOutput, editButton);
         aVerticalLayout.setClassName("article");
@@ -180,7 +188,6 @@ public class HomeView extends AbstractView implements EntityEditor<Article> {
         articleEditorDialog.open();
         this.currentEntity = article;
         articleBinder.setBean(currentEntity);
-        dialogArticleDateTextField.setValue(LocalDateTime.now().toLocalDate());
     }
 
     private void goBackToView() {

@@ -26,5 +26,5 @@ server:
 #     key-store-type: jks
 #     key-alias: tomcat
 #     key-password: password
-  port: 3000
+  port: 3003
     
