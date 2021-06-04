@@ -3,6 +3,7 @@ package org.feichtmeier.genericwebapp.entity;
 import java.time.LocalDateTime;
 
 import javax.persistence.Entity;
+import javax.persistence.Lob;
 import javax.persistence.OneToOne;
 import javax.validation.constraints.NotNull;
 
@@ -16,6 +17,7 @@ public class Article extends AbstractEntity {
     @NotNull
     private String title;
     @NotNull
+    @Lob
     private String textBody;
     @NotNull
     private String textBodyShort;

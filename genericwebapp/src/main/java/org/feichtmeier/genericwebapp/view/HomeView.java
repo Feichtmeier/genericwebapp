@@ -91,7 +91,6 @@ public class HomeView extends AbstractView implements EntityEditor<Article> {
         // Edit Dialog
         articleBinder = new Binder<>(Article.class);
         articleEditorDialog = new Dialog();
-        articleEditorDialog.setMaxWidth("400px");
         // Dialog top
         dialogTopLayout = new VerticalLayout();
         dialogArticleTitleTextField = new TextField("Title");
@@ -99,14 +98,14 @@ public class HomeView extends AbstractView implements EntityEditor<Article> {
         // dialogArticleDateTextField.setLocale(Locale.GERMANY);
         articleBinder.bind(dialogArticleDateTextField, "timeStamp");
         markdownArea = new MarkdownArea();
-        markdownArea.getInput().setHeight("200px");
+        markdownArea.getInput().setMinWidth("400px");
         imageUpload = new Upload();
         dialogTopLayout.add(dialogArticleDateTextField, dialogArticleTitleTextField, markdownArea, imageUpload);
 
         // Dialog bottom
         dialogSaveButton = new Button("", VaadinIcon.CHECK.create(), e -> {
             if (articleBinder.validate().isOk()) {
-                if(currentEntity.getTimeStamp() == null) {
+                if (currentEntity.getTimeStamp() == null) {
                     currentEntity.setTimeStamp(LocalDateTime.now());
                 }
 
@@ -148,11 +147,11 @@ public class HomeView extends AbstractView implements EntityEditor<Article> {
     private void addArticleToView(Article article) {
         final VerticalLayout aVerticalLayout = new VerticalLayout();
         final H2 title = new H2(article.getTitle());
-        final Button editButton = new Button(VaadinIcon.EDIT.create(), e -> {
-            editEntity(article);
-        });
+        final Button editButton = new Button(VaadinIcon.EDIT.create(), e -> editEntity(article));
         editButton.setVisible(userService.isViewEditable(userService.findByUsername(SecurityUtils.getUsername()),
                 ViewNames.ARTICLE_EDIT_BUTTON));
+        final Button viewButton = new Button(VaadinIcon.EYE.create(), e -> showArticleDetails(article));
+        final HorizontalLayout buttonLayout = new HorizontalLayout(editButton, viewButton);
         title.setClassName("article-title");
         // final Text text = new Text(body);
         final Div markdownOutput = new Div();
@@ -160,7 +159,7 @@ public class HomeView extends AbstractView implements EntityEditor<Article> {
         addMarkdown(text, markdownOutput);
         final Label dateText = new Label(DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL).format(article.getTimeStamp()));
         dateText.setClassName("article-date");
-        aVerticalLayout.add(dateText, title, markdownOutput, editButton);
+        aVerticalLayout.add(dateText, title, buttonLayout);
         aVerticalLayout.setClassName("article");
         viewBottomLayout.add(aVerticalLayout);
     }

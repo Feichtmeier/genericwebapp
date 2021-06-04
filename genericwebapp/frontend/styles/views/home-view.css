@@ -9,16 +9,16 @@
 .article {
     background-color: var(--lumo-contrast-5pct);
     border-radius: 5px;
-    cursor: pointer;
+    /* cursor: pointer; */
 }
-
+/* 
 .article:hover {
     background-color: var(--lumo-contrast-10pct);
 }
 
 .article:active {
     background-color: var(--lumo-contrast-20pct);
-}
+} */
 
 .article-title {
     margin-top: 5px;
