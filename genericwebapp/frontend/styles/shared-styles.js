@@ -69,6 +69,7 @@ $_documentContainer.innerHTML = `
     .grid-view-editor-dialog-bottom-layout {
       align-items: center;
       width: 100%;
+      margin-top: 20px;
       flex-grow: 0;
     }
 

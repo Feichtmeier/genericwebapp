@@ -47,6 +47,7 @@ public class HomeView extends AbstractView implements EntityEditor<Article> {
     private final TextField viewArticleFilter;
     private final Button viewNewArticleButton;
     private final Dialog articleEditorDialog;
+    private final Dialog articleReaDialog;
     private final Button dialogSaveButton, dialogCancelButton, dialogDeleteButton;
     private final VerticalLayout dialogTopLayout;
     private final TextField dialogArticleTitleTextField;
@@ -136,6 +137,11 @@ public class HomeView extends AbstractView implements EntityEditor<Article> {
         articleBinder.forField(dialogArticleTitleTextField).asRequired("Must chose an article title!")
                 .bind(Article::getTitle, Article::setTitle);
         articleBinder.bind(markdownArea.getInput(), "textBody");
+
+        // Read dialog
+        articleReaDialog = new Dialog();
+        articleReaDialog.setMaxWidth("700px");
+
         refreshArticlesInView();
     }
 
@@ -195,7 +201,11 @@ public class HomeView extends AbstractView implements EntityEditor<Article> {
     }
 
     private void showArticleDetails(Article article) {
-
+        final Div articleDiv = new Div();        
+        addMarkdown(article.getTextBody(), articleDiv);        
+        articleReaDialog.removeAll();
+        articleReaDialog.add(articleDiv);
+        articleReaDialog.open();
     }
 
     @Override
