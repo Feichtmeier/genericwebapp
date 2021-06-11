@@ -6,7 +6,7 @@ spring:
             hibernate:
                 dialect: org.hibernate.dialect.MySQL5Dialect
     datasource:
-        url: jdbc:mysql://localhost:3306/genericwebapp?serverTimezone=Europe/Berlin
+        url: jdbc:mysql://localhost:3308/genericwebapp?serverTimezone=Europe/Berlin
         username: genericwebapp
         password: genericwebapp
 
@@ -28,3 +28,4 @@ server:
 #     key-password: password
   port: 3003
     
+# docker run -e TZ=Europe/Berlin --detach --tty -p 81:80 -p 3308:3306 --name xamppy-docker --mount "source=xamppy-docker-vol,destination=/opt/lampp/var/mysql/" tomsik68/xampp
