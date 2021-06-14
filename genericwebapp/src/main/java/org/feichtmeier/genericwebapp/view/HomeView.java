@@ -1,8 +1,14 @@
 package org.feichtmeier.genericwebapp.view;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.imageio.ImageIO;
 
 import com.vaadin.flow.component.Html;
 import com.vaadin.flow.component.button.Button;
@@ -11,6 +17,7 @@ import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H2;
+import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
@@ -18,6 +25,8 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.component.upload.Upload;
+import com.vaadin.flow.component.upload.receivers.MemoryBuffer;
+import com.vaadin.flow.component.upload.receivers.MultiFileMemoryBuffer;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.spring.annotation.VaadinSessionScope;
@@ -25,6 +34,8 @@ import com.vladsch.flexmark.html.HtmlRenderer;
 import com.vladsch.flexmark.parser.Parser;
 
 import org.feichtmeier.genericwebapp.entity.Article;
+import org.feichtmeier.genericwebapp.entity.ArticleImage;
+import org.feichtmeier.genericwebapp.entity.AvatarImage;
 import org.feichtmeier.genericwebapp.security.SecurityUtils;
 import org.feichtmeier.genericwebapp.service.ArticleImageService;
 import org.feichtmeier.genericwebapp.service.ArticleService;
@@ -37,7 +48,7 @@ import org.vaadin.maxime.StringUtil;
 @CssImport("./styles/views/home-view.css")
 @Component
 @VaadinSessionScope
-public class HomeView extends AbstractView implements EntityEditor<Article> {
+public class HomeView extends ViewWithImages implements EntityEditor<Article> {
 
     private static final long serialVersionUID = -2333684897315095897L;
 
@@ -52,11 +63,12 @@ public class HomeView extends AbstractView implements EntityEditor<Article> {
     private final VerticalLayout dialogTopLayout;
     private final TextField dialogArticleTitleTextField;
     private final DateTimePicker dialogArticleDateTextField;
-    private final Upload imageUpload;
+    private final Upload upload;
     private final MarkdownArea markdownArea;
     private final HorizontalLayout dialogBottomLayout;
     private final VerticalLayout dialogBody;
     private final Binder<Article> articleBinder;
+    private final HorizontalLayout imageContainer;
     // Markdown
     private final Parser parser = Parser.builder().build();
     private final HtmlRenderer renderer = HtmlRenderer.builder().build();
@@ -65,8 +77,11 @@ public class HomeView extends AbstractView implements EntityEditor<Article> {
     private final UserService userService;
     private final ArticleService articleService;
     private final ArticleImageService articleImageService;
+    private final List<ArticleImage> articleImages;
 
     public HomeView(UserService userService, ArticleService articleService, ArticleImageService articleImageService) {
+        super(new MemoryBuffer(), new MultiFileMemoryBuffer());
+        articleImages = new ArrayList<>();
 
         this.userService = userService;
         this.articleService = articleService;
@@ -100,8 +115,32 @@ public class HomeView extends AbstractView implements EntityEditor<Article> {
         articleBinder.bind(dialogArticleDateTextField, "timeStamp");
         markdownArea = new MarkdownArea();
         markdownArea.getInput().setMinWidth("400px");
-        imageUpload = new Upload();
-        dialogTopLayout.add(dialogArticleDateTextField, dialogArticleTitleTextField, markdownArea, imageUpload);
+        imageContainer = new HorizontalLayout();
+        upload = new Upload(buffer);
+        upload.setUploadButton(new Button("Add image..."));
+        upload.setDropLabel(new Label("Drop image here"));
+        upload.setAcceptedFileTypes("image/png", "image/jpeg");
+        upload.addSucceededListener(event -> {
+            if (event.getMIMEType().startsWith("image")) {
+                final Image image = createImageFromUpload(event.getMIMEType(), event.getFileName(),
+                        buffer.getInputStream());
+                imageContainer.removeAll();
+                imageContainer.add(image);
+
+                ByteArrayOutputStream pngContent = new ByteArrayOutputStream();
+                try {
+                    ImageIO.write(ImageIO.read(buffer.getInputStream()), "png", pngContent);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                final ArticleImage articleImage = new ArticleImage(pngContent.toByteArray(), event.getFileName(),
+                        event.getMIMEType(), this.currentEntity, LocalDateTime.now());
+                articleImages.add(articleImage);
+            }
+        });
+        
+        dialogTopLayout.add(dialogArticleDateTextField, dialogArticleTitleTextField, markdownArea, upload, imageContainer);
 
         // Dialog bottom
         dialogSaveButton = new Button("", VaadinIcon.CHECK.create(), e -> {
@@ -111,6 +150,7 @@ public class HomeView extends AbstractView implements EntityEditor<Article> {
                 }
 
                 articleService.save(currentEntity);
+                articleImages.forEach((articleImage) -> articleImageService.save(articleImage));
                 refreshArticlesInView();
 
                 Notification.show("Saved Article " + currentEntity.getTitle());
