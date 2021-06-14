@@ -35,7 +35,6 @@ import com.vladsch.flexmark.parser.Parser;
 
 import org.feichtmeier.genericwebapp.entity.Article;
 import org.feichtmeier.genericwebapp.entity.ArticleImage;
-import org.feichtmeier.genericwebapp.entity.AvatarImage;
 import org.feichtmeier.genericwebapp.security.SecurityUtils;
 import org.feichtmeier.genericwebapp.service.ArticleImageService;
 import org.feichtmeier.genericwebapp.service.ArticleService;
@@ -150,7 +149,7 @@ public class HomeView extends ViewWithImages implements EntityEditor<Article> {
                 }
 
                 articleService.save(currentEntity);
-                articleImages.forEach((articleImage) -> articleImageService.save(articleImage));
+                articleImages.forEach((articleImage) -> this.articleImageService.save(articleImage));
                 refreshArticlesInView();
 
                 Notification.show("Saved Article " + currentEntity.getTitle());
