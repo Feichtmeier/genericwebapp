@@ -46,7 +46,7 @@ public class SettingsView extends ViewWithImages {
         if (null == userAvatar) {
             defaultAvatarImage = new Image("https://dummyimage.com/50x50/e7ebef/3b3b3b", "Avatar");
         } else {
-            defaultAvatarImage = createImageFromEntity(userAvatar);
+            defaultAvatarImage = createImageFromEntity(userAvatar, ImageType.AVATAR_IMAGE);
         }
 
         imageContainer = new HorizontalLayout(defaultAvatarImage);
@@ -57,11 +57,9 @@ public class SettingsView extends ViewWithImages {
         upload.addSucceededListener(event -> {
             if (event.getMIMEType().startsWith("image")) {
                 final Image image = createImageFromUpload(event.getMIMEType(), event.getFileName(),
-                        buffer.getInputStream());
-                imageContainer.removeAll();
-                imageContainer.add(image);
+                        buffer.getInputStream(), ImageType.AVATAR_IMAGE);
 
-                ByteArrayOutputStream pngContent = new ByteArrayOutputStream();
+                final ByteArrayOutputStream pngContent = new ByteArrayOutputStream();
                 try {
                     ImageIO.write(ImageIO.read(buffer.getInputStream()), "png", pngContent);
                 } catch (IOException e) {
@@ -70,7 +68,10 @@ public class SettingsView extends ViewWithImages {
 
                 final AvatarImage avatarImage = new AvatarImage(pngContent.toByteArray(), event.getFileName(),
                         event.getMIMEType(), userService.findByUsername(sessionUsername), LocalDateTime.now());
-                avatarImageService.save(avatarImage);
+                if (null != avatarImageService.save(avatarImage)) {
+                    imageContainer.removeAll();
+                    imageContainer.add(image);
+                }
             }
         });
 

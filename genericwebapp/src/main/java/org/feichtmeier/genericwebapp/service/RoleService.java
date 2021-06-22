@@ -21,8 +21,8 @@ public class RoleService implements DataService<Role> {
     }
 
     @Override
-    public void save(Role entity) {
-        roleRepository.save(entity);
+    public Role save(Role entity) {
+        return roleRepository.save(entity);
     }
 
     @Override

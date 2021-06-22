@@ -33,7 +33,7 @@ public class ViewWithImages extends AbstractView {
         
     }
     
-    public Image createImageFromUpload(String mimeType, String fileName, InputStream stream) {
+    public Image createImageFromUpload(String mimeType, String fileName, InputStream stream, ImageType imageType) {
         final Image image = new Image();
         try {
             byte[] bytes = IOUtils.toByteArray(stream);
@@ -44,7 +44,9 @@ public class ViewWithImages extends AbstractView {
                     ImageReader reader = readers.next();
                     try {
                         reader.setInput(in);
-                        image.setClassName("avatar");
+                        if (imageType == ImageType.AVATAR_IMAGE) {
+                            image.setClassName("avatar");
+                        }
                     } finally {
                         reader.dispose();
                     }
@@ -57,13 +59,15 @@ public class ViewWithImages extends AbstractView {
         return image;
     }
 
-    public Image createImageFromEntity(AbstractImage imageEntity) {
+    public Image createImageFromEntity(AbstractImage imageEntity, ImageType imageType) {
         final StreamResource sr = new StreamResource("avatarImage", () -> {
             return new ByteArrayInputStream(imageEntity.getByteArray());
         });
         sr.setContentType("image/png");
         final Image image = new Image(sr, imageEntity.getFileName());
-        image.setClassName("avatar");
+        if (imageType == ImageType.AVATAR_IMAGE) {
+            image.setClassName("avatar");
+        }
 
         return image;
     }

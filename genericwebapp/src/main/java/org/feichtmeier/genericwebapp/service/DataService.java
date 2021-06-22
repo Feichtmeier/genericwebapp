@@ -10,7 +10,7 @@ public interface DataService<E extends AbstractEntity> {
 
     public List<E> findAll();
 
-    public void save(E entity);
+    public E save(E entity);
 
     public void delete(E entity);
 

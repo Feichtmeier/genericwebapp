@@ -22,8 +22,8 @@ public class AvatarImageService implements DataService<AvatarImage> {
     }
 
     @Override
-    public void save(AvatarImage entity) {
-        avatarImageRepository.save(entity);
+    public AvatarImage save(AvatarImage entity) {
+        return avatarImageRepository.save(entity);
     }
 
     @Override

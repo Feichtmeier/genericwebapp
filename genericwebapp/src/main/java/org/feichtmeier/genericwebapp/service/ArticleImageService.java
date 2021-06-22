@@ -21,8 +21,8 @@ public class ArticleImageService implements DataService<ArticleImage> {
     }
 
     @Override
-    public void save(ArticleImage entity) {
-        articleImageRepository.save(entity);
+    public ArticleImage save(ArticleImage entity) {
+        return articleImageRepository.save(entity);
     }
 
     @Override

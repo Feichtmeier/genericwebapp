@@ -122,11 +122,12 @@ public class HomeView extends ViewWithImages implements EntityEditor<Article> {
         upload.addSucceededListener(event -> {
             if (event.getMIMEType().startsWith("image")) {
                 final Image image = createImageFromUpload(event.getMIMEType(), event.getFileName(),
-                        buffer.getInputStream());
+                        buffer.getInputStream(), ImageType.REGULAR_IMAGE);
                 imageContainer.removeAll();
+                image.setMaxHeight("100px");
                 imageContainer.add(image);
 
-                ByteArrayOutputStream pngContent = new ByteArrayOutputStream();
+                final ByteArrayOutputStream pngContent = new ByteArrayOutputStream();
                 try {
                     ImageIO.write(ImageIO.read(buffer.getInputStream()), "png", pngContent);
                 } catch (IOException e) {
@@ -240,7 +241,7 @@ public class HomeView extends ViewWithImages implements EntityEditor<Article> {
     }
 
     private void showArticleDetails(Article article) {
-        final Div articleDiv = new Div();        
+        final Div articleDiv = new Div();
         addMarkdown(article.getTextBody(), articleDiv);        
         articleReaDialog.removeAll();
         articleReaDialog.add(articleDiv);

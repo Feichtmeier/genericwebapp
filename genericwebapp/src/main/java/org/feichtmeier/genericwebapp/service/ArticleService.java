@@ -21,8 +21,8 @@ public class ArticleService implements DataService<Article> {
     }
 
     @Override
-    public void save(Article entity) {
-        articleRepository.save(entity);
+    public Article save(Article entity) {
+        return articleRepository.save(entity);
 
     }
 

@@ -21,8 +21,8 @@ public class PermissionService implements DataService<Permission> {
     }
 
     @Override
-    public void save(Permission entity) {
-        permissionRepository.save(entity);
+    public Permission save(Permission entity) {
+        return permissionRepository.save(entity);
     }
 
     @Override

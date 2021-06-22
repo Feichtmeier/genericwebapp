@@ -23,8 +23,8 @@ public class UserService implements DataService<User> {
     }
 
     @Override
-    public void save(User entity) {
-        userRepository.save(entity);
+    public User save(User entity) {
+        return userRepository.save(entity);
     }
 
     @Override
